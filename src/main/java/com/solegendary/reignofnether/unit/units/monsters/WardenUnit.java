@@ -6,6 +6,7 @@ import com.solegendary.reignofnether.ability.abilities.SonicBoom;
 import com.solegendary.reignofnether.building.Building;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybindings;
+import com.solegendary.reignofnether.research.ResearchClient;
 import com.solegendary.reignofnether.research.ResearchServerEvents;
 import com.solegendary.reignofnether.research.researchItems.ResearchSculkAmplifiers;
 import com.solegendary.reignofnether.resources.ResourceCost;
@@ -268,24 +269,29 @@ public class WardenUnit extends Warden implements Unit, AttackerUnit {
                 Vec3 particlePos = startPos.add(normTargetPos.scale(i));
                 level.sendParticles(ParticleTypes.SONIC_BOOM, particlePos.x, particlePos.y, particlePos.z, 1, 0,0,0,0);
             }
+        }
+        boolean hasResearch;
+        if (this.level.isClientSide())
+            hasResearch = ResearchClient.hasResearch(ResearchSculkAmplifiers.itemName);
+        else
+            hasResearch = ResearchServerEvents.playerHasResearch(getOwnerName(), ResearchSculkAmplifiers.itemName);
 
-            if (!ResearchServerEvents.playerHasResearch(getOwnerName(), ResearchSculkAmplifiers.itemName))
-                targetBuilding.destroyRandomBlocks((int) SONIC_BOOM_DAMAGE / 2);
-            else {
-                List<Mob> nearbyEnemies = MiscUtil.getEntitiesWithinRange(
-                                new Vector3d(targetBuilding.centrePos.getX(), targetBuilding.centrePos.getY(), targetBuilding.centrePos.getZ()),
-                                ResearchSculkAmplifiers.SPLIT_BOOM_RANGE, Mob.class, this.level)
-                        .stream().filter(mob -> mob instanceof Unit unit &&
-                                UnitServerEvents.getUnitToEntityRelationship(this, mob) == Relationship.HOSTILE)
-                        .toList();
+        if (hasResearch)
+            targetBuilding.destroyRandomBlocks((int) SONIC_BOOM_DAMAGE / 2);
+        else {
+            List<Mob> nearbyEnemies = MiscUtil.getEntitiesWithinRange(
+                            new Vector3d(targetBuilding.centrePos.getX(), targetBuilding.centrePos.getY(), targetBuilding.centrePos.getZ()),
+                            ResearchSculkAmplifiers.SPLIT_BOOM_RANGE, Mob.class, this.level)
+                    .stream().filter(mob -> mob instanceof Unit unit &&
+                            UnitServerEvents.getUnitToEntityRelationship(this, mob) == Relationship.HOSTILE)
+                    .toList();
 
-                if (nearbyEnemies.size() > 0)
-                    doEntitySonicBoom(nearbyEnemies.get(0));
-                if (nearbyEnemies.size() > 1)
-                    doEntitySonicBoom(nearbyEnemies.get(1));
-                if (nearbyEnemies.size() > 2)
-                    doEntitySonicBoom(nearbyEnemies.get(2));
-            }
+            if (nearbyEnemies.size() > 0)
+                doEntitySonicBoom(nearbyEnemies.get(0));
+            if (nearbyEnemies.size() > 1)
+                doEntitySonicBoom(nearbyEnemies.get(1));
+            if (nearbyEnemies.size() > 2)
+                doEntitySonicBoom(nearbyEnemies.get(2));
         }
     }
 
