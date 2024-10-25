@@ -7,7 +7,13 @@
 [❌] Not done, top ones are roughly of higher priority
 
 
-
+Features
+--------
+[❌] New Monster Building: Sculk Catalyst
+    - Like in vanilla, nearby units which die spread sculk blocks
+    - Extends night range in a 25-block radius, which can be extended up to 40 blocks with more sculk
+    - When attacked, destroys nearby sculk blocks before taking damage (effectively giving it +1 hp sculk)
+    - Can be upgraded at a Lab (with a Stronghold) to allow wardens to split sonic booms into 3 random nearby enemies
 
 
 Bugfixes
@@ -33,6 +39,8 @@ Bugfixes
 [🟡] Fixed undead burning too early or too late
 
 [🟡] Defeated players lose all of their research
+
+[❌] Ravager difficult to control when mounted
 
 
 Quality of Life Features

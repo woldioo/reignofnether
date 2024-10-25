@@ -53,6 +53,9 @@ public class BuildingBlock {
         if (this.blockState.getBlock() == Blocks.SCULK_SENSOR &&
             bs.getBlock() == Blocks.SCULK_SENSOR)
             return true;
+        if (this.blockState.getBlock() == Blocks.SCULK_SHRIEKER &&
+            bs.getBlock() == Blocks.SCULK_SHRIEKER)
+            return true;
 
         return !this.blockState.isAir() && (bs == this.blockState || isMatchingWallBlock);
     }

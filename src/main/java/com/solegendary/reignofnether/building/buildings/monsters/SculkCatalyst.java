@@ -16,10 +16,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.*;
 
 import static com.solegendary.reignofnether.building.BuildingUtils.getAbsoluteBlockData;
 
@@ -29,9 +28,15 @@ public class SculkCatalyst extends Building implements NightSource {
     public final static String structureName = "sculk_catalyst";
     public final static ResourceCost cost = ResourceCosts.SCULK_CATALYST;
 
+    private final static Random random = new Random();
+
     public final static int nightRange = 25;
     public final static int nightRangeMax = 40;
     private final Set<BlockPos> nightBorderBps = new HashSet<>();
+
+    private final static int SCULK_SEARCH_RANGE = 30;
+
+    private final ArrayList<BlockPos> sculkBps = new ArrayList<>();
 
     public SculkCatalyst(Level level, BlockPos originPos, Rotation rotation, String ownerName) {
         super(level, originPos, rotation, ownerName, getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation), false);
@@ -44,7 +49,7 @@ public class SculkCatalyst extends Building implements NightSource {
         this.woodCost = cost.wood;
         this.oreCost = cost.ore;
         this.popSupply = cost.population;
-        this.buildTimeModifier = 2.0f;
+        this.buildTimeModifier = 2.5f;
 
         this.startingBlockTypes.add(Blocks.POLISHED_BLACKSTONE);
     }
@@ -76,8 +81,70 @@ public class SculkCatalyst extends Building implements NightSource {
         return BuildingBlockData.getBuildingBlocks(structureName, level);
     }
 
-    private static int numSculkBlocksNearby() {
-        return 0;
+    private void updateSculkBps() {
+        sculkBps.clear();
+        for (int x = centrePos.getX() - SCULK_SEARCH_RANGE / 2; x < centrePos.getX() + SCULK_SEARCH_RANGE / 2; x++) {
+            for (int z = centrePos.getZ() - SCULK_SEARCH_RANGE / 2; z < centrePos.getZ() + SCULK_SEARCH_RANGE / 2; z++) {
+                BlockPos topBp = new BlockPos(x, maxCorner.getY(), z);
+                if (isPosInsideBuilding(topBp))
+                    continue;
+
+                int y = 0;
+                BlockState bs;
+                BlockPos bp;
+                do {
+                    y += 1;
+                    bp = topBp.offset(0,-y,0);
+                    bs = level.getBlockState(bp);
+                } while (bs.isAir() && y < 10);
+
+                if (bs.getBlock() == Blocks.SCULK || bs.getBlock() == Blocks.SCULK_VEIN)
+                    sculkBps.add(bp);
+            }
+        }
+        Collections.shuffle(sculkBps);
+    }
+
+    // returns the number of blocks converted
+    private int restoreRandomSculk(int amount) {
+        if (getLevel().isClientSide())
+            return 0;
+        int restoredSculk = 0;
+
+        for (int i = 0; i < amount; i++) {
+            BlockPos bp;
+            BlockState bs;
+            try {
+                bp = sculkBps.get(i);
+                bs = level.getBlockState(bp);
+            } catch (IndexOutOfBoundsException e) {
+                return restoredSculk;
+            }
+            if (bs.getBlock() == Blocks.SCULK) {
+                for (BlockPos bpAdj : List.of(bp.below(), bp.north(), bp.south(), bp.east(), bp.west())) {
+                    BlockState bsAdj = level.getBlockState(bpAdj);
+                    if (!bsAdj.isAir()) {
+                        level.setBlockAndUpdate(bp, bsAdj);
+                        restoredSculk += 1;
+                    }
+                }
+            }
+            else if (bs.getBlock() == Blocks.SCULK_VEIN) {
+                level.destroyBlock(bp, false);
+                restoredSculk += 1;
+            }
+        }
+        return restoredSculk;
+    }
+
+    public void destroyRandomBlocks(int amount) {
+        if (getLevel().isClientSide() || amount <= 0)
+            return;
+
+        updateSculkBps();
+        int restoredSculk = restoreRandomSculk(amount * 2);
+        if (restoredSculk < amount)
+            super.destroyRandomBlocks(amount - restoredSculk);
     }
 
     public static AbilityButton getBuildButton(Keybinding hotkey) {
