@@ -5,6 +5,7 @@ import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.research.ResearchClient;
+import com.solegendary.reignofnether.research.researchItems.ResearchSculkAmplifiers;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.time.TimeClientEvents;
@@ -31,10 +32,8 @@ public class Stronghold extends ProductionBuilding implements GarrisonableBuildi
     public final static String structureName = "stronghold";
     public final static ResourceCost cost = ResourceCosts.STRONGHOLD;
     public final static int nightRange = 60;
-
-    private final static int MAX_OCCUPANTS = 7;
-
     private final Set<BlockPos> nightBorderBps = new HashSet<>();
+    private final static int MAX_OCCUPANTS = 7;
 
     public Stronghold(Level level, BlockPos originPos, Rotation rotation, String ownerName) {
         super(level, originPos, rotation, ownerName, getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation), false);

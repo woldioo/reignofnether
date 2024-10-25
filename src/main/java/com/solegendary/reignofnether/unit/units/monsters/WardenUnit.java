@@ -1,18 +1,24 @@
 package com.solegendary.reignofnether.unit.units.monsters;
 
+import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.ability.Ability;
 import com.solegendary.reignofnether.ability.abilities.SonicBoom;
 import com.solegendary.reignofnether.building.Building;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybindings;
+import com.solegendary.reignofnether.research.ResearchServerEvents;
+import com.solegendary.reignofnether.research.researchItems.ResearchSculkAmplifiers;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.time.NightUtils;
+import com.solegendary.reignofnether.unit.Relationship;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
+import com.solegendary.reignofnether.unit.UnitServerEvents;
 import com.solegendary.reignofnether.unit.goals.*;
 import com.solegendary.reignofnether.unit.interfaces.AttackerUnit;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.util.Faction;
+import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -27,6 +33,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -261,8 +268,25 @@ public class WardenUnit extends Warden implements Unit, AttackerUnit {
                 Vec3 particlePos = startPos.add(normTargetPos.scale(i));
                 level.sendParticles(ParticleTypes.SONIC_BOOM, particlePos.x, particlePos.y, particlePos.z, 1, 0,0,0,0);
             }
+
+            if (!ResearchServerEvents.playerHasResearch(getOwnerName(), ResearchSculkAmplifiers.itemName))
+                targetBuilding.destroyRandomBlocks((int) SONIC_BOOM_DAMAGE / 2);
+            else {
+                List<Mob> nearbyEnemies = MiscUtil.getEntitiesWithinRange(
+                                new Vector3d(targetBuilding.centrePos.getX(), targetBuilding.centrePos.getY(), targetBuilding.centrePos.getZ()),
+                                ResearchSculkAmplifiers.SPLIT_BOOM_RANGE, Mob.class, this.level)
+                        .stream().filter(mob -> mob instanceof Unit unit &&
+                                UnitServerEvents.getUnitToEntityRelationship(this, mob) == Relationship.HOSTILE)
+                        .toList();
+
+                if (nearbyEnemies.size() > 0)
+                    doEntitySonicBoom(nearbyEnemies.get(0));
+                if (nearbyEnemies.size() > 1)
+                    doEntitySonicBoom(nearbyEnemies.get(1));
+                if (nearbyEnemies.size() > 2)
+                    doEntitySonicBoom(nearbyEnemies.get(2));
+            }
         }
-        targetBuilding.destroyRandomBlocks((int) SONIC_BOOM_DAMAGE / 2);
     }
 
     public void startSonicBoomAnimation() {

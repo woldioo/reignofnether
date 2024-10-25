@@ -18,8 +18,8 @@ Bugfixes
 [✔] Survival players can no longer use F12 cam
 [✔] The hotkey for bridges has been changed to G to avoid an overlap with Build/Repair
 [✔] Fixed a crash when you build over a ledge with no floor
-[✔] Podzol and Mud blocks now convert to nether terrain (as nylium)
-
+[✔] Podzol, mud, moss and mycelium now convert to nether terrain (as nylium)
+[✔] Changed bridge hotkey again to C as G also was taken
 [🟡] Added a hard stop on opening the creative menu while in F12 cam
 
 [🟡] Disabled "being revealed" messages when your capitol is destroyed if fog of war is disabled
@@ -32,7 +32,7 @@ Bugfixes
 
 [🟡] Fixed undead burning too early or too late
 
-
+[🟡] Defeated players lose all of their research
 
 
 Quality of Life Features

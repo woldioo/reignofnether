@@ -528,6 +528,11 @@ public class PlayerServerEvents {
                 }
             }
             saveRTSPlayers();
+
+            ResearchServerEvents.removeAllResearchFor(playerName);
+            ResearchServerEvents.syncResearch(playerName);
+
+            ResearchServerEvents.saveResearch();
         }
         ResourcesServerEvents.resourcesList.removeIf(rl -> rl.ownerName.equals(playerName));
     }

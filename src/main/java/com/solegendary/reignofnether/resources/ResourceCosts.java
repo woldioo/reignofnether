@@ -79,6 +79,7 @@ public class ResourceCosts {
     public static ResourceCost MAUSOLEUM = ResourceCost.Building(0,300,150, 10);
     public static ResourceCost HAUNTED_HOUSE = ResourceCost.Building(0,100,0, 10);
     public static ResourceCost PUMPKIN_FARM = ResourceCost.Building(0,200,0, 0);
+    public static ResourceCost SCULK_CATALYST = ResourceCost.Building(0,100,0, 0);
     public static ResourceCost GRAVEYARD = ResourceCost.Building(0,150,0, 0);
     public static ResourceCost SPIDER_LAIR = ResourceCost.Building(0,150,75, 0);
     public static ResourceCost DUNGEON = ResourceCost.Building(0,150,75, 0);
@@ -123,6 +124,7 @@ public class ResourceCosts {
     public static ResourceCost RESEARCH_EVOKER_VEXES = ResourceCost.Research(500,0,300, 120);
     public static ResourceCost RESEARCH_CASTLE_FLAG = ResourceCost.Research(200,0,100, 60);
     public static ResourceCost RESEARCH_SILVERFISH = ResourceCost.Research(0,300,300, 120);
+    public static ResourceCost RESEARCH_SCULK_AMPLIFIERS = ResourceCost.Research(0,200,400, 150);
     public static ResourceCost RESEARCH_RAVAGER_ARTILLERY = ResourceCost.Research(400,0,350, 140);
     public static ResourceCost RESEARCH_BRUTE_SHIELDS = ResourceCost.Research(0,300,300, 150);
     public static ResourceCost RESEARCH_HOGLIN_CAVALRY = ResourceCost.Research(300,250,0, 100);
