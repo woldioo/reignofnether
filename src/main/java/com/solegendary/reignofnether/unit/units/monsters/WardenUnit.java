@@ -235,7 +235,10 @@ public class WardenUnit extends Warden implements Unit, AttackerUnit {
     }
 
     public void doEntitySonicBoom(LivingEntity targetEntity) {
-        Vec3 startPos = this.position().add(0, 1.6, 0);
+        doEntitySonicBoom(targetEntity, this.position().add(0, 1.6, 0));
+    }
+
+    public void doEntitySonicBoom(LivingEntity targetEntity, Vec3 startPos) {
         Vec3 targetPos = targetEntity.getEyePosition().subtract(startPos);
         Vec3 normTargetPos = targetPos.normalize();
 
@@ -285,13 +288,12 @@ public class WardenUnit extends Warden implements Unit, AttackerUnit {
                     .stream().filter(mob -> mob instanceof Unit unit &&
                             UnitServerEvents.getUnitToEntityRelationship(this, mob) == Relationship.HOSTILE)
                     .toList();
-
             if (nearbyEnemies.size() > 0)
-                doEntitySonicBoom(nearbyEnemies.get(0));
+                doEntitySonicBoom(nearbyEnemies.get(0), Vec3.atCenterOf(targetBuilding.centrePos));
             if (nearbyEnemies.size() > 1)
-                doEntitySonicBoom(nearbyEnemies.get(1));
+                doEntitySonicBoom(nearbyEnemies.get(1), Vec3.atCenterOf(targetBuilding.centrePos));
             if (nearbyEnemies.size() > 2)
-                doEntitySonicBoom(nearbyEnemies.get(2));
+                doEntitySonicBoom(nearbyEnemies.get(2), Vec3.atCenterOf(targetBuilding.centrePos));
         }
     }
 
