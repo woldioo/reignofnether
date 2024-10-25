@@ -20,8 +20,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -46,6 +48,9 @@ public class TimeClientEvents {
 
     public static boolean showNightRadius = true;
 
+    private static final long DAWN = 500;
+    private static final long DUSK = 12500;
+
     private static final Button CLOCK_BUTTON = new Button(
         "Clock",
         14,
@@ -60,6 +65,20 @@ public class TimeClientEvents {
         null
     );
 
+    // use instead of level.isDay() as its much stricter for undead burning checks
+    public static boolean isDay() {
+        return serverTime > DAWN && serverTime <= DUSK;
+    }
+
+    // more consistent version of Mob.isSunburnTick()
+    public static boolean isSunBurnTick(Mob mob) {
+        if (isDay() && !mob.level.isClientSide) {
+            BlockPos blockpos = new BlockPos(mob.getX(), mob.getEyeY(), mob.getZ());
+            boolean flag = mob.isInWaterRainOrBubble() || mob.isInPowderSnow || mob.wasInPowderSnow;
+            return !mob.isOnFire() && !flag && mob.level.canSeeSky(blockpos) && !NightUtils.isInRangeOfNightSource(mob.getEyePosition(), mob.level.isClientSide);
+        }
+        return false;
+    }
 
     // ensures a time value is between 0 and 24000
     public static long normaliseTime(long time) {
@@ -147,6 +166,8 @@ public class TimeClientEvents {
         //    CLOCK_BUTTON.checkClicked((int) evt.getMouseX(), (int) evt.getMouseY(), false);
     }
 
+
+
     @SubscribeEvent
     public static void onDrawScreen(ScreenEvent.Render evt) {
         if (!TutorialClientEvents.isAtOrPastStage(TutorialStage.MINIMAP_CLICK))
@@ -157,12 +178,9 @@ public class TimeClientEvents {
         if (evt.getMouseX() > xPos && evt.getMouseX() <= xPos + GUI_LENGTH &&
             evt.getMouseY() > yPos && evt.getMouseY() <= yPos + GUI_LENGTH) {
 
-            final long DAWN = 500;
-            final long DUSK = 12500;
-
             // 'day' is when undead start burning, ~500
             // 'night' is when undead stop burning, ~12500
-            boolean isDay = serverTime > DAWN && serverTime <= DUSK;
+            boolean isDay = isDay();
             String dayStr = isDay ? " (day)" : " (night)";
             String timeStr = get12HourTimeStr(serverTime) + dayStr;
 

@@ -7,7 +7,7 @@ import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.research.ResearchClient;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
-import com.solegendary.reignofnether.time.TimeUtils;
+import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.unit.units.monsters.WardenProd;
 import com.solegendary.reignofnether.util.Faction;
 import com.solegendary.reignofnether.util.MiscUtil;
@@ -20,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
 
@@ -62,9 +61,7 @@ public class Stronghold extends ProductionBuilding implements GarrisonableBuildi
         updateNightBorderBps();
     }
 
-    //public int getNightRange() { return (isBuilt || isBuiltServerside) ? nightRange : 0; }
-
-    public int getNightRange() { return nightRange; }
+    public int getNightRange() { return (isBuilt || isBuiltServerside) ? nightRange : 0; }
 
     public BlockPos getNightCentre() { return centrePos; }
 
@@ -83,6 +80,13 @@ public class Stronghold extends ProductionBuilding implements GarrisonableBuildi
     @Override
     public Set<BlockPos> getNightBorderBps() {
         return nightBorderBps;
+    }
+
+    @Override
+    public void tick(Level tickLevel) {
+        super.tick(tickLevel);
+        if (tickLevel.isClientSide && tickAge % 100 == 0 && TimeClientEvents.showNightRadius)
+            updateNightBorderBps();
     }
 
     public Faction getFaction() {return Faction.MONSTERS;}

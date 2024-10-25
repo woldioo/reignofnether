@@ -100,6 +100,7 @@ public abstract class Building {
     private long ticksToSpawnAnimals = 0; // spawn once soon after placement
     private final int MAX_ANIMALS = 8;
     private final int ANIMAL_SPAWN_RANGE = 80; // block range to check and spawn animals in
+    protected long tickAge = 0; // not saved
 
     public int foodCost;
     public int woodCost;
@@ -670,6 +671,7 @@ public abstract class Building {
                 spawnHuntableAnimalsNearby(ANIMAL_SPAWN_RANGE);
             }
         }
+        tickAge += 1;
     }
 
     // if there aren't already too many animals nearby, spawn some random huntable animals

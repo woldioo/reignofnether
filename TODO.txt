@@ -30,8 +30,7 @@ Bugfixes
 
 [✔] Building blocks no longer drop items for survival players when mined
 
-[🟡] Fixed undead burning too early (change isSunBurnTick to check exact time of day to be between 500 and 12500)
-    - Apparently undead actually burn for about 55% of the day in vanilla code
+[🟡] Fixed undead burning too early or too late
 
 
 
