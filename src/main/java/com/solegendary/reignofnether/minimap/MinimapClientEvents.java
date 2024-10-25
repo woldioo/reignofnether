@@ -18,6 +18,7 @@ import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
 import com.solegendary.reignofnether.player.PlayerServerboundPacket;
 import com.solegendary.reignofnether.time.TimeClientEvents;
+import com.solegendary.reignofnether.time.TimeUtils;
 import com.solegendary.reignofnether.tutorial.TutorialClientEvents;
 import com.solegendary.reignofnether.tutorial.TutorialStage;
 import com.solegendary.reignofnether.unit.Relationship;
@@ -42,6 +43,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -391,6 +393,10 @@ public class MinimapClientEvents {
             ArrayList<BlockPos> nightCircleBpsThick = new ArrayList<>();
             // raise thickness
             for (BlockPos bp : nightCircleBps) {
+                // remove overlaps
+                //if (TimeUtils.isInRangeOfNightSource(Vec3.atCenterOf(bp), true, building.originPos))
+                //    continue;
+
                 nightCircleBpsThick.add(bp);
                 nightCircleBpsThick.add(bp.offset(1,0,0));
                 nightCircleBpsThick.add(bp.offset(0,0,1));

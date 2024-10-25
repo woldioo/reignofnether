@@ -1,5 +1,8 @@
 package com.solegendary.reignofnether.orthoview;
 
+import com.solegendary.reignofnether.building.Building;
+import com.solegendary.reignofnether.building.BuildingClientEvents;
+import com.solegendary.reignofnether.building.NightSource;
 import com.solegendary.reignofnether.fogofwar.FogOfWarClientEvents;
 import com.solegendary.reignofnether.guiscreen.TopdownGui;
 import com.solegendary.reignofnether.guiscreen.TopdownGuiServerboundPacket;
@@ -216,6 +219,10 @@ public class OrthoviewClientEvents {
     public static void toggleEnable() {
         if (MC.level == null || MC.player == null)
             return;
+
+        for (Building building : BuildingClientEvents.getBuildings())
+            if (building instanceof NightSource ns)
+                ns.updateNightBorderBps();
 
         enabled = !enabled;
 

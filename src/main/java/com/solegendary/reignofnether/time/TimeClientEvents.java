@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -203,13 +204,24 @@ public class TimeClientEvents {
     public static void onRenderLevel(RenderLevelStageEvent evt) {
         if (evt.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS)
             return;
-        if (!OrthoviewClientEvents.isEnabled() || !showNightRadius)
+        if (!OrthoviewClientEvents.isEnabled() || !showNightRadius || MC.level == null)
             return;
 
         // draw night-ranges for monsters
         for (Building building : BuildingClientEvents.getBuildings())
             if (building instanceof NightSource ns)
-                for (BlockPos bp : ns.getNightBorderBps())
-                    MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.UP, bp, 0f, 0f, 0f, 0.5f);
+                for (BlockPos bp : ns.getNightBorderBps()) {
+                    MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.UP, bp, 0f, 0f, 0f, 0.6f);
+                    /* causes a lot of flickering
+                    if (MC.level.getBlockState(bp.north()).isAir())
+                        MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.NORTH, bp, 0f, 0f, 0f, 0.5f);
+                    if (MC.level.getBlockState(bp.south()).isAir())
+                        MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.SOUTH, bp, 0f, 0f, 0f, 0.5f);
+                    if (MC.level.getBlockState(bp.east()).isAir())
+                        MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.EAST, bp, 0f, 0f, 0f, 0.5f);
+                    if (MC.level.getBlockState(bp.west()).isAir())
+                        MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.WEST, bp, 0f, 0f, 0f, 0.5f);
+                    */
+                }
     }
 }

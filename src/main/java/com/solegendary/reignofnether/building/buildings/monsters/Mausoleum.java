@@ -4,8 +4,7 @@ import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.resources.ResourceCost;
-import com.solegendary.reignofnether.unit.UnitServerEvents;
-import com.solegendary.reignofnether.unit.interfaces.Unit;
+import com.solegendary.reignofnether.time.TimeUtils;
 import com.solegendary.reignofnether.unit.units.monsters.ZombieVillagerProd;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.resources.ResourceCosts;
@@ -15,11 +14,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.phys.Vec3;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -70,9 +70,7 @@ public class Mausoleum extends ProductionBuilding implements NightSource {
     @Override
     public void updateNightBorderBps() {
         this.nightBorderBps.clear();
-        this.nightBorderBps.addAll(MiscUtil.getGroundCircleBlocks(centrePos, getNightRange(), level));
-        this.nightBorderBps.addAll(MiscUtil.getGroundCircleBlocks(centrePos.offset(1,0,0), getNightRange(), level));
-        this.nightBorderBps.addAll(MiscUtil.getGroundCircleBlocks(centrePos.offset(0,0,1), getNightRange(), level));
+        this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos, getNightRange(), level, originPos));
     }
 
     @Override

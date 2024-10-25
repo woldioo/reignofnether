@@ -5,7 +5,7 @@ import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.cursor.CursorClientEvents;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
-import com.solegendary.reignofnether.resources.BlockUtils;
+import com.solegendary.reignofnether.time.TimeUtils;
 import com.solegendary.reignofnether.unit.Relationship;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.UnitServerEvents;
@@ -18,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
@@ -31,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
@@ -40,7 +40,6 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static com.solegendary.reignofnether.resources.BlockUtils.isLeafBlock;
 import static com.solegendary.reignofnether.resources.BlockUtils.isLogBlock;
@@ -339,29 +338,40 @@ public class MiscUtil {
         return CursorClientEvents.getRefinedCursorWorldPos(cursorWorldPosNear, cursorWorldPosFar);
     }
 
-
     // get the tops of all blocks which are of at a certain horizontal distance away from the centrePos
-    public static Set<BlockPos> getGroundCircleBlocks(BlockPos centrePos, int radius, Level level) {
+    public static Set<BlockPos> getNightCircleBlocks(BlockPos centrePos, int radius, Level level, BlockPos excludedOrigin) {
         if (radius <= 0)
             return Set.of();
 
         ArrayList<BlockPos> bps = new ArrayList<>();
 
         for (BlockPos bp : CircleUtil.getCircle(centrePos, radius)) {
-            int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bp.getX(), bp.getZ()) - 1;
-            BlockPos groundBp = new BlockPos(bp.getX(), groundY, bp.getZ());
+            // remove overlaps
+            //if (TimeUtils.isInRangeOfNightSource(Vec3.atCenterOf(bp), true, excludedOrigin))
+            //    continue;
 
+            int groundY1 = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bp.getX(), bp.getZ()) - 1;
+            BlockPos topBp1 = new BlockPos(bp.getX(), groundY1, bp.getZ());
+            bps.add(topBp1);
+
+            /*
             int y = 1;
-            while (y < 10 && (level.getBlockState(groundBp).isAir() ||
-                    BlockUtils.isLeafBlock(level.getBlockState(groundBp)) ||
-                    BuildingUtils.isPosInsideAnyBuilding(true, groundBp))) {
-                groundBp = groundBp.offset(0,-y,0);
-                y += 1;
+            if (level.getBlockState(topBp1).getBlock() instanceof LeavesBlock) {
+                BlockPos bottomBp = topBp1.offset(0,-y,0);
+                while (y < 30 && level.getBlockState(bottomBp))
             }
-            bps.add(groundBp);
+             */
+
+            int groundY2 = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bp.getX() + 1, bp.getZ()) - 1;
+            BlockPos topBp2 = new BlockPos(bp.getX() + 1, groundY2, bp.getZ());
+            bps.add(topBp2);
+            int groundY3 = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bp.getX(), bp.getZ() + 1) - 1;
+            BlockPos topBp3 = new BlockPos(bp.getX(), groundY3, bp.getZ() + 1);
+            bps.add(topBp3);
         }
         return new HashSet<>(bps);
     }
+
 
     public static class CircleUtil {
 

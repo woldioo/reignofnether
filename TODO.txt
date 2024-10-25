@@ -45,9 +45,9 @@ Quality of Life Features
 
 [✔] make /rts-fog serverside (no warnings)
 
-[🟡] Radius indicator around monster capitol and stronghold to better indicate range of night
-    (can use this same code for ability range indicators too)
-    - night warping areas are now cylinders instead of a sphere (this means it has unlimited vertical range)
+[🟡] Sources of night warping now have a range indicator, toggleable by clicking the clock
+
+[🟡] Night warping areas are now cylinders instead of a sphere (this means it has unlimited vertical range)
 
 
 
@@ -65,5 +65,5 @@ Balancing Features
 [✔] Warden Health has been increased from 120 to 150
 [🟡] Iron golem ore cost ↓ 50, wood cost ↑ 50
 [🟡] Ravager food cost ↑ 50, build time ↑ 10s
-[🟡] Hoglin ore cost ↑ 25, build time ↑ 5s, population ↑ 1
+[🟡] Hoglin health ↑ 5, attack speed ↑ 0.1, ore cost ↑ 25, build time ↑ 5s, population ↑ 1
 [🟡] Ghast ore cost ↓ 50
