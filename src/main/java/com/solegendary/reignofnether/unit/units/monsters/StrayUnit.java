@@ -188,8 +188,7 @@ public class StrayUnit extends Stray implements Unit, AttackerUnit, RangedAttack
 
     @Override
     protected boolean isSunBurnTick() {
-        return super.isSunBurnTick() &&
-                !TimeUtils.isInRangeOfNightSource(this.getEyePosition(), false);
+        return TimeUtils.isSunBurnTick(this);
     }
 
     public void initialiseGoals() {

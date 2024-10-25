@@ -163,8 +163,7 @@ public class ZombieUnit extends Zombie implements Unit, AttackerUnit, Convertabl
 
     @Override
     protected boolean isSunBurnTick() {
-        return super.isSunBurnTick() &&
-                !TimeUtils.isInRangeOfNightSource(this.getEyePosition(), false);
+        return TimeUtils.isSunBurnTick(this);
     }
 
     public void initialiseGoals() {

@@ -514,6 +514,9 @@ public class BuildingServerEvents {
                         for (LivingEntity le : garr.getOccupants())
                             le.hurt(exp.getDamageSource(), random.nextInt(atkDmg + 1));
 
+                    if (building instanceof AbstractBridge)
+                        atkDmg /= 2;
+
                     building.destroyRandomBlocks(atkDmg);
                 }
 

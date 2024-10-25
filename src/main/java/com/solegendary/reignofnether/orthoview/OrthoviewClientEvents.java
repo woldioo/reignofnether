@@ -21,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
@@ -277,10 +278,15 @@ public class OrthoviewClientEvents {
         if (evt.getAction() == GLFW.GLFW_PRESS) { // prevent repeated key actions
             if (evt.getKey() == Keybindings.getFnum(12).key &&
                 !OrthoviewClientEvents.isCameraLocked() &&
-                MC.gameMode != null &&
-                MC.gameMode.getPlayerMode() != GameType.SURVIVAL)
-                toggleEnable();
-
+                MC.gameMode != null) {
+                if (MC.gameMode.getPlayerMode() == GameType.SURVIVAL && MC.player != null) {
+                    MC.player.sendSystemMessage(Component.literal(""));
+                    MC.player.sendSystemMessage(Component.literal("Cannot switch to RTS mode while in survival mode."));
+                    MC.player.sendSystemMessage(Component.literal(""));
+                }
+                else
+                    toggleEnable();
+            }
             if (evt.getKey() == Keybindings.getFnum(6).key) {
                 FogOfWarClientEvents.resetFogChunks();
 

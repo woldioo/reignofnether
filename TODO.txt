@@ -17,8 +17,8 @@ Bugfixes
 [✔] Iron golem spawn egg texture is fixed
 [✔] Survival players can no longer use F12 cam
 [✔] The hotkey for bridges has been changed to G to avoid an overlap with Build/Repair
-
 [✔] Fixed a crash when you build over a ledge with no floor
+[✔] Podzol and Mud blocks now convert to nether terrain (as nylium)
 
 [🟡] Added a hard stop on opening the creative menu while in F12 cam
 
@@ -26,26 +26,27 @@ Bugfixes
 
 [✔] Farm water now turns magma below it into cobblestone and soulsand into soulsoil to prevent becoming a bubble column
 
-[🟡] Podzol can now be converted into nether terrain (as nylium)
-
 [🟡] Workers no longer take damage from berry bushes and cacti
 
 [✔] Building blocks no longer drop items for survival players when mined
 
-[❌] Fixed undead burning too early (change isSunBurnTick to check exact time of day to be between 500 and 12500)
+[🟡] Fixed undead burning too early (change isSunBurnTick to check exact time of day to be between 500 and 12500)
     - Apparently undead actually burn for about 55% of the day in vanilla code
+
+
 
 
 Quality of Life Features
 ------------------------
 
-[🟡] Tree logs now become affected by gravity whenever any log is broken
+[✔] Tree logs now become affected by gravity whenever any log is broken
     - This applies to all log blocks, wood blocks and nether stems
     - this is enabled by default but can be toggled using /gamerule doLogFalling
 
 [✔] make /rts-fog serverside (no warnings)
 
 [🟡] Sources of night warping now have a range indicator, toggleable by clicking the clock
+    - need to set an update timer
 
 [🟡] Night warping areas are now cylinders instead of a sphere (this means it has unlimited vertical range)
 
@@ -60,6 +61,8 @@ Balancing Features
     - The Advanced Portals upgrade removes this penalty
 
 [✔] Default max population has been raised from 100 to 120
+[🟡] Bridges now take 1/2 damage from explosions
+
 [🟡] Natural monster unit regen is doubled to 1hp per 6s if you are near a night source AND it is true night
 
 [✔] Warden Health has been increased from 120 to 150

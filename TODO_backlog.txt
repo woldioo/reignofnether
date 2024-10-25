@@ -52,6 +52,9 @@ Bugfixes
 Quality of Life Features
 ------------------------
 
+[❌] Gamerule for being aggressive to neutral mobs (including modded mobs)
+    - should not include vexes or huntable animals
+
 [❌] Right click the bridge icon to remove fences
 
 [❌] Flatten terrain ability
@@ -73,7 +76,11 @@ Balancing
     - range equal to night radius
     - Sculk blocks are unconvertible by portals
 
-    - Incorporate sculk into monster buildings to show they spread night
+    - Use nearby sculk blocks as absorption HP
+        - when damaged, instead unconvert a sculk block nearby
+    - when destroyed, convert all sculk back
+        - for conversion just check block underneath (if nothing underneath, check random adjacent, if nothing adjacent, just destroy)
+    - exclude shrieker and catalyst from breaking
 
 [❌] The Silverfish upgrade is now given by default to monster players
 

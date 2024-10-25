@@ -350,43 +350,84 @@ public class MiscUtil {
             //if (TimeUtils.isInRangeOfNightSource(Vec3.atCenterOf(bp), true, excludedOrigin))
             //    continue;
 
-            int groundY1 = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bp.getX(), bp.getZ()) - 1;
-            BlockPos topBp1 = new BlockPos(bp.getX(), groundY1, bp.getZ());
-            bps.add(topBp1);
+            for (int i = 0; i < 3 ; i++) {
+                int x = bp.getX();
+                int z = bp.getZ();
+                if (i == 1)
+                    x += 1;
+                else if (i == 2)
+                    z += 1;
 
-            /*
-            int y = 1;
-            if (level.getBlockState(topBp1).getBlock() instanceof LeavesBlock) {
-                BlockPos bottomBp = topBp1.offset(0,-y,0);
-                while (y < 30 && level.getBlockState(bottomBp))
+                int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+                BlockPos topBp = new BlockPos(x, groundY, z);
+                bps.add(topBp);
+
+                int y = 1;
+                if (level.getBlockState(topBp).getBlock() instanceof LeavesBlock) {
+                    BlockPos bottomBp;
+                    BlockState bs;
+                    do {
+                        bottomBp = topBp.offset(0,-y,0);
+                        bs = level.getBlockState(bottomBp);
+                        y += 1;
+                    } while (y < 30 && bs.getBlock() instanceof LeavesBlock || !bs.getMaterial().isSolid());
+                    if (!level.getBlockState(bottomBp.above()).getMaterial().isSolid())
+                        bps.add(bottomBp);
+                }
             }
-             */
-
-            int groundY2 = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bp.getX() + 1, bp.getZ()) - 1;
-            BlockPos topBp2 = new BlockPos(bp.getX() + 1, groundY2, bp.getZ());
-            bps.add(topBp2);
-            int groundY3 = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bp.getX(), bp.getZ() + 1) - 1;
-            BlockPos topBp3 = new BlockPos(bp.getX(), groundY3, bp.getZ() + 1);
-            bps.add(topBp3);
         }
         return new HashSet<>(bps);
     }
+
+
 
 
     public static class CircleUtil {
 
         private static final Map<Integer, List<BlockPos>> circleCache = new HashMap<>();
 
+        private static final int HASH_GRID_SIZE = 5;
+
+        private static final Map<String, List<BlockPos>> spatialHashMap = new HashMap<>();
+
+        public static List<BlockPos> getNonOverlappingCircles(Map<BlockPos, Integer> originMap) {
+            Set<BlockPos> nonOverlappingPoints = new HashSet<>();
+
+            for (BlockPos origin : originMap.keySet()) {
+                List<BlockPos> circlePoints = getCircle(origin, originMap.get(origin));
+
+                for (BlockPos point : circlePoints) {
+                    String hashKey = getHashKey(point);
+
+                    if (!spatialHashMap.containsKey(hashKey) || !spatialHashMap.get(hashKey).contains(point)) {
+                        nonOverlappingPoints.add(point);
+                        addPointToSpatialHashMap(point, hashKey);
+                    }
+                }
+            }
+
+            return new ArrayList<>(nonOverlappingPoints);
+        }
+
+        private static String getHashKey(BlockPos point) {
+            int x = point.getX() / HASH_GRID_SIZE;
+            int z = point.getZ() / HASH_GRID_SIZE;
+            return x + ":" + z;
+        }
+
+        private static void addPointToSpatialHashMap(BlockPos point, String hashKey) {
+            spatialHashMap.putIfAbsent(hashKey, new ArrayList<>());
+            spatialHashMap.get(hashKey).add(point);
+        }
+
         public static List<BlockPos> getCircle(BlockPos center, int radius) {
             if (!circleCache.containsKey(radius)) {
-                // If not cached, compute and store it
                 circleCache.put(radius, computeCircleEdge(radius));
             }
-            // Retrieve precomputed circle edge points
-            List<BlockPos> cachedCircle = circleCache.get(radius);
 
-            // Translate the circle to the given center position
+            List<BlockPos> cachedCircle = circleCache.get(radius);
             List<BlockPos> translatedCircle = new ArrayList<>(cachedCircle.size());
+
             int cx = center.getX();
             int cy = center.getY();
             int cz = center.getZ();
@@ -394,8 +435,10 @@ public class MiscUtil {
             for (BlockPos pos : cachedCircle) {
                 translatedCircle.add(new BlockPos(cx + pos.getX(), cy, cz + pos.getZ()));
             }
+
             return translatedCircle;
         }
+
         private static List<BlockPos> computeCircleEdge(int radius) {
             List<BlockPos> circleBlocks = new ArrayList<>(8 * radius);
 
@@ -403,7 +446,6 @@ public class MiscUtil {
             int z = 0;
             int decisionOver2 = 1 - x;
 
-            // Bresenham's circle algorithm to compute the edge points
             while (x >= z) {
                 addSymmetricPoints(circleBlocks, x, z);
                 z++;
@@ -417,8 +459,8 @@ public class MiscUtil {
 
             return circleBlocks;
         }
+
         private static void addSymmetricPoints(List<BlockPos> circleBlocks, int x, int z) {
-            // Adding symmetric points in 8 octants
             circleBlocks.add(new BlockPos(x, 0, z));
             circleBlocks.add(new BlockPos(-x, 0, z));
             circleBlocks.add(new BlockPos(x, 0, -z));
@@ -432,4 +474,6 @@ public class MiscUtil {
             }
         }
     }
+
+
 }

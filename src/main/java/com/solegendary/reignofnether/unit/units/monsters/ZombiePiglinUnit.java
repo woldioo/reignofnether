@@ -159,8 +159,7 @@ public class ZombiePiglinUnit extends ZombifiedPiglin implements Unit, AttackerU
 
     @Override
     protected boolean isSunBurnTick() {
-        return super.isSunBurnTick() &&
-                !TimeUtils.isInRangeOfNightSource(this.getEyePosition(), false);
+        return TimeUtils.isSunBurnTick(this);
     }
 
     public void initialiseGoals() {

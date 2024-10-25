@@ -166,8 +166,7 @@ public class DrownedUnit extends Drowned implements Unit, AttackerUnit {
 
     @Override
     protected boolean isSunBurnTick() {
-        return super.isSunBurnTick() &&
-                !TimeUtils.isInRangeOfNightSource(this.getEyePosition(), false);
+        return TimeUtils.isSunBurnTick(this);
     }
 
     @Override

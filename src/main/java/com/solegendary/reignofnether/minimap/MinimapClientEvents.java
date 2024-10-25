@@ -377,6 +377,7 @@ public class MinimapClientEvents {
     }
 
     private static void updateNightCircles() {
+
         for (Building building : BuildingClientEvents.getBuildings()) {
 
             if (!building.isExploredClientside || building instanceof AbstractBridge ||
