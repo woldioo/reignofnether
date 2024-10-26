@@ -127,7 +127,7 @@ public class WitchUnit extends Witch implements Unit {
         super(entityType, level);
 
         ThrowLingeringHarmingPotion ab1 = new ThrowLingeringHarmingPotion(this);
-        ThrowLingeringHealingPotion ab2 = new ThrowLingeringHealingPotion(this);
+        ThrowLingeringRegenPotion ab2 = new ThrowLingeringRegenPotion(this);
         this.abilities.add(ab1);
         this.abilities.add(ab2);
 

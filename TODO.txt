@@ -71,7 +71,10 @@ Balancing Features
 [✔] Default max population has been raised from 100 to 120
 [🟡] Bridges now take 1/2 damage from explosions
 
+[🟡] Witches now throw regeneration potions instead of healing
+
 [🟡] Natural monster unit regen is doubled to 1hp per 6s if you are near a night source AND it is true night
+
 
 [✔] Warden Health has been increased from 120 to 150
 [🟡] Iron golem ore cost ↓ 50, wood cost ↑ 50
