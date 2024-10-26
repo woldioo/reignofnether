@@ -80,7 +80,7 @@ public class Mausoleum extends ProductionBuilding implements NightSource {
     @Override
     public void tick(Level tickLevel) {
         super.tick(tickLevel);
-        if (tickLevel.isClientSide && tickAge % 100 == 0 && TimeClientEvents.showNightRadius)
+        if (tickLevel.isClientSide && tickAge % 100 == 0)
             updateNightBorderBps();
     }
 

@@ -59,6 +59,8 @@ Bugfixes
 Quality of Life Features
 ------------------------
 
+[❌] Teams using vanilla teams functionality
+
 [❌] Shift queueing movements and buildings (not just placement)
 
 [❌] The world generation datapack is now hardcoded into the mod by default

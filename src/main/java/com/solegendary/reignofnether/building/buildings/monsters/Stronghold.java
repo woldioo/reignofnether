@@ -84,7 +84,7 @@ public class Stronghold extends ProductionBuilding implements GarrisonableBuildi
     @Override
     public void tick(Level tickLevel) {
         super.tick(tickLevel);
-        if (tickLevel.isClientSide && tickAge % 100 == 0 && TimeClientEvents.showNightRadius)
+        if (tickLevel.isClientSide && tickAge % 100 == 0)
             updateNightBorderBps();
     }
 

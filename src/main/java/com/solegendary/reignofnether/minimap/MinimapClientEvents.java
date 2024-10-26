@@ -16,6 +16,7 @@ import com.solegendary.reignofnether.hud.Button;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
 import com.solegendary.reignofnether.player.PlayerServerboundPacket;
+import com.solegendary.reignofnether.time.NightCircleMode;
 import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.tutorial.TutorialClientEvents;
 import com.solegendary.reignofnether.tutorial.TutorialStage;
@@ -647,7 +648,7 @@ public class MinimapClientEvents {
         if (refreshTicks <= 0) {
             updateMapTerrain(terrainPartition, darkTerrainPartition);
             mapColoursOverlays = new int[worldRadius * 2][worldRadius * 2];
-            if (TimeClientEvents.showNightRadius)
+            if (TimeClientEvents.nightCircleMode != NightCircleMode.OFF)
                 updateNightCircles();
             updateMapUnitsAndBuildings();
             updateMapViewQuad();

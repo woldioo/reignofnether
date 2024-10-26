@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -40,7 +41,7 @@ public class TimeClientEvents {
     // actual time on the server
     public static long serverTime = 0;
 
-    public static boolean showNightRadius = true;
+    public static NightCircleMode nightCircleMode = NightCircleMode.ALL;
 
     private static final Button CLOCK_BUTTON = new Button(
         "Clock",
@@ -51,7 +52,14 @@ public class TimeClientEvents {
         () -> false,
         () -> false,
         () -> true,
-        () -> showNightRadius = !showNightRadius,
+        () -> {
+            if (nightCircleMode == NightCircleMode.ALL)
+                nightCircleMode = NightCircleMode.PARTIAL;
+            else if (nightCircleMode == NightCircleMode.PARTIAL)
+                nightCircleMode = NightCircleMode.OFF;
+            else if (nightCircleMode == NightCircleMode.OFF)
+                nightCircleMode = NightCircleMode.ALL;
+        },
         null,
         null
     );
@@ -120,7 +128,7 @@ public class TimeClientEvents {
                     timeUntilStr,
                     FormattedCharSequence.forward("" + timeStr, Style.EMPTY),
                     gameLengthStr,
-                    FormattedCharSequence.forward("Night circles: " + (showNightRadius ? "ON" : "OFF"), Style.EMPTY)
+                    FormattedCharSequence.forward("Night circles: " + nightCircleMode.name(), Style.EMPTY)
             );
             if (targetClientTime != serverTime)
                 tooltip = List.of(
@@ -128,7 +136,7 @@ public class TimeClientEvents {
                         FormattedCharSequence.forward("Real time: " + timeStr, Style.EMPTY),
                         timeUntilStr,
                         gameLengthStr,
-                        FormattedCharSequence.forward("Night circles: " + (showNightRadius ? "ON" : "OFF"), Style.EMPTY)
+                        FormattedCharSequence.forward("Night circles: " + nightCircleMode.name(), Style.EMPTY)
                 );
 
             MyRenderer.renderTooltip(
@@ -145,7 +153,7 @@ public class TimeClientEvents {
     public static void onRenderLevel(RenderLevelStageEvent evt) {
         if (evt.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS)
             return;
-        if (!OrthoviewClientEvents.isEnabled() || !showNightRadius || MC.level == null)
+        if (!OrthoviewClientEvents.isEnabled() || nightCircleMode == NightCircleMode.OFF || MC.level == null)
             return;
 
         // draw night-ranges for monsters
@@ -164,5 +172,26 @@ public class TimeClientEvents {
                         MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.WEST, bp, 0f, 0f, 0f, 0.5f);
                     */
                 }
+    }
+
+    @SubscribeEvent
+    public static void onKeyPress(ScreenEvent.KeyPressed.Pre evt) {
+        if (evt.getKeyCode() == GLFW.GLFW_KEY_SPACE) {
+            List<Building> nss = BuildingClientEvents.getBuildings().stream().filter(b -> b instanceof NightSource).toList();
+            for (Building b : nss) {
+                NightSource ns = ((NightSource) b);
+
+                ns.getNightBorderBps().removeIf(bp -> {
+                    Vec2 vec2 = new Vec2(bp.getX(), bp.getZ());
+                    for (Building b2 : nss) {
+                        NightSource ns2 = ((NightSource) b2);
+                        int range = ns2.getNightRange();
+                        if (ns != ns2 && vec2.distanceToSqr(new Vec2(b2.centrePos.getX(), b2.centrePos.getZ())) < range * range)
+                            return true;
+                    }
+                    return false;
+                });
+            }
+        }
     }
 }
