@@ -2,6 +2,7 @@ package com.solegendary.reignofnether.unit.units.monsters;
 
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.resources.ResourceCosts;
+import com.solegendary.reignofnether.time.NightUtils;
 import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.interfaces.AttackerUnit;
@@ -162,7 +163,7 @@ public class ZombieUnit extends Zombie implements Unit, AttackerUnit, Convertabl
 
     @Override
     protected boolean isSunBurnTick() {
-        return TimeClientEvents.isSunBurnTick(this);
+        return NightUtils.isSunBurnTick(this);
     }
 
     public void initialiseGoals() {

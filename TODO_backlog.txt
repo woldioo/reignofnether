@@ -47,6 +47,7 @@ Bugfixes
 [❌] On a server, unloaded workers stop gathering stuff
     - Relook at forced chunks?
 
+[🟡] Made building on tall grass easier
 
 
 Quality of Life Features

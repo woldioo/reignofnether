@@ -194,7 +194,7 @@ public class SkeletonUnit extends Skeleton implements Unit, AttackerUnit, Ranged
 
     @Override
     protected boolean isSunBurnTick() {
-        return TimeClientEvents.isSunBurnTick(this);
+        return NightUtils.isSunBurnTick(this);
     }
 
     public void initialiseGoals() {

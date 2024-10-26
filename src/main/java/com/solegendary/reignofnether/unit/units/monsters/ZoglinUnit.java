@@ -5,6 +5,7 @@ import com.solegendary.reignofnether.ability.abilities.Eject;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.resources.ResourceCosts;
+import com.solegendary.reignofnether.time.NightUtils;
 import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.goals.*;
@@ -191,7 +192,7 @@ public class ZoglinUnit extends Zoglin implements Unit, AttackerUnit {
 
     @Override
     protected boolean isSunBurnTick() {
-        return TimeClientEvents.isSunBurnTick(this);
+        return NightUtils.isSunBurnTick(this);
     }
 
     public void tick() {

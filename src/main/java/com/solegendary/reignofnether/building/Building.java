@@ -546,7 +546,7 @@ public abstract class Building {
 
     public void onBuilt() {
         isBuilt = true;
-        if (!this.level.isClientSide()) {
+        if (!this.level.isClientSide() && isCapitol) {
             FrozenChunkClientboundPacket.setBuildingBuiltServerside(this.originPos);
             for (int i = 0; i < 3; i++)
                 spawnHuntableAnimalsNearby(ANIMAL_SPAWN_RANGE / 2);

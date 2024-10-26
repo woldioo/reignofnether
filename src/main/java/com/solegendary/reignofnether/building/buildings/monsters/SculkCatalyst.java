@@ -31,8 +31,8 @@ public class SculkCatalyst extends Building implements NightSource {
 
     private final static Random random = new Random();
 
-    public final static int nightRange = 25;
-    public final static int nightRangeMax = 40;
+    public final static int nightRangeMin = 25;
+    public final static int nightRangeMax = 50;
     private final Set<BlockPos> nightBorderBps = new HashSet<>();
 
     private final static int SCULK_SEARCH_RANGE = 30;
@@ -57,7 +57,7 @@ public class SculkCatalyst extends Building implements NightSource {
 
     public int getNightRange() {
         if (isBuilt || isBuiltServerside) {
-            return Math.min(nightRange + (sculkBps.size() / 4), nightRangeMax);
+            return Math.min(nightRangeMin + (sculkBps.size() / 4), nightRangeMax);
         }
         return 0;
     }
@@ -178,7 +178,7 @@ public class SculkCatalyst extends Building implements NightSource {
                         FormattedCharSequence.forward("", Style.EMPTY),
                         FormattedCharSequence.forward("A pillar which spreads sculk when nearby units die.", Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Distorts time to midnight within a " + nightRange + " block radius.", Style.EMPTY),
+                        FormattedCharSequence.forward("Distorts time to midnight within a " + nightRangeMin + " block radius.", Style.EMPTY),
                         FormattedCharSequence.forward("Nearby sculk extends this range up to " + nightRangeMax + " and ", Style.EMPTY),
                         FormattedCharSequence.forward("provides absorption health.", Style.EMPTY)
                 ),

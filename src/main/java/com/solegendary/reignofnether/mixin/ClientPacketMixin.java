@@ -3,6 +3,7 @@ package com.solegendary.reignofnether.mixin;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
 import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.time.NightUtils;
+import com.solegendary.reignofnether.time.TimeUtils;
 import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -38,7 +39,7 @@ public class ClientPacketMixin {
 
         ci.cancel();
 
-        TimeClientEvents.serverTime = TimeClientEvents.normaliseTime(pPacket.getDayTime());
+        TimeClientEvents.serverTime = TimeUtils.normaliseTime(pPacket.getDayTime());
 
         if (NightUtils.isInRangeOfNightSource(pos, true))
             TimeClientEvents.targetClientTime = 18000; // midnight

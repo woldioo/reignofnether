@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.solegendary.reignofnether.time.TimeClientEvents.normaliseTime;
+import static com.solegendary.reignofnether.time.TimeUtils.normaliseTime;
 
 @Mixin(ClientLevel.class)
 public class ClientLevelMixin {

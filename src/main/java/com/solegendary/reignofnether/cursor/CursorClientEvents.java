@@ -194,8 +194,6 @@ public class CursorClientEvents {
                 BuildingUtils.isPosInsideAnyBuilding(true, preselectedBlockPos.above()))
                 preselectedBlockPos = preselectedBlockPos.above();
         }
-        if (MC.level.getBlockState(preselectedBlockPos).getBlock() == Blocks.TALL_GRASS)
-            preselectedBlockPos = preselectedBlockPos.below();
 
         // ****************************************
         // Find entity moused over and/or selected

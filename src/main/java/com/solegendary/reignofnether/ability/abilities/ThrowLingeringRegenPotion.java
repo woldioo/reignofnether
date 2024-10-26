@@ -41,7 +41,7 @@ public class ThrowLingeringRegenPotion extends Ability {
     public AbilityButton getButton(Keybinding hotkey) {
         return new AbilityButton(
             "Lingering Regen Potion",
-            new ResourceLocation(ReignOfNether.MOD_ID, "textures/icons/items/lingering_potion_healing.png"),
+            new ResourceLocation(ReignOfNether.MOD_ID, "textures/icons/items/lingering_potion_regeneration.png"),
             hotkey,
             () -> CursorClientEvents.getLeftClickAction() == UnitAction.THROW_LINGERING_REGEN_POTION,
             () -> false, //!ResearchClient.hasResearch(ResearchLingeringPotions.itemName),

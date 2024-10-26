@@ -21,6 +21,7 @@ import com.solegendary.reignofnether.unit.interfaces.ConvertableUnit;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.interfaces.WorkerUnit;
 import com.solegendary.reignofnether.unit.packets.UnitActionServerboundPacket;
+import com.solegendary.reignofnether.unit.units.monsters.CreeperUnit;
 import com.solegendary.reignofnether.unit.units.monsters.WardenUnit;
 import com.solegendary.reignofnether.unit.units.monsters.ZoglinUnit;
 import com.solegendary.reignofnether.unit.units.piglins.BruteUnit;
@@ -666,7 +667,8 @@ public class UnitClientEvents {
     public static void onButtonPress(ScreenEvent.KeyPressed.Pre evt) {
         if (evt.getKeyCode() == GLFW.GLFW_KEY_DELETE) {
             LivingEntity entity = hudSelectedEntity;
-            if (entity != null && getPlayerToEntityRelationship(entity) == Relationship.OWNED)
+            if (entity != null && getPlayerToEntityRelationship(entity) == Relationship.OWNED &&
+                    !(entity instanceof CreeperUnit))
                 sendUnitCommand(UnitAction.DELETE);
         }
     }
