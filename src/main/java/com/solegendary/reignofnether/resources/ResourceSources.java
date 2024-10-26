@@ -265,6 +265,13 @@ public class ResourceSources {
             ), */
             new ResourceSource("Logs",
                     List.of(Blocks.OAK_LOG, Blocks.BIRCH_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG, Blocks.JUNGLE_LOG, Blocks.MANGROVE_LOG, Blocks.SPRUCE_LOG,
+                            BlockRegistrar.FALLING_OAK_LOG.get(),
+                            BlockRegistrar.FALLING_BIRCH_LOG.get(),
+                            BlockRegistrar.FALLING_ACACIA_LOG.get(),
+                            BlockRegistrar.FALLING_DARK_OAK_LOG.get(),
+                            BlockRegistrar.FALLING_JUNGLE_LOG.get(),
+                            BlockRegistrar.FALLING_MANGROVE_LOG.get(),
+                            BlockRegistrar.FALLING_SPRUCE_LOG.get(),
                             Blocks.OAK_WOOD, Blocks.BIRCH_WOOD, Blocks.ACACIA_WOOD, Blocks.DARK_OAK_WOOD, Blocks.JUNGLE_WOOD, Blocks.MANGROVE_WOOD, Blocks.SPRUCE_WOOD),
                     List.of(Items.OAK_LOG, Items.BIRCH_LOG, Items.ACACIA_LOG, Items.DARK_OAK_LOG, Items.JUNGLE_LOG, Items.MANGROVE_LOG, Items.SPRUCE_LOG,
                             Items.OAK_WOOD, Items.BIRCH_WOOD, Items.ACACIA_WOOD, Items.DARK_OAK_WOOD, Items.JUNGLE_WOOD, Items.MANGROVE_WOOD, Items.SPRUCE_WOOD),
@@ -273,7 +280,10 @@ public class ResourceSources {
                     ResourceName.WOOD
             ),
             new ResourceSource("Nether Logs",
-                    List.of(Blocks.CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.CRIMSON_HYPHAE, Blocks.WARPED_HYPHAE),
+                    List.of(Blocks.CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.CRIMSON_HYPHAE, Blocks.WARPED_HYPHAE,
+                            BlockRegistrar.FALLING_WARPED_STEM.get(),
+                            BlockRegistrar.FALLING_CRIMSON_STEM.get()
+                    ),
                     List.of(Items.CRIMSON_STEM, Items.WARPED_STEM, Items.CRIMSON_HYPHAE, Items.WARPED_HYPHAE),
                     TICKS_PER_SECOND * 12,
                     17,

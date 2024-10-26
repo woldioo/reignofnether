@@ -12,6 +12,7 @@ import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -117,6 +118,17 @@ public class SculkCatalyst extends Building implements NightSource {
             }
         }
         Collections.shuffle(sculkBps);
+    }
+
+    @Override
+    public void destroy(ServerLevel serverLevel) {
+        int i = 0;
+        while (sculkBps.size() > 0 && i < 10) {
+            restoreRandomSculk(100);
+            updateSculkBps();
+            i += 1;
+        }
+        super.destroy(serverLevel);
     }
 
     // returns the number of blocks converted

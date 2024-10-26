@@ -47,7 +47,7 @@ Bugfixes
 [❌] On a server, unloaded workers stop gathering stuff
     - Relook at forced chunks?
 
-[🟡] Made building on tall grass easier
+[❌] Made building on tall grass easier
 
 
 Quality of Life Features
@@ -64,6 +64,7 @@ Quality of Life Features
 
 [❌] Amethyst is now mineable, and regenerates automatically after 1min
 
+[❌] Reduce web slowness by a lot
 
 
 Balancing

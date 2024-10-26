@@ -97,7 +97,7 @@ public class ResourceCosts {
     public static ResourceCost LIBRARY = ResourceCost.Building(0,350,100, 0);
     public static ResourceCost WATCHTOWER = ResourceCost.Building(0,100,100, 0);
     public static ResourceCost CASTLE = ResourceCost.Building(0,400,300, 0);
-    public static ResourceCost IRON_GOLEM_BUILDING = ResourceCost.Building(0,0,250, 0);
+    public static ResourceCost IRON_GOLEM_BUILDING = ResourceCost.Building(0,50,200, 0);
 
     // Piglins
     public static ResourceCost CENTRAL_PORTAL = ResourceCost.Building(0,300,150, 10);
