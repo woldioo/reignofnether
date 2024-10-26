@@ -6,6 +6,7 @@
 [🟡] Partially done, only has a workaround and/or needs testing
 [❌] Not done, top ones are roughly of higher priority
 
+
 Features
 --------
 [❌] Wave Survival
@@ -15,7 +16,12 @@ Features
         - But won't work on sky maps
     - play a random cave ambience sound at the start of each night and title function
     - start off doing only monster enemies
-    - roguelike features?
+
+    - lose if your capitol dies
+    - need to make sure enemies don't spawn too close to your buildings
+    - might need improved pathfinding
+
+
 
 [❌] King of the Beacon
     - simple pyramid made of 4 layers + beacon block (9x9 minimum)
@@ -53,10 +59,9 @@ Bugfixes
 Quality of Life Features
 ------------------------
 
-[❌] Gamerule for being aggressive to neutral mobs (including modded mobs)
-    - should not include vexes or huntable animals
+[❌] Shift queueing movements and buildings (not just placement)
 
-[❌] Right click the bridge icon to remove fences
+[❌] The world generation datapack is now hardcoded into the mod by default
 
 [❌] Flatten terrain ability
     - Require that villagers work on it like a building
@@ -69,8 +74,6 @@ Quality of Life Features
 
 Balancing
 ---------
-
-[❌] The Silverfish upgrade is now given by default to monster players
 
 [❌] An upgrade at the lab now upgrades silverfish to endermites for +1 attack and +5 movespeed
 

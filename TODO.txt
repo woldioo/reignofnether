@@ -7,9 +7,14 @@
 [🟡] Partially done, only has a workaround and/or needs testing
 [❌] Not done, top ones are roughly of higher priority
 
-Changes since Beta
-------------------
-[❌] Falling logs don't give drops to survival players and don't break faster with axes
+Change since beta
+-----------------
+[❌] Night circle borders that are overlapping are now hidden
+
+[🟡] Gamerule for being aggressive to neutral mobs (including modded mobs)
+    - [❌] should not include vexes or huntable animals
+    - should include right click to attack and attack-move
+
 
 
 🎉 Features 🎉

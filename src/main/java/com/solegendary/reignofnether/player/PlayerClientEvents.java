@@ -91,6 +91,7 @@ public class PlayerClientEvents {
                         MC.player.sendSystemMessage(Component.literal("/rts-reset - Delete all units/buildings, set all to spectator"));
                         MC.player.sendSystemMessage(Component.literal("/rts-lock enable/disable - Prevent all players from joining the RTS match"));
                         MC.player.sendSystemMessage(Component.literal("/gamerule doLogFalling - Set whether tree logs fall when cut"));
+                        MC.player.sendSystemMessage(Component.literal("/gamerule neutralAggro - Set whether you auto-attack neutral units/buildings"));
                     }
                     return 1;
                 }));

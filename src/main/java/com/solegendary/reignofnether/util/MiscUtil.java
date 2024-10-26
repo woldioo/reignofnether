@@ -5,6 +5,7 @@ import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.cursor.CursorClientEvents;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
+import com.solegendary.reignofnether.registrars.GameRuleRegistrar;
 import com.solegendary.reignofnether.unit.Relationship;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.UnitServerEvents;
@@ -186,7 +187,10 @@ public class MiscUtil {
             if (tMob instanceof Unit unit && unit.getMoveGoal() instanceof FlyingMoveToTargetGoal &&
                     unitMob instanceof AttackerUnit attackerUnit && attackerUnit.getAttackGoal() instanceof MeleeAttackUnitGoal)
                 continue;
-            if (rs == Relationship.HOSTILE && tMob.getId() != unitMob.getId() && hasLineOfSightForAttacks(unitMob, tMob))
+
+            boolean neutralAggro = unitMob.getLevel().getGameRules().getRule(GameRuleRegistrar.NEUTRAL_AGGRO).get();
+            if ((rs == Relationship.HOSTILE || (rs == Relationship.NEUTRAL && neutralAggro)) &&
+                tMob.getId() != unitMob.getId() && hasLineOfSightForAttacks(unitMob, tMob))
                 nearbyHostileMobs.add(tMob);
         }
         // find the closest mob
