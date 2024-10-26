@@ -4,6 +4,7 @@ import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.ability.Ability;
 import com.solegendary.reignofnether.ability.abilities.SonicBoom;
 import com.solegendary.reignofnether.building.Building;
+import com.solegendary.reignofnether.building.buildings.monsters.SculkCatalyst;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.research.ResearchClient;
@@ -279,9 +280,7 @@ public class WardenUnit extends Warden implements Unit, AttackerUnit {
         else
             hasResearch = ResearchServerEvents.playerHasResearch(getOwnerName(), ResearchSculkAmplifiers.itemName);
 
-        if (hasResearch)
-            targetBuilding.destroyRandomBlocks((int) SONIC_BOOM_DAMAGE / 2);
-        else {
+        if (hasResearch && targetBuilding instanceof SculkCatalyst) {
             List<Mob> nearbyEnemies = MiscUtil.getEntitiesWithinRange(
                             new Vector3d(targetBuilding.centrePos.getX(), targetBuilding.centrePos.getY(), targetBuilding.centrePos.getZ()),
                             ResearchSculkAmplifiers.SPLIT_BOOM_RANGE, Mob.class, this.level)
@@ -295,6 +294,8 @@ public class WardenUnit extends Warden implements Unit, AttackerUnit {
             if (nearbyEnemies.size() > 2)
                 doEntitySonicBoom(nearbyEnemies.get(2), Vec3.atCenterOf(targetBuilding.centrePos));
         }
+        else
+            targetBuilding.destroyRandomBlocks((int) SONIC_BOOM_DAMAGE / 2);
     }
 
     public void startSonicBoomAnimation() {

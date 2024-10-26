@@ -7,6 +7,7 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.solegendary.reignofnether.building.Building;
 import com.solegendary.reignofnether.building.BuildingClientEvents;
+import com.solegendary.reignofnether.building.NightSource;
 import com.solegendary.reignofnether.healthbars.HealthBarClientEvents;
 import com.solegendary.reignofnether.unit.Relationship;
 import com.solegendary.reignofnether.util.MyRenderer;
@@ -45,6 +46,9 @@ class PortraitRendererBuilding {
 
         if (rs != Relationship.OWNED && !building.ownerName.isBlank())
             name += " (" + building.ownerName + ")";
+
+        if (building instanceof NightSource ns && building.isBuilt)
+            name += " (" + ns.getNightRange() + " night range)";
 
         // draw name
         GuiComponent.drawString(

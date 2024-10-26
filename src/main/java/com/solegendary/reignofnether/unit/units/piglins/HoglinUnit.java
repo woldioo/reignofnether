@@ -129,6 +129,8 @@ public class HoglinUnit extends Hoglin implements Unit, AttackerUnit {
     final static public int popCost = ResourceCosts.HOGLIN.population;
     public int maxResources = 100;
 
+    final static public float BUILDING_DAMAGE_MULTIPLIER = 1.5f;
+
     private final List<AbilityButton> abilityButtons = new ArrayList<>();
     private final List<Ability> abilities = new ArrayList<>();
     private final List<ItemStack> items = new ArrayList<>();

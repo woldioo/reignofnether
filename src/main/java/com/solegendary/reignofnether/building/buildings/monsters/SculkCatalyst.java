@@ -6,6 +6,7 @@ import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.research.ResearchClient;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
+import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.util.Faction;
 import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.core.BlockPos;
@@ -54,7 +55,12 @@ public class SculkCatalyst extends Building implements NightSource {
         this.startingBlockTypes.add(Blocks.POLISHED_BLACKSTONE);
     }
 
-    public int getNightRange() { return (isBuilt || isBuiltServerside) ? nightRange : 0; }
+    public int getNightRange() {
+        if (isBuilt || isBuiltServerside) {
+            return Math.min(nightRange + (sculkBps.size() / 4), nightRangeMax);
+        }
+        return 0;
+    }
 
     public BlockPos getNightCentre() { return centrePos; }
 
@@ -66,6 +72,7 @@ public class SculkCatalyst extends Building implements NightSource {
 
     @Override
     public void updateNightBorderBps() {
+        updateSculkBps();
         this.nightBorderBps.clear();
         this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos, getNightRange(), level, originPos));
     }
@@ -73,6 +80,13 @@ public class SculkCatalyst extends Building implements NightSource {
     @Override
     public Set<BlockPos> getNightBorderBps() {
         return nightBorderBps;
+    }
+
+    @Override
+    public void tick(Level tickLevel) {
+        super.tick(tickLevel);
+        if (tickLevel.isClientSide && tickAge % 100 == 0 && TimeClientEvents.showNightRadius)
+            updateNightBorderBps();
     }
 
     public Faction getFaction() {return Faction.MONSTERS;}
