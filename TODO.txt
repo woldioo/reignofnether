@@ -22,6 +22,7 @@ Changes since beta
 ⚙ Quality of Life Features ⚙
 [✔] Night circle borders that are overlapping can now be hidden by clicking the clock
 [✔] Night circle borders are now highlighted in green when their source building is selected
+[✔] Visible borders have been shrunk so the line itself is (usually) safe to walk on
 [✔] New /gamerule neutralAggro used to allow treating of all neutral mobs as enemies
     - Allows attacking neutral mobs using right-click, attack move or when a military unit is idle
     - This includes all modded and vanilla mobs and defeated players' units

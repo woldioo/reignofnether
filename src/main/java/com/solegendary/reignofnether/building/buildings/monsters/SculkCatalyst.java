@@ -76,7 +76,8 @@ public class SculkCatalyst extends Building implements NightSource {
     public void updateNightBorderBps() {
         updateSculkBps();
         this.nightBorderBps.clear();
-        this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos, getNightRange(), level));
+        this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos,
+                getNightRange() - TimeClientEvents.VISIBLE_BORDER_ADJ, level));
     }
 
     @Override

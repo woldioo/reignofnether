@@ -186,6 +186,7 @@ public class TimeClientEvents {
     private static final int NIGHT_SOURCES_UPDATE_TICKS_MAX = 100;
     private static int nightSourcesUpdateTicks = NIGHT_SOURCES_UPDATE_TICKS_MAX;
     public static ArrayList<Pair<BlockPos, Integer>> nightSourceOrigins = new ArrayList<>();
+    public static final int VISIBLE_BORDER_ADJ = 2; // shrink a bit so borderlines themselves are safe to walk on
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent evt) {
@@ -200,7 +201,8 @@ public class TimeClientEvents {
             for (Building building : BuildingClientEvents.getBuildings()) {
                 if (!building.isExploredClientside || !(building instanceof NightSource ns))
                     continue;
-                nightSourceOrigins.add(new Pair<>(building.centrePos, ns.getNightRange()));
+
+                nightSourceOrigins.add(new Pair<>(building.centrePos, ns.getNightRange() - VISIBLE_BORDER_ADJ));
             }
         }
     }
