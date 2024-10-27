@@ -7,6 +7,7 @@ import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.cursor.CursorClientEvents;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
 import com.solegendary.reignofnether.registrars.GameRuleRegistrar;
+import com.solegendary.reignofnether.resources.ResourceSources;
 import com.solegendary.reignofnether.time.NightCircleMode;
 import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.unit.Relationship;
@@ -28,6 +29,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -192,7 +194,13 @@ public class MiscUtil {
                 continue;
 
             boolean neutralAggro = unitMob.getLevel().getGameRules().getRule(GameRuleRegistrar.NEUTRAL_AGGRO).get();
-            if ((rs == Relationship.HOSTILE || (rs == Relationship.NEUTRAL && neutralAggro)) &&
+
+            boolean canAttackNeutral =
+                    rs == Relationship.NEUTRAL &&
+                    neutralAggro && !(tMob instanceof Vex) &&
+                    !ResourceSources.isHuntableAnimal(tMob);
+
+            if ((rs == Relationship.HOSTILE || canAttackNeutral) &&
                 tMob.getId() != unitMob.getId() && hasLineOfSightForAttacks(unitMob, tMob))
                 nearbyHostileMobs.add(tMob);
         }

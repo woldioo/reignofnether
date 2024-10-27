@@ -17,10 +17,11 @@ Fixes since beta
 [✔] Night circle borders are now highlighted in green when their source building is selected
 [✔] Two or more Sculk Catalysts that are too close to each are no longer indestructible
 [✔] Removed some tall grass that was part of the barracks structure
-[🟡] Allow falling logs to be gathered inside of buildings
-[🟡] Gamerule for being aggressive to neutral mobs (including modded mobs)
-    - [❌] should not include vexes or huntable animals
-    - should include right click to attack and attack-move
+[✔] Falling logs now break if they fall into buildings
+[✔] /gamerule neutralAggro can now be used to allow treating of all units as enemies
+    - Allows attacking neutral mobs using right-click, attack move or when a military unit is idle
+    - This includes all modded and vanilla mobs and defeated players' units
+    - Excludes vexes and huntable animals
 
 
 

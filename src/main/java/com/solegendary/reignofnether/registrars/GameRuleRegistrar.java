@@ -12,7 +12,7 @@ public class GameRuleRegistrar {
         LOG_FALLING = GameRules.register("doLogFalling", GameRules.Category.MISC,
                 GameRules.BooleanValue.create(true)
         );
-        // do non-neutral units automatically attack neutral units?
+        // treat neutral units as enemies? this includes auto attacks, right clicks and attack moving
         NEUTRAL_AGGRO = GameRules.register("neutralAggro", GameRules.Category.MISC,
                 GameRules.BooleanValue.create(true)
         );

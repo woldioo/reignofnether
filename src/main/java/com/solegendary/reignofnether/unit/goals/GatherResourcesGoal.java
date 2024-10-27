@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static com.solegendary.reignofnether.resources.BlockUtils.isFallingLogBlock;
 import static com.solegendary.reignofnether.resources.BlockUtils.isLogBlock;
 
 // Move towards the nearest open resource blocks and start gathering them
@@ -78,7 +77,7 @@ public class GatherResourcesGoal extends MoveToTargetBlockGoal {
             return false;
 
         // if the worker is farming, stick to only the assigned farm
-        if (targetFarm != null && (!targetFarm.isPosInsideBuilding(bp) || isFallingLogBlock(bs)))
+        if (targetFarm != null && !targetFarm.isPosInsideBuilding(bp))
             return false;
 
         if (bs.getBlock() == Blocks.FARMLAND || bs.getBlock() == Blocks.SOUL_SAND) {
