@@ -1,11 +1,14 @@
 package com.solegendary.reignofnether.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.cursor.CursorClientEvents;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
 import com.solegendary.reignofnether.registrars.GameRuleRegistrar;
+import com.solegendary.reignofnether.time.NightCircleMode;
+import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.unit.Relationship;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.UnitServerEvents;
@@ -342,17 +345,19 @@ public class MiscUtil {
     }
 
     // get the tops of all blocks which are of at a certain horizontal distance away from the centrePos
-    public static Set<BlockPos> getNightCircleBlocks(BlockPos centrePos, int radius, Level level, BlockPos excludedOrigin) {
+    public static Set<BlockPos> getNightCircleBlocks(BlockPos centrePos, int radius, Level level) {
         if (radius <= 0)
             return Set.of();
 
         ArrayList<BlockPos> bps = new ArrayList<>();
 
-        for (BlockPos bp : CircleUtil.getCircle(centrePos, radius)) {
-            // remove overlaps
-            //if (TimeUtils.isInRangeOfNightSource(Vec3.atCenterOf(bp), true, excludedOrigin))
-            //    continue;
+        Set<BlockPos> nightCircleBps;
+        if (TimeClientEvents.nightCircleMode == NightCircleMode.NO_OVERLAPS)
+            nightCircleBps = MiscUtil.CircleUtil.getCircleWithCulledOverlaps(centrePos, radius, TimeClientEvents.nightSourceOrigins);
+        else
+            nightCircleBps = MiscUtil.CircleUtil.getCircle(centrePos, radius);
 
+        for (BlockPos bp : nightCircleBps) {
             for (int i = 0; i < 3 ; i++) {
                 int x = bp.getX();
                 int z = bp.getZ();
@@ -387,30 +392,11 @@ public class MiscUtil {
 
     public static class CircleUtil {
 
-        private static final Map<Integer, List<BlockPos>> circleCache = new HashMap<>();
+        private static final Map<Integer, Set<BlockPos>> circleCache = new HashMap<>();
 
         private static final int HASH_GRID_SIZE = 5;
 
-        private static final Map<String, List<BlockPos>> spatialHashMap = new HashMap<>();
-
-        public static List<BlockPos> getNonOverlappingCircles(Map<BlockPos, Integer> originMap) {
-            Set<BlockPos> nonOverlappingPoints = new HashSet<>();
-
-            for (BlockPos origin : originMap.keySet()) {
-                List<BlockPos> circlePoints = getCircle(origin, originMap.get(origin));
-
-                for (BlockPos point : circlePoints) {
-                    String hashKey = getHashKey(point);
-
-                    if (!spatialHashMap.containsKey(hashKey) || !spatialHashMap.get(hashKey).contains(point)) {
-                        nonOverlappingPoints.add(point);
-                        addPointToSpatialHashMap(point, hashKey);
-                    }
-                }
-            }
-
-            return new ArrayList<>(nonOverlappingPoints);
-        }
+        private static final Map<String, Set<BlockPos>> spatialHashMap = new HashMap<>();
 
         private static String getHashKey(BlockPos point) {
             int x = point.getX() / HASH_GRID_SIZE;
@@ -419,17 +405,41 @@ public class MiscUtil {
         }
 
         private static void addPointToSpatialHashMap(BlockPos point, String hashKey) {
-            spatialHashMap.putIfAbsent(hashKey, new ArrayList<>());
+            spatialHashMap.putIfAbsent(hashKey, new HashSet<>());
             spatialHashMap.get(hashKey).add(point);
         }
 
-        public static List<BlockPos> getCircle(BlockPos center, int radius) {
+        public static Set<BlockPos> getCircleWithCulledOverlaps(BlockPos center, int radius, List<Pair<BlockPos, Integer>> overlapSources) {
+            // skip rendering entirely if we are fully inside another circle
+            if (TimeClientEvents.nightCircleMode == NightCircleMode.NO_OVERLAPS) {
+                for (Pair<BlockPos, Integer> os : overlapSources) {
+                    Vec2 centre1 = new Vec2(center.getX(),center.getZ());
+                    Vec2 centre2 = new Vec2(os.getFirst().getX(), os.getFirst().getZ());
+                    int overlapRange = os.getSecond();
+                    if (!center.equals(os.getFirst()) && radius < overlapRange && centre1.distanceToSqr(centre2) < radius * radius)
+                        return Set.of();
+                }
+            }
+            Set<BlockPos> circleBps = getCircle(center, radius);
+
+            for (Pair<BlockPos, Integer> os : overlapSources) {
+                circleBps.removeIf(bp -> {
+                    Vec2 centre1 = new Vec2(bp.getX(), bp.getZ());
+                    Vec2 centre2 = new Vec2(os.getFirst().getX(), os.getFirst().getZ());
+                    int range = os.getSecond();
+                    return !center.equals(os.getFirst()) && centre1.distanceToSqr(centre2) < range * range;
+                });
+            }
+            return circleBps;
+        }
+
+        public static Set<BlockPos> getCircle(BlockPos center, int radius) {
             if (!circleCache.containsKey(radius)) {
                 circleCache.put(radius, computeCircleEdge(radius));
             }
 
-            List<BlockPos> cachedCircle = circleCache.get(radius);
-            List<BlockPos> translatedCircle = new ArrayList<>(cachedCircle.size());
+            Set<BlockPos> cachedCircle = circleCache.get(radius);
+            Set<BlockPos> translatedCircle = new HashSet<>(cachedCircle.size());
 
             int cx = center.getX();
             int cy = center.getY();
@@ -442,8 +452,8 @@ public class MiscUtil {
             return translatedCircle;
         }
 
-        private static List<BlockPos> computeCircleEdge(int radius) {
-            List<BlockPos> circleBlocks = new ArrayList<>(8 * radius);
+        private static Set<BlockPos> computeCircleEdge(int radius) {
+            Set<BlockPos> circleBlocks = new HashSet<>(8 * radius);
 
             int x = radius;
             int z = 0;
@@ -463,7 +473,7 @@ public class MiscUtil {
             return circleBlocks;
         }
 
-        private static void addSymmetricPoints(List<BlockPos> circleBlocks, int x, int z) {
+        private static void addSymmetricPoints(Set<BlockPos> circleBlocks, int x, int z) {
             circleBlocks.add(new BlockPos(x, 0, z));
             circleBlocks.add(new BlockPos(-x, 0, z));
             circleBlocks.add(new BlockPos(x, 0, -z));

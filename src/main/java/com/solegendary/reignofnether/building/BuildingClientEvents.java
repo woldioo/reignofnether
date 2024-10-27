@@ -281,6 +281,9 @@ public class BuildingClientEvents {
 
     // disallow any building block from clipping into any other existing blocks
     private static boolean isBuildingPlacementClipping(BlockPos originPos) {
+        if (MC.level == null)
+            return false;
+
         if (isBuildingToPlaceABridge())
             return false;
 

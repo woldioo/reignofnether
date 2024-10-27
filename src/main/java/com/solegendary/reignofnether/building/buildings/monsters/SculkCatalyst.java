@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 
 import static com.solegendary.reignofnether.building.BuildingUtils.getAbsoluteBlockData;
+import static com.solegendary.reignofnether.building.BuildingUtils.isPosInsideAnyBuilding;
 
 public class SculkCatalyst extends Building implements NightSource {
 
@@ -75,7 +76,7 @@ public class SculkCatalyst extends Building implements NightSource {
     public void updateNightBorderBps() {
         updateSculkBps();
         this.nightBorderBps.clear();
-        this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos, getNightRange(), level, originPos));
+        this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos, getNightRange(), level));
     }
 
     @Override
@@ -101,7 +102,7 @@ public class SculkCatalyst extends Building implements NightSource {
         for (int x = centrePos.getX() - SCULK_SEARCH_RANGE / 2; x < centrePos.getX() + SCULK_SEARCH_RANGE / 2; x++) {
             for (int z = centrePos.getZ() - SCULK_SEARCH_RANGE / 2; z < centrePos.getZ() + SCULK_SEARCH_RANGE / 2; z++) {
                 BlockPos topBp = new BlockPos(x, maxCorner.getY(), z);
-                if (isPosInsideBuilding(topBp))
+                if (isPosInsideAnyBuilding(level.isClientSide(), topBp))
                     continue;
 
                 int y = 0;

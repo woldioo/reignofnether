@@ -3,12 +3,12 @@ package com.solegendary.reignofnether.minimap;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.ReignOfNether;
 import com.solegendary.reignofnether.building.Building;
 import com.solegendary.reignofnether.building.BuildingClientEvents;
-import com.solegendary.reignofnether.building.NightSource;
 import com.solegendary.reignofnether.building.buildings.shared.AbstractBridge;
 import com.solegendary.reignofnether.cursor.CursorClientEvents;
 import com.solegendary.reignofnether.fogofwar.FogOfWarClientEvents;
@@ -375,26 +375,30 @@ public class MinimapClientEvents {
 
     private static void updateNightCircles() {
 
-        for (Building building : BuildingClientEvents.getBuildings()) {
+        // get list of night source centre:range pairs
+        ArrayList<Pair<BlockPos, Integer>> nightSources = new ArrayList<>();
 
-            if (!building.isExploredClientside || building instanceof AbstractBridge ||
-                !(building instanceof NightSource ns))
-                continue;
+        for (Pair<BlockPos, Integer> ns : TimeClientEvents.nightSourceOrigins) {
 
-            int xc = building.originPos.getX() + (BUILDING_RADIUS / 2);
-            int zc = building.originPos.getZ() + (BUILDING_RADIUS / 2);
-
+            int xc = ns.getFirst().getX() + (BUILDING_RADIUS / 2);
+            int zc = ns.getFirst().getZ() + (BUILDING_RADIUS / 2);
             int xN = xc - xc_world + (mapGuiRadius * 2);
             int zN = zc - zc_world + (mapGuiRadius * 2);
 
-            List<BlockPos> nightCircleBps = MiscUtil.CircleUtil.getCircle(new BlockPos(xN, 0, zN), ns.getNightRange());
+            nightSources.add(new Pair<>(new BlockPos(xN, 0, zN), ns.getSecond()));
+        }
+
+        outerloop:
+        for (Pair<BlockPos, Integer> ns : nightSources) {
+            Set<BlockPos> nightCircleBps;
+            if (TimeClientEvents.nightCircleMode == NightCircleMode.NO_OVERLAPS)
+                nightCircleBps = MiscUtil.CircleUtil.getCircleWithCulledOverlaps(ns.getFirst(), ns.getSecond(), nightSources);
+            else
+                nightCircleBps = MiscUtil.CircleUtil.getCircle(ns.getFirst(), ns.getSecond());
+
             ArrayList<BlockPos> nightCircleBpsThick = new ArrayList<>();
             // raise thickness
             for (BlockPos bp : nightCircleBps) {
-                // remove overlaps
-                //if (TimeUtils.isInRangeOfNightSource(Vec3.atCenterOf(bp), true, building.originPos))
-                //    continue;
-
                 nightCircleBpsThick.add(bp);
                 nightCircleBpsThick.add(bp.offset(1,0,0));
                 nightCircleBpsThick.add(bp.offset(0,0,1));

@@ -9,7 +9,21 @@
 
 Change since beta
 -----------------
-[❌] Night circle borders that are overlapping are now hidden
+[✔] Fixed crash related to placing buildings
+
+[🟡] Fixed crash on the title screen for some languages
+
+[🟡] Fixed ticking entity crash related to Pillagers
+
+[❌] Prevent zombie babies spawning
+
+[✔] Night circle borders that are overlapping can now be hidden by clicking the clock
+[✔] Night circle borders are highlighted in green when their source building is selected
+[✔] 2 or more Sculk Catalysts that are too close to each are no longer indestructible
+
+[❌] Allow shift selection of units if a building is involved
+
+[❌] Allow falling logs to be gathered inside of buildings
 
 [🟡] Gamerule for being aggressive to neutral mobs (including modded mobs)
     - [❌] should not include vexes or huntable animals

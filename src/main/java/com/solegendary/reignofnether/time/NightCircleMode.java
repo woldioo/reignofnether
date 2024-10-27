@@ -2,6 +2,6 @@ package com.solegendary.reignofnether.time;
 
 public enum NightCircleMode {
     ALL,
-    PARTIAL,
+    NO_OVERLAPS,
     OFF
 }

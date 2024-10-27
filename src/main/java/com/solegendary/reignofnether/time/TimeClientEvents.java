@@ -1,5 +1,6 @@
 package com.solegendary.reignofnether.time;
 
+import com.mojang.datafixers.util.Pair;
 import com.solegendary.reignofnether.building.Building;
 import com.solegendary.reignofnether.building.BuildingClientEvents;
 import com.solegendary.reignofnether.building.NightSource;
@@ -18,13 +19,14 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.solegendary.reignofnether.time.TimeUtils.*;
@@ -54,11 +56,14 @@ public class TimeClientEvents {
         () -> true,
         () -> {
             if (nightCircleMode == NightCircleMode.ALL)
-                nightCircleMode = NightCircleMode.PARTIAL;
-            else if (nightCircleMode == NightCircleMode.PARTIAL)
+                nightCircleMode = NightCircleMode.NO_OVERLAPS;
+            else if (nightCircleMode == NightCircleMode.NO_OVERLAPS)
                 nightCircleMode = NightCircleMode.OFF;
             else if (nightCircleMode == NightCircleMode.OFF)
                 nightCircleMode = NightCircleMode.ALL;
+            for (Building building : BuildingClientEvents.getBuildings())
+                if (building instanceof NightSource ns)
+                    ns.updateNightBorderBps();
         },
         null,
         null
@@ -136,7 +141,7 @@ public class TimeClientEvents {
                         FormattedCharSequence.forward("Real time: " + timeStr, Style.EMPTY),
                         timeUntilStr,
                         gameLengthStr,
-                        FormattedCharSequence.forward("Night circles: " + nightCircleMode.name(), Style.EMPTY)
+                        FormattedCharSequence.forward("Night circles: " + nightCircleMode.name().replace("_"," "), Style.EMPTY)
                 );
 
             MyRenderer.renderTooltip(
@@ -160,7 +165,10 @@ public class TimeClientEvents {
         for (Building building : BuildingClientEvents.getBuildings())
             if (building instanceof NightSource ns)
                 for (BlockPos bp : ns.getNightBorderBps()) {
-                    MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.UP, bp, 0f, 0f, 0f, 0.6f);
+                    if (BuildingClientEvents.getSelectedBuildings().contains(building))
+                        MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.UP, bp, 0f, 0.8f, 0f, 0.3f);
+                    else
+                        MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.UP, bp, 0f, 0f, 0f, 0.6f);
                     /* causes a lot of flickering
                     if (MC.level.getBlockState(bp.north()).isAir())
                         MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.NORTH, bp, 0f, 0f, 0f, 0.5f);
@@ -174,24 +182,40 @@ public class TimeClientEvents {
                 }
     }
 
-    @SubscribeEvent
-    public static void onKeyPress(ScreenEvent.KeyPressed.Pre evt) {
-        if (evt.getKeyCode() == GLFW.GLFW_KEY_SPACE) {
-            List<Building> nss = BuildingClientEvents.getBuildings().stream().filter(b -> b instanceof NightSource).toList();
-            for (Building b : nss) {
-                NightSource ns = ((NightSource) b);
+    // maintain a mapping of night sources for easy culling calcs
+    private static final int NIGHT_SOURCES_UPDATE_TICKS_MAX = 100;
+    private static int nightSourcesUpdateTicks = NIGHT_SOURCES_UPDATE_TICKS_MAX;
+    public static ArrayList<Pair<BlockPos, Integer>> nightSourceOrigins = new ArrayList<>();
 
-                ns.getNightBorderBps().removeIf(bp -> {
-                    Vec2 vec2 = new Vec2(bp.getX(), bp.getZ());
-                    for (Building b2 : nss) {
-                        NightSource ns2 = ((NightSource) b2);
-                        int range = ns2.getNightRange();
-                        if (ns != ns2 && vec2.distanceToSqr(new Vec2(b2.centrePos.getX(), b2.centrePos.getZ())) < range * range)
-                            return true;
-                    }
-                    return false;
-                });
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent evt) {
+
+        nightSourcesUpdateTicks -= 1;
+        if (nightSourcesUpdateTicks <= 0) {
+            nightSourcesUpdateTicks = NIGHT_SOURCES_UPDATE_TICKS_MAX;
+
+            nightSourceOrigins.clear();
+
+            // get list of night source centre:range pairs
+            for (Building building : BuildingClientEvents.getBuildings()) {
+                if (!building.isExploredClientside || !(building instanceof NightSource ns))
+                    continue;
+                nightSourceOrigins.add(new Pair<>(building.centrePos, ns.getNightRange()));
             }
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
