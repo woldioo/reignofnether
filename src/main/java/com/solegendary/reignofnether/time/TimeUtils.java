@@ -59,6 +59,6 @@ public class TimeUtils {
     // use instead of level.isDay() as its much stricter for undead burning checks
     public static boolean isDay(long time) {
         long normTime = normaliseTime(time);
-        return time > DAWN && time <= DUSK;
+        return normTime > DAWN && normTime <= DUSK;
     }
 }

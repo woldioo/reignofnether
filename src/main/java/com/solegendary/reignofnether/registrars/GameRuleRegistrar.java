@@ -14,7 +14,7 @@ public class GameRuleRegistrar {
         );
         // treat neutral units as enemies? this includes auto attacks, right clicks and attack moving
         NEUTRAL_AGGRO = GameRules.register("neutralAggro", GameRules.Category.MISC,
-                GameRules.BooleanValue.create(true)
+                GameRules.BooleanValue.create(false)
         );
     }
 }

@@ -7,18 +7,22 @@
 [🟡] Partially done, only has a workaround and/or needs testing
 [❌] Not done, top ones are roughly of higher priority
 
-Fixes since beta
-----------------
+Changes since beta
+------------------
+
+🛠️ Bugfixes 🛠️
 [✔] Fixed crash related to placing buildings
 [✔] Fixed crash on the title screen for some languages
 [✔] Fixed ticking entity crash related to Pillagers
 [✔] Fixed Zombies spawning as neutral baby zombies
-[✔] Night circle borders that are overlapping can now be hidden by clicking the clock
-[✔] Night circle borders are now highlighted in green when their source building is selected
 [✔] Two or more Sculk Catalysts that are too close to each are no longer indestructible
 [✔] Removed some tall grass that was part of the barracks structure
 [✔] Falling logs now break if they fall into buildings
-[✔] /gamerule neutralAggro can now be used to allow treating of all units as enemies
+
+⚙ Quality of Life Features ⚙
+[✔] Night circle borders that are overlapping can now be hidden by clicking the clock
+[✔] Night circle borders are now highlighted in green when their source building is selected
+[✔] New /gamerule neutralAggro used to allow treating of all neutral mobs as enemies
     - Allows attacking neutral mobs using right-click, attack move or when a military unit is idle
     - This includes all modded and vanilla mobs and defeated players' units
     - Excludes vexes and huntable animals
