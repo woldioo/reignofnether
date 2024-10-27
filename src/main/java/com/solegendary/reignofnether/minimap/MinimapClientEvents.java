@@ -388,7 +388,6 @@ public class MinimapClientEvents {
             nightSources.add(new Pair<>(new BlockPos(xN, 0, zN), ns.getSecond()));
         }
 
-        outerloop:
         for (Pair<BlockPos, Integer> ns : nightSources) {
             Set<BlockPos> nightCircleBps;
             if (TimeClientEvents.nightCircleMode == NightCircleMode.NO_OVERLAPS)

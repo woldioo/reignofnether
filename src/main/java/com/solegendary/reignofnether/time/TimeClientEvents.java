@@ -43,7 +43,7 @@ public class TimeClientEvents {
     // actual time on the server
     public static long serverTime = 0;
 
-    public static NightCircleMode nightCircleMode = NightCircleMode.ALL;
+    public static NightCircleMode nightCircleMode = NightCircleMode.NO_OVERLAPS;
 
     private static final Button CLOCK_BUTTON = new Button(
         "Clock",

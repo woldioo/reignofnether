@@ -17,6 +17,19 @@ public class BlockUtils {
                         Blocks.CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.MUSHROOM_STEM, Blocks.CRIMSON_HYPHAE, Blocks.WARPED_HYPHAE)
                 .contains(bs.getBlock());
     }
+    public static boolean isFallingLogBlock(BlockState bs) {
+        return List.of(
+                BlockRegistrar.FALLING_OAK_LOG.get(),
+                BlockRegistrar.FALLING_BIRCH_LOG.get(),
+                BlockRegistrar.FALLING_ACACIA_LOG.get(),
+                BlockRegistrar.FALLING_DARK_OAK_LOG.get(),
+                BlockRegistrar.FALLING_JUNGLE_LOG.get(),
+                BlockRegistrar.FALLING_MANGROVE_LOG.get(),
+                BlockRegistrar.FALLING_SPRUCE_LOG.get(),
+                BlockRegistrar.FALLING_CRIMSON_STEM.get(),
+                BlockRegistrar.FALLING_WARPED_STEM.get())
+            .contains(bs.getBlock());
+    }
     public static boolean isLeafBlock(BlockState bs) {
         if (bs.getMaterial() == Material.LEAVES)
             return true;
