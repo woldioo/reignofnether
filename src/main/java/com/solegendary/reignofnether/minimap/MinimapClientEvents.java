@@ -399,8 +399,8 @@ public class MinimapClientEvents {
             // raise thickness
             for (BlockPos bp : nightCircleBps) {
                 nightCircleBpsThick.add(bp);
-                nightCircleBpsThick.add(bp.offset(1,0,0));
-                nightCircleBpsThick.add(bp.offset(0,0,1));
+                nightCircleBpsThick.add(bp.offset(-1,0,0));
+                nightCircleBpsThick.add(bp.offset(0,0,-1));
             }
             for (BlockPos bp : nightCircleBpsThick) {
                 if (bp.getX() > 0 && bp.getX() < mapColoursOverlays.length &&

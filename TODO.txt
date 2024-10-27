@@ -16,11 +16,21 @@ Changes since beta
 [✔] Fixed ticking entity crash related to Pillagers
 [✔] Fixed Zombies spawning as neutral baby zombies
 [✔] Two or more Sculk Catalysts that are too close to each are no longer indestructible
+[✔] Sculk Catalysts show how much extra HP they have on their health number
+[✔] Sculk is removed more consistently upon deleting a catalyst
+    - if the catalyst is deleted before it ever took any damage, the sculk is not removed until another catalyst nearby is deleted again
+[❌] Sculk can now spread on dirt paths and tall grass
+[✔] Can no longer build on Portals on leaves
 [✔] Removed some tall grass that was part of the barracks structure
 [✔] Falling logs now break if they fall into buildings
 
+[❌] Added Discord and Lilypad.gg buttons to the main menu
+[❌] Fixed the title menu being squished sometimes
+
+
 ⚙ Quality of Life Features ⚙
 [✔] Night circle borders that are overlapping can now be hidden by clicking the clock
+    - tons of exceptions when building a catalyst
 [✔] Night circle borders are now highlighted in green when their source building is selected
 [✔] Visible borders have been shrunk so the line itself is (usually) safe to walk on
 [✔] New /gamerule neutralAggro used to allow treating of all neutral mobs as enemies

@@ -19,6 +19,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 
 import java.util.*;
 
@@ -38,8 +39,14 @@ public class SculkCatalyst extends Building implements NightSource {
     private final Set<BlockPos> nightBorderBps = new HashSet<>();
 
     private final static int SCULK_SEARCH_RANGE = 30;
+    private final static float HP_PER_SCULK = 0.5f;
+    private final static float RANGE_PER_SCULK = 0.25f;
 
     private final ArrayList<BlockPos> sculkBps = new ArrayList<>();
+
+    // for some reason, destroy() does not restore sculk unless restoreRandomSculk was run at least once before
+    private boolean didSculkFix = false;
+    private BlockPos sculkFixBp = null;
 
     public SculkCatalyst(Level level, BlockPos originPos, Rotation rotation, String ownerName) {
         super(level, originPos, rotation, ownerName, getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation), false);
@@ -59,17 +66,16 @@ public class SculkCatalyst extends Building implements NightSource {
 
     public int getNightRange() {
         if (isBuilt || isBuiltServerside) {
-            return Math.min(nightRangeMin + (sculkBps.size() / 4), nightRangeMax);
+            return (int) Math.min(nightRangeMin + (sculkBps.size() * RANGE_PER_SCULK), nightRangeMax);
         }
         return 0;
     }
-
-    public BlockPos getNightCentre() { return centrePos; }
 
     @Override
     public void onBuilt() {
         super.onBuilt();
         updateNightBorderBps();
+        updateSculkBps();
     }
 
     @Override
@@ -88,8 +94,13 @@ public class SculkCatalyst extends Building implements NightSource {
     @Override
     public void tick(Level tickLevel) {
         super.tick(tickLevel);
-        if (tickLevel.isClientSide && tickAge % 100 == 0)
+        if (tickLevel.isClientSide && tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 100 == 0)
             updateNightBorderBps();
+    }
+
+    @Override
+    public int getHealth() {
+        return (int) (getBlocksPlaced() / MIN_BLOCKS_PERCENT) - getHighestBlockCountReached() + (int) (sculkBps.size() * HP_PER_SCULK);
     }
 
     public Faction getFaction() {return Faction.MONSTERS;}
@@ -122,15 +133,18 @@ public class SculkCatalyst extends Building implements NightSource {
         Collections.shuffle(sculkBps);
     }
 
+    private static int destroys = 0;
+
     @Override
     public void destroy(ServerLevel serverLevel) {
+        super.destroy(serverLevel);
+
+        updateSculkBps();
         int i = 0;
         while (sculkBps.size() > 0 && i < 10) {
             restoreRandomSculk(100);
-            updateSculkBps();
             i += 1;
         }
-        super.destroy(serverLevel);
     }
 
     // returns the number of blocks converted
@@ -138,22 +152,25 @@ public class SculkCatalyst extends Building implements NightSource {
         if (getLevel().isClientSide())
             return 0;
         int restoredSculk = 0;
+        updateSculkBps();
 
         for (int i = 0; i < amount; i++) {
             BlockPos bp;
             BlockState bs;
-            try {
-                bp = sculkBps.get(i);
-                bs = level.getBlockState(bp);
-            } catch (IndexOutOfBoundsException e) {
+
+            if (i >= sculkBps.size())
                 return restoredSculk;
-            }
+
+            bp = sculkBps.get(i);
+            bs = level.getBlockState(bp);
+
             if (bs.getBlock() == Blocks.SCULK) {
                 for (BlockPos bpAdj : List.of(bp.below(), bp.north(), bp.south(), bp.east(), bp.west())) {
                     BlockState bsAdj = level.getBlockState(bpAdj);
-                    if (!bsAdj.isAir()) {
+                    if (!bsAdj.isAir() && bsAdj.getMaterial() != Material.SCULK) {
                         level.setBlockAndUpdate(bp, bsAdj);
                         restoredSculk += 1;
+                        break;
                     }
                 }
             }
@@ -169,8 +186,7 @@ public class SculkCatalyst extends Building implements NightSource {
         if (getLevel().isClientSide() || amount <= 0)
             return;
 
-        updateSculkBps();
-        int restoredSculk = restoreRandomSculk(amount * 2);
+        int restoredSculk = restoreRandomSculk((int) (amount / HP_PER_SCULK));
         if (restoredSculk < amount)
             super.destroyRandomBlocks(amount - restoredSculk);
     }

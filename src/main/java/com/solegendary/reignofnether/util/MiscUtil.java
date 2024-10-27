@@ -418,6 +418,9 @@ public class MiscUtil {
         }
 
         public static Set<BlockPos> getCircleWithCulledOverlaps(BlockPos center, int radius, List<Pair<BlockPos, Integer>> overlapSources) {
+            if (radius <= 0)
+                return new HashSet<>();
+
             // skip rendering entirely if we are fully inside another circle
             if (TimeClientEvents.nightCircleMode == NightCircleMode.NO_OVERLAPS) {
                 for (Pair<BlockPos, Integer> os : overlapSources) {
@@ -442,6 +445,9 @@ public class MiscUtil {
         }
 
         public static Set<BlockPos> getCircle(BlockPos center, int radius) {
+            if (radius <= 0)
+                return new HashSet<>();
+
             if (!circleCache.containsKey(radius)) {
                 circleCache.put(radius, computeCircleEdge(radius));
             }

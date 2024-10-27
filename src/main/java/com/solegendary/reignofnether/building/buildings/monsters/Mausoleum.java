@@ -64,8 +64,6 @@ public class Mausoleum extends ProductionBuilding implements NightSource {
 
     public int getNightRange() { return nightRange; }
 
-    public BlockPos getNightCentre() { return centrePos; }
-
     @Override
     public void updateNightBorderBps() {
         this.nightBorderBps.clear();
@@ -81,7 +79,7 @@ public class Mausoleum extends ProductionBuilding implements NightSource {
     @Override
     public void tick(Level tickLevel) {
         super.tick(tickLevel);
-        if (tickLevel.isClientSide && tickAge % 100 == 0)
+        if (tickLevel.isClientSide && tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 100 == 0)
             updateNightBorderBps();
     }
 

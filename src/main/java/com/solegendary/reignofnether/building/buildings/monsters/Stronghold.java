@@ -5,10 +5,8 @@ import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.research.ResearchClient;
-import com.solegendary.reignofnether.research.researchItems.ResearchSculkAmplifiers;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
-import com.solegendary.reignofnether.time.NightCircleMode;
 import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.unit.units.monsters.WardenProd;
 import com.solegendary.reignofnether.util.Faction;
@@ -63,8 +61,6 @@ public class Stronghold extends ProductionBuilding implements GarrisonableBuildi
 
     public int getNightRange() { return (isBuilt || isBuiltServerside) ? nightRange : 0; }
 
-    public BlockPos getNightCentre() { return centrePos; }
-
     @Override
     public void onBuilt() {
         super.onBuilt();
@@ -86,7 +82,7 @@ public class Stronghold extends ProductionBuilding implements GarrisonableBuildi
     @Override
     public void tick(Level tickLevel) {
         super.tick(tickLevel);
-        if (tickLevel.isClientSide && tickAge % 100 == 0)
+        if (tickLevel.isClientSide && tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 100 == 0)
             updateNightBorderBps();
     }
 
