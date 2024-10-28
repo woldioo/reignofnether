@@ -251,7 +251,7 @@ public class ResourcesServerEvents {
             BlockState bsAdj = level.getBlockState(bpAdj);
             if (isLogBlock(bsAdj) && !bpsExcluded.contains(bpAdj)) {
                 Block fallingLogBlock = FALLING_LOGS.get(bsAdj.getBlock());
-                if (fallingLogBlock != null && !BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), bpAdj)) { // Check if the block exists in FALLING_LOGS
+                if (fallingLogBlock != null && !BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), bpAdj)) {
                     if (bsAdj.hasProperty(BlockStateProperties.AXIS)) {
                         level.setBlockAndUpdate(bpAdj, fallingLogBlock.defaultBlockState()
                                 .setValue(BlockStateProperties.AXIS, bsAdj.getValue(BlockStateProperties.AXIS)));
