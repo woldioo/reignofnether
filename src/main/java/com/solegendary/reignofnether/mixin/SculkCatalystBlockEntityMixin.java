@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SculkCatalystBlockEntity.class)
 public abstract class SculkCatalystBlockEntityMixin extends BlockEntity {
 
-    private @Final SculkSpreader sculkSpreader;
+    private final @Final SculkSpreader sculkSpreader = SculkSpreader.createLevelSpreader();
 
     public SculkCatalystBlockEntityMixin(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
@@ -62,6 +62,10 @@ public abstract class SculkCatalystBlockEntityMixin extends BlockEntity {
         if (this.isRemoved()) {
             cir.setReturnValue(false);
         } else {
+            if (this.sculkSpreader == null) {
+                cir.setReturnValue(false);
+                return;
+            }
             GameEvent.Context $$2 = pEventMessage.context();
             if (pEventMessage.gameEvent() == GameEvent.ENTITY_DIE) {
                 Entity var5 = $$2.sourceEntity();
