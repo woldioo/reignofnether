@@ -110,7 +110,7 @@ public class Laboratory extends ProductionBuilding {
             () -> BuildingClientEvents.getBuildingToPlace() == Laboratory.class,
             () -> false,
             () -> (BuildingClientEvents.hasFinishedBuilding(Mausoleum.buildingName) &&
-                    BuildingClientEvents.hasFinishedBuilding(Blacksmith.buildingName)) ||
+                    BuildingClientEvents.hasFinishedBuilding(Graveyard.buildingName)) ||
                     ResearchClient.hasCheat("modifythephasevariance"),
             () -> BuildingClientEvents.setBuildingToPlace(Laboratory.class),
             null,

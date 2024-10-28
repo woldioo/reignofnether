@@ -641,7 +641,7 @@ public abstract class Building {
             else
                 msPerBuild *= repairTimeModifier;
 
-            if (this instanceof Portal && !BuildingClientEvents.isOnNetherBlocks(blocks, originPos) &&
+            if (this instanceof Portal && !BuildingServerEvents.isOnNetherBlocks(blocks, originPos, serverLevel) &&
                     !ResearchServerEvents.playerHasResearch(ownerName, ResearchAdvancedPortals.itemName))
                 msPerBuild *= Portal.NON_NETHER_BUILD_TIME_MODIFIER;
 
