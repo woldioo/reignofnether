@@ -549,10 +549,11 @@ public abstract class Building {
 
     public void onBuilt() {
         isBuilt = true;
-        if (!this.level.isClientSide() && isCapitol) {
+        if (!this.level.isClientSide()) {
             FrozenChunkClientboundPacket.setBuildingBuiltServerside(this.originPos);
-            for (int i = 0; i < 3; i++)
-                spawnHuntableAnimalsNearby(ANIMAL_SPAWN_RANGE / 2);
+            if (isCapitol)
+                for (int i = 0; i < 3; i++)
+                    spawnHuntableAnimalsNearby(ANIMAL_SPAWN_RANGE / 2);
         }
         else
             TutorialClientEvents.updateStage();

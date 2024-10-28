@@ -69,7 +69,6 @@ public abstract class SculkCatalystBlockEntityMixin extends BlockEntity {
                     LivingEntity $$3 = (LivingEntity)var5;
                     if (isWithinRangeOfMaxedCatalystBuilding($$3)) {
                         cir.setReturnValue(false);
-                        System.out.println("limited range!");
                         return;
                     }
                     if (!$$3.wasExperienceConsumed()) {

@@ -69,6 +69,8 @@ public class Stronghold extends ProductionBuilding implements GarrisonableBuildi
 
     @Override
     public void updateNightBorderBps() {
+        if (!level.isClientSide())
+            return;
         this.nightBorderBps.clear();
         this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos,
                 getNightRange() - TimeClientEvents.VISIBLE_BORDER_ADJ, level));

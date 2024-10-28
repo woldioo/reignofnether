@@ -11,7 +11,6 @@ Changes since beta
 ------------------
 
 
-
 🛠️ Bugfixes 🛠️
 [✔] Fixed crash related to placing buildings
 [✔] Fixed crash on the title screen for some languages
@@ -23,10 +22,9 @@ Changes since beta
 [✔] Sculk Catalysts show how much extra HP they have on their health number
 [✔] Sculk is removed more consistently upon deleting a catalyst
 [✔] Sculk can now spread on dirt paths and tall grass
-[✔] Sculk spread now stops once there are 200 total blocks around it (150% of what you need for max night range)
+[✔] Sculk spread is capped at 200 total blocks (2x what is needed for max night range)
 [✔] Can no longer build on Portals on leaves
 [✔] Falling logs now break if they fall into buildings
-
 
 ⚙ Quality of Life Features ⚙
 [✔] Night circle borders that are overlapping can now be hidden by clicking the clock
@@ -37,8 +35,10 @@ Changes since beta
     - Allows attacking neutral mobs using right-click, attack move or when a military unit is idle
     - This includes all modded and vanilla mobs and defeated players' units
     - Excludes vexes and huntable animals
-[✔] Added Discord invite, Lilypad.gg link and RoN version to the main menu
 [✔] Random animal spawns around your capitol are now much more consistent and chickens are now worth 75 food
+
+⚙ Miscellaneous ⚙
+[✔] Added Discord invite, Lilypad.gg link and RoN version to the main menu
 
 
 🎉 Features 🎉

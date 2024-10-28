@@ -66,6 +66,8 @@ public class Mausoleum extends ProductionBuilding implements NightSource {
 
     @Override
     public void updateNightBorderBps() {
+        if (!level.isClientSide())
+            return;
         this.nightBorderBps.clear();
         this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos,
                 getNightRange() - TimeClientEvents.VISIBLE_BORDER_ADJ, level));
