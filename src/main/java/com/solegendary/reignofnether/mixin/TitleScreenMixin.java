@@ -8,16 +8,20 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.PanoramaRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.gui.TitleScreenModUpdateIndicator;
 import net.minecraftforge.internal.BrandingControl;
+import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
+import java.net.URI;
 
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
@@ -34,14 +39,117 @@ public class TitleScreenMixin extends Screen {
             new ResourceLocation("textures/gui/title/minecraft.png");
     private static final ResourceLocation MINECRAFT_EDITION =
             new ResourceLocation("textures/gui/title/edition.png");
+    private static final ResourceLocation DISCORD_TEXTURE =
+            new ResourceLocation( "textures/gui/title/discord.png");
+    private static final ResourceLocation LILYPAD_TEXTURE =
+            new ResourceLocation( "textures/gui/title/badge.png");
 
     @Shadow @Final private PanoramaRenderer panorama;
     @Shadow @Final private boolean fading;
     @Shadow private long fadeInStart;
     @Nullable @Shadow private TitleScreenModUpdateIndicator modUpdateNotification;
+    private AbstractWidget lilypadButton;
+    private AbstractWidget discordButton;
 
     protected TitleScreenMixin(Component pTitle) {
         super(pTitle);
+    }
+
+    private boolean textureExists(ResourceLocation resource) {
+        try {
+            ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+            return resourceManager.getResource(resource).isPresent();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Inject(method = "init", at = @At("TAIL"))
+    private void init(CallbackInfo ci) {
+        int buttonWidth = 125;
+        int buttonHeight = 20;
+
+        int lilypadX = this.width - buttonWidth - 10;
+        int lilypadY = this.height - buttonHeight - 30;
+
+        this.lilypadButton = new AbstractWidget(lilypadX, lilypadY, 150, 56, Component.empty()) {
+            @Override
+            public void onClick(double pMouseX, double pMouseY) {
+                openLink("https://lilypad.gg/reignofnether");
+            }
+
+            @Override
+            public void updateNarration(NarrationElementOutput output) {
+                output.add(NarratedElementType.TITLE, Component.literal("Choose Lilypad Hosting"));
+            }
+
+            @Override
+            public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderTexture(0, LILYPAD_TEXTURE);
+
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+
+                pPoseStack.pushPose();
+                float scale = 0.8f;
+                pPoseStack.translate(this.x, this.y, 0);
+                pPoseStack.scale(scale, scale, 1.0f);
+
+                blit(pPoseStack, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
+
+                pPoseStack.popPose();
+            }
+
+        };
+
+        int discordX = lilypadX;
+        int discordY = lilypadY - 40;
+
+        this.discordButton = new AbstractWidget(discordX, discordY, 150, 48, Component.empty()) {
+            @Override
+            public void onClick(double pMouseX, double pMouseY) {
+                openLink("https://discord.gg/uR6FWdUcw3");
+            }
+
+            @Override
+            public void updateNarration(NarrationElementOutput output) {
+                output.add(NarratedElementType.TITLE, Component.literal("Join our Discord"));
+            }
+
+            @Override
+            public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderTexture(0, DISCORD_TEXTURE);
+
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+
+                pPoseStack.pushPose();
+                float scaleX = 0.8f;
+                float scaleY = 0.8f;
+
+                pPoseStack.translate(this.x, this.y, 0);
+                pPoseStack.scale(scaleX, scaleY, 1.0f);
+
+                blit(pPoseStack, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
+
+                pPoseStack.popPose();
+            }
+
+        };
+
+        this.addRenderableWidget(this.lilypadButton);
+        this.addRenderableWidget(this.discordButton);
+    }
+
+    private void openLink(String url) {
+        try {
+            URI uri = new URI(url);
+            Util.getPlatform().openUri(uri);
+        } catch (Exception e) {
+            System.err.println("Failed to open URL: " + e.getMessage());
+        }
     }
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
