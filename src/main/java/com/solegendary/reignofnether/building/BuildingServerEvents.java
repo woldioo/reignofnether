@@ -8,6 +8,7 @@ import com.solegendary.reignofnether.building.buildings.shared.AbstractBridge;
 import com.solegendary.reignofnether.building.buildings.villagers.Castle;
 import com.solegendary.reignofnether.building.buildings.villagers.IronGolemBuilding;
 import com.solegendary.reignofnether.fogofwar.FrozenChunkClientboundPacket;
+import com.solegendary.reignofnether.nether.NetherBlocks;
 import com.solegendary.reignofnether.player.PlayerServerEvents;
 import com.solegendary.reignofnether.research.ResearchServerEvents;
 import com.solegendary.reignofnether.resources.*;
@@ -562,5 +563,27 @@ public class BuildingServerEvents {
                 return;
             }
         }
+    }
+
+    private static final float MIN_NETHER_BLOCKS_PERCENT = 0.8f;
+
+    public static boolean isOnNetherBlocks(List<BuildingBlock> blocks, BlockPos originPos, ServerLevel level) {
+        int netherBlocksBelow = 0;
+        int blocksBelow = 0;
+        for (BuildingBlock block : blocks) {
+            if (block.getBlockPos().getY() == 0 && level != null) {
+                BlockPos bp = block.getBlockPos().offset(originPos).offset(0,1,0);
+                BlockState bs = block.getBlockState(); // building block
+                BlockState bsBelow = level.getBlockState(bp.below()); // world block
+
+                if (bs.getMaterial().isSolid()) {
+                    blocksBelow += 1;
+                    if (NetherBlocks.isNetherBlock(level, bp.below()))
+                        netherBlocksBelow += 1;
+                }
+            }
+        }
+        if (blocksBelow <= 0) return false; // avoid division by 0
+        return ((float) netherBlocksBelow / (float) blocksBelow) > MIN_NETHER_BLOCKS_PERCENT;
     }
 }
