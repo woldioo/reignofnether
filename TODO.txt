@@ -11,7 +11,7 @@ Hotfix changes
 --------------
 Laboratories can now be built correctly
 Fixed a crash related to piglins building on overworld terrain
-[🟡] Fixed a crash related to sculk spreading
+Fixed a crash related to sculk spreading
 Fixed a crash related to chopping mushroom blocks
 Buildings made of logs no longer break if an adjacent log was broken near them
 Falling logs are now convertible to nether blocks
