@@ -3,6 +3,7 @@ package com.solegendary.reignofnether.minimap;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.ReignOfNether;
@@ -11,11 +12,12 @@ import com.solegendary.reignofnether.building.BuildingClientEvents;
 import com.solegendary.reignofnether.building.buildings.shared.AbstractBridge;
 import com.solegendary.reignofnether.cursor.CursorClientEvents;
 import com.solegendary.reignofnether.fogofwar.FogOfWarClientEvents;
-import com.solegendary.reignofnether.fogofwar.FrozenChunk;
 import com.solegendary.reignofnether.hud.Button;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
 import com.solegendary.reignofnether.player.PlayerServerboundPacket;
+import com.solegendary.reignofnether.time.NightCircleMode;
+import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.tutorial.TutorialClientEvents;
 import com.solegendary.reignofnether.tutorial.TutorialStage;
 import com.solegendary.reignofnether.unit.Relationship;
@@ -46,7 +48,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class MinimapClientEvents {
 
@@ -372,6 +373,43 @@ public class MinimapClientEvents {
         }
     }
 
+    private static void updateNightCircles() {
+
+        // get list of night source centre:range pairs
+        ArrayList<Pair<BlockPos, Integer>> nightSources = new ArrayList<>();
+
+        for (Pair<BlockPos, Integer> ns : TimeClientEvents.nightSourceOrigins) {
+
+            int xc = ns.getFirst().getX() + (BUILDING_RADIUS / 2);
+            int zc = ns.getFirst().getZ() + (BUILDING_RADIUS / 2);
+            int xN = xc - xc_world + (mapGuiRadius * 2);
+            int zN = zc - zc_world + (mapGuiRadius * 2);
+
+            nightSources.add(new Pair<>(new BlockPos(xN, 0, zN), ns.getSecond()));
+        }
+
+        for (Pair<BlockPos, Integer> ns : nightSources) {
+            Set<BlockPos> nightCircleBps;
+            if (TimeClientEvents.nightCircleMode == NightCircleMode.NO_OVERLAPS)
+                nightCircleBps = MiscUtil.CircleUtil.getCircleWithCulledOverlaps(ns.getFirst(), ns.getSecond(), nightSources);
+            else
+                nightCircleBps = MiscUtil.CircleUtil.getCircle(ns.getFirst(), ns.getSecond());
+
+            ArrayList<BlockPos> nightCircleBpsThick = new ArrayList<>();
+            // raise thickness
+            for (BlockPos bp : nightCircleBps) {
+                nightCircleBpsThick.add(bp);
+                nightCircleBpsThick.add(bp.offset(-1,0,0));
+                nightCircleBpsThick.add(bp.offset(0,0,-1));
+            }
+            for (BlockPos bp : nightCircleBpsThick) {
+                if (bp.getX() > 0 && bp.getX() < mapColoursOverlays.length &&
+                    bp.getZ() > 0 && bp.getZ() < mapColoursOverlays[0].length)
+                    mapColoursOverlays[bp.getX()][bp.getZ()] = MiscUtil.reverseHexRGB(0x0) | (0xFF << 24);
+            }
+        }
+    }
+
     private static void updateMapUnitsAndBuildings() {
         // draw buildings
         for (Building building : BuildingClientEvents.getBuildings()) {
@@ -613,6 +651,8 @@ public class MinimapClientEvents {
         if (refreshTicks <= 0) {
             updateMapTerrain(terrainPartition, darkTerrainPartition);
             mapColoursOverlays = new int[worldRadius * 2][worldRadius * 2];
+            if (TimeClientEvents.nightCircleMode != NightCircleMode.OFF)
+                updateNightCircles();
             updateMapUnitsAndBuildings();
             updateMapViewQuad();
 

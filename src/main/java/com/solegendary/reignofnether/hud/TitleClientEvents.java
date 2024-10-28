@@ -23,7 +23,13 @@ public class TitleClientEvents {
     public static PanoramaRenderer getPanorama() { return panorama; }
 
     private static CubeMap getCubeMap() {
-        String dir = titleBackgroundFaction.toString().toLowerCase();
+        String dir = "";
+
+        switch (titleBackgroundFaction) {
+            case VILLAGERS -> dir = "villagers";
+            case MONSTERS -> dir = "monsters";
+            case PIGLINS -> dir = "piglins";
+        }
         return new CubeMap(new ResourceLocation("textures/gui/title/background/" + dir + "/panorama"));
     }
 

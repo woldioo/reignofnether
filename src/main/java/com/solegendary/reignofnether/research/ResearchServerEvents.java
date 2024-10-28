@@ -49,6 +49,11 @@ public class ResearchServerEvents {
         saveResearch();
     }
 
+    public static void removeAllResearchFor(String playerName) {
+        researchItems.removeIf(r -> r.getFirst().equals(playerName));
+        saveResearch();
+    }
+
     public static void syncResearch(String playerName) {
         for (Pair<String, String> researchItem : researchItems)
             if (playerName.equals(researchItem.getFirst()))

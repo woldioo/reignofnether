@@ -2,17 +2,18 @@ package com.solegendary.reignofnether.resources;
 
 import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.registrars.BlockRegistrar;
+import com.solegendary.reignofnether.registrars.GameRuleRegistrar;
 import com.solegendary.reignofnether.tutorial.TutorialServerEvents;
 import com.solegendary.reignofnether.unit.UnitServerEvents;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -20,9 +21,10 @@ import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
+import static com.solegendary.reignofnether.resources.BlockUtils.isLogBlock;
+import static com.solegendary.reignofnether.resources.BlockUtils.numAirOrLeafBlocksBelow;
 
 public class ResourcesServerEvents {
 
@@ -221,12 +223,22 @@ public class ResourcesServerEvents {
 
     @SubscribeEvent
     public static void onPlayerBlockBreak(BlockEvent.BreakEvent evt) {
+        if (BuildingUtils.isPosInsideAnyBuilding(false, evt.getPos())) {
+            evt.setCanceled(true);
+            if (evt.getLevel() instanceof ServerLevel serverLevel)
+                serverLevel.setBlockAndUpdate(evt.getPos(), Blocks.AIR.defaultBlockState());
+        }
+
         if (isLogBlock(evt.getState()) && !BuildingUtils.isPosInsideAnyBuilding(false, evt.getPos()))
-            breakAdjacentLogs(evt.getPos(), new ArrayList<>(), (Level) evt.getLevel());
+            fellAdjacentLogs(evt.getPos(), new ArrayList<>(), (Level) evt.getLevel());
     }
 
     // if a tree is touched, destroy any adjacent logs that are above the ground after some time to avoid leaving tall trees behind
-    public static void breakAdjacentLogs(BlockPos bp, ArrayList<BlockPos> bpsExcluded, Level level) {
+    public static void fellAdjacentLogs(BlockPos bp, ArrayList<BlockPos> bpsExcluded, Level level) {
+
+        if (!level.getGameRules().getRule(GameRuleRegistrar.LOG_FALLING).get())
+            return;
+
         BlockState bs = level.getBlockState(bp);
 
         List<BlockPos> bpsAdj = List.of(
@@ -238,39 +250,38 @@ public class ResourcesServerEvents {
         for (BlockPos bpAdj : bpsAdj) {
             BlockState bsAdj = level.getBlockState(bpAdj);
             if (isLogBlock(bsAdj) && !bpsExcluded.contains(bpAdj)) {
-                if (numAirOrLeafBlocksBelow(bpAdj, level) >= 5)
-                    level.destroyBlock(bpAdj, true);
+                if (bsAdj.hasProperty(BlockStateProperties.AXIS)) {
+                    level.setBlockAndUpdate(bpAdj, FALLING_LOGS.get(bsAdj.getBlock()).defaultBlockState()
+                            .setValue(BlockStateProperties.AXIS, bsAdj.getValue(BlockStateProperties.AXIS)));
+                } else {
+                    level.setBlockAndUpdate(bpAdj, FALLING_LOGS.get(bsAdj.getBlock()).defaultBlockState());
+                }
                 bpsExcluded.add(bpAdj);
-                breakAdjacentLogs(bpAdj, bpsExcluded, level);
+                fellAdjacentLogs(bpAdj, bpsExcluded, level);
             }
         }
     }
 
-    public static boolean isLogBlock(BlockState bs) {
-        return List.of(Blocks.OAK_LOG, Blocks.BIRCH_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG, Blocks.JUNGLE_LOG, Blocks.MANGROVE_LOG, Blocks.SPRUCE_LOG,
-                        Blocks.OAK_WOOD, Blocks.BIRCH_WOOD, Blocks.ACACIA_WOOD, Blocks.DARK_OAK_WOOD, Blocks.JUNGLE_WOOD, Blocks.MANGROVE_WOOD, Blocks.SPRUCE_WOOD,
-                        Blocks.CRIMSON_STEM, Blocks.WARPED_STEM, Blocks.MUSHROOM_STEM, Blocks.CRIMSON_HYPHAE, Blocks.WARPED_HYPHAE)
-                .contains(bs.getBlock());
-    }
-    public static boolean isLeafBlock(BlockState bs) {
-        if (bs.getMaterial() == Material.LEAVES)
-            return true;
-        return List.of(Blocks.OAK_LEAVES, Blocks.BIRCH_LEAVES, Blocks.ACACIA_LEAVES, Blocks.DARK_OAK_LEAVES, Blocks.JUNGLE_LEAVES, Blocks.MANGROVE_LEAVES, Blocks.SPRUCE_LEAVES,
-                        BlockRegistrar.DECAYABLE_NETHER_WART_BLOCK.get(), BlockRegistrar.DECAYABLE_WARPED_WART_BLOCK.get(),
-                        Blocks.RED_MUSHROOM_BLOCK, Blocks.BROWN_MUSHROOM_BLOCK)
-                .contains(bs.getBlock());
-    }
-
-    public static int numAirOrLeafBlocksBelow(BlockPos bp, Level level) {
-        int blocks = 0;
-        for (int i = -1; i > -10; i--) {
-            BlockState bs = level.getBlockState(bp.offset(0,i,0));
-            if (bs.isAir() || isLeafBlock(bs))
-                blocks += 1;
-            else if (!isLogBlock(bs)) // stop counting if we hit a non-log solid block to avoid counting underground blocks
-                break;
-        }
-        return blocks;
+    private static final Map<Block, Block> FALLING_LOGS = new HashMap<>();
+    static {
+        FALLING_LOGS.put(Blocks.OAK_LOG, BlockRegistrar.FALLING_OAK_LOG.get());
+        FALLING_LOGS.put(Blocks.SPRUCE_LOG, BlockRegistrar.FALLING_SPRUCE_LOG.get());
+        FALLING_LOGS.put(Blocks.BIRCH_LOG, BlockRegistrar.FALLING_BIRCH_LOG.get());
+        FALLING_LOGS.put(Blocks.JUNGLE_LOG, BlockRegistrar.FALLING_JUNGLE_LOG.get());
+        FALLING_LOGS.put(Blocks.ACACIA_LOG, BlockRegistrar.FALLING_ACACIA_LOG.get());
+        FALLING_LOGS.put(Blocks.DARK_OAK_LOG, BlockRegistrar.FALLING_DARK_OAK_LOG.get());
+        FALLING_LOGS.put(Blocks.MANGROVE_LOG, BlockRegistrar.FALLING_MANGROVE_LOG.get());
+        FALLING_LOGS.put(Blocks.OAK_WOOD, BlockRegistrar.FALLING_OAK_LOG.get());
+        FALLING_LOGS.put(Blocks.SPRUCE_WOOD, BlockRegistrar.FALLING_SPRUCE_LOG.get());
+        FALLING_LOGS.put(Blocks.BIRCH_WOOD, BlockRegistrar.FALLING_BIRCH_LOG.get());
+        FALLING_LOGS.put(Blocks.JUNGLE_WOOD, BlockRegistrar.FALLING_JUNGLE_LOG.get());
+        FALLING_LOGS.put(Blocks.ACACIA_WOOD, BlockRegistrar.FALLING_ACACIA_LOG.get());
+        FALLING_LOGS.put(Blocks.DARK_OAK_WOOD, BlockRegistrar.FALLING_DARK_OAK_LOG.get());
+        FALLING_LOGS.put(Blocks.MANGROVE_WOOD, BlockRegistrar.FALLING_MANGROVE_LOG.get());
+        FALLING_LOGS.put(Blocks.WARPED_STEM, BlockRegistrar.FALLING_WARPED_STEM.get());
+        FALLING_LOGS.put(Blocks.WARPED_HYPHAE, BlockRegistrar.FALLING_WARPED_STEM.get());
+        FALLING_LOGS.put(Blocks.CRIMSON_STEM, BlockRegistrar.FALLING_CRIMSON_STEM.get());
+        FALLING_LOGS.put(Blocks.CRIMSON_HYPHAE, BlockRegistrar.FALLING_CRIMSON_STEM.get());
     }
 }
 

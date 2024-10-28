@@ -11,7 +11,6 @@ import com.solegendary.reignofnether.fogofwar.FrozenChunkClientboundPacket;
 import com.solegendary.reignofnether.player.PlayerServerEvents;
 import com.solegendary.reignofnether.research.ResearchServerEvents;
 import com.solegendary.reignofnether.resources.*;
-import com.solegendary.reignofnether.tutorial.TutorialServerEvents;
 import com.solegendary.reignofnether.unit.Relationship;
 import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.UnitServerEvents;
@@ -52,6 +51,7 @@ public class BuildingServerEvents {
     private static int buildingSyncTicks = BUILDING_SYNC_TICKS_MAX;
 
     private static int TNT_BUILDING_BASE_DAMAGE = 20;
+    private static int MAX_SCAFFOLD_DEPTH = 5;
 
     private static ServerLevel serverLevel = null;
 
@@ -188,16 +188,10 @@ public class BuildingServerEvents {
                 newBuilding.forceChunk(true);
                 int minY = BuildingUtils.getMinCorner(newBuilding.blocks).getY();
 
-                if (!(newBuilding instanceof AbstractBridge)) {
-                    for (BuildingBlock block : newBuilding.blocks) {
-                        if (block.getBlockPos().getY() == minY && !block.getBlockState().isAir()) {
-                            if (!placeScaffoldingUnder(block, newBuilding)) {
-                                // Abort if the scaffolding placement failed
-                                return;
-                            }
-                        }
-                    }
-                }
+                if (!(newBuilding instanceof AbstractBridge))
+                    for (BuildingBlock block : newBuilding.blocks)
+                        if (block.getBlockPos().getY() == minY && !block.getBlockState().isAir())
+                            placeScaffoldingUnder(block, newBuilding);
 
                 newBuilding.blocks.stream()
                         .filter(block -> block.getBlockPos().getY() == minY &&
@@ -218,37 +212,32 @@ public class BuildingServerEvents {
             UnitServerEvents.getAllUnits().stream()
                     .filter(entity -> entity instanceof Unit unit && unit.getOwnerName().equals(ownerName) &&
                             newBuilding.isPosInsideBuilding(entity.getOnPos().above().above()))
-                    .forEach(entity -> assignActionIfNotBuilder(entity, builderUnitIds, newBuilding));
+                    .forEach(entity -> moveNonBuildersAwayFromBuildingFoundations(entity, builderUnitIds, newBuilding));
         }
     }
 
-    private static boolean placeScaffoldingUnder(BuildingBlock block, Building newBuilding) {
+    private static void placeScaffoldingUnder(BuildingBlock block, Building newBuilding) {
         BlockPos basePos = block.getBlockPos();
         int yBelow = 0;
         BlockState bsBelow;
-        boolean tooDeep = false;
 
-        // Search downward for a solid block up to -5 levels below.
-        while (yBelow > -5) {
+        // Search downward for a solid block up to -5 levels below
+        while (yBelow > -MAX_SCAFFOLD_DEPTH) {
             yBelow--;
             bsBelow = serverLevel.getBlockState(basePos.offset(0, yBelow, 0));
-            if (bsBelow.getMaterial().isSolidBlocking()) {
-                break; // Found a solid block, exit loop.
-            }
+            if (bsBelow.getMaterial().isSolidBlocking())
+                break; // Found a solid block, exit loop
         }
+        if (yBelow <= -MAX_SCAFFOLD_DEPTH)
+            return;
 
-        if (yBelow <= -5) {
-            return false; // Abort if no solid block found within limit (possibly void).
-        }
-
-        // Place scaffolding from the lowest point back to the original block's level.
+        // Place scaffolding from the lowest point back to the original block's level
         for (int y = yBelow + 1; y < 0; y++) {
             BlockPos scaffoldPos = basePos.offset(0, y, 0);
             BuildingBlock scaffold = new BuildingBlock(scaffoldPos, Blocks.SCAFFOLDING.defaultBlockState());
             newBuilding.getScaffoldBlocks().add(scaffold);
             newBuilding.addToBlockPlaceQueue(scaffold);
         }
-        return true;
     }
 
 
@@ -283,7 +272,7 @@ public class BuildingServerEvents {
         );
     }
 
-    private static void assignActionIfNotBuilder(LivingEntity entity, int[] builderUnitIds, Building newBuilding) {
+    private static void moveNonBuildersAwayFromBuildingFoundations(LivingEntity entity, int[] builderUnitIds, Building newBuilding) {
         if (Arrays.stream(builderUnitIds).noneMatch(id -> id == entity.getId())) {
             UnitServerEvents.addActionItem(
                     ((Unit) entity).getOwnerName(),
@@ -524,6 +513,9 @@ public class BuildingServerEvents {
                     if (building instanceof GarrisonableBuilding garr)
                         for (LivingEntity le : garr.getOccupants())
                             le.hurt(exp.getDamageSource(), random.nextInt(atkDmg + 1));
+
+                    if (building instanceof AbstractBridge)
+                        atkDmg /= 2;
 
                     building.destroyRandomBlocks(atkDmg);
                 }

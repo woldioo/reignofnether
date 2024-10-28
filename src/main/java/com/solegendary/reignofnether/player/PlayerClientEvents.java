@@ -3,6 +3,7 @@ package com.solegendary.reignofnether.player;
 import com.solegendary.reignofnether.building.Building;
 import com.solegendary.reignofnether.building.BuildingClientEvents;
 import com.solegendary.reignofnether.fogofwar.FogOfWarClientEvents;
+import com.solegendary.reignofnether.guiscreen.TopdownGui;
 import com.solegendary.reignofnether.hud.HudClientEvents;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
@@ -11,6 +12,8 @@ import com.solegendary.reignofnether.research.ResearchClient;
 import com.solegendary.reignofnether.resources.ResourcesClientEvents;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -87,6 +90,8 @@ public class PlayerClientEvents {
                         MC.player.sendSystemMessage(Component.literal("/rts-surrender - Concede the match"));
                         MC.player.sendSystemMessage(Component.literal("/rts-reset - Delete all units/buildings, set all to spectator"));
                         MC.player.sendSystemMessage(Component.literal("/rts-lock enable/disable - Prevent all players from joining the RTS match"));
+                        MC.player.sendSystemMessage(Component.literal("/gamerule doLogFalling - Set whether tree logs fall when cut"));
+                        MC.player.sendSystemMessage(Component.literal("/gamerule neutralAggro - Set whether you auto-attack neutral units/buildings"));
                     }
                     return 1;
                 }));
@@ -189,6 +194,13 @@ public class PlayerClientEvents {
     public static void onClientTick(TickEvent.ClientTickEvent evt) {
         if (evt.phase == TickEvent.Phase.END)
             rtsGameTicks += 1;
+    }
+
+    // disallow opening the creative menu while orthoview is enabled
+    @SubscribeEvent
+    public static void onScreenOpen(ScreenEvent.Opening evt) {
+        if (OrthoviewClientEvents.isEnabled() && evt.getScreen() instanceof CreativeModeInventoryScreen)
+            evt.setCanceled(true);
     }
 
     // allow tab player list menu on the orthoview screen

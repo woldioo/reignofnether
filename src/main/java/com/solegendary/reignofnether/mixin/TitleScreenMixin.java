@@ -6,6 +6,7 @@ import com.mojang.math.Vector3f;
 import com.solegendary.reignofnether.hud.TitleClientEvents;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -42,7 +43,9 @@ public class TitleScreenMixin extends Screen {
     private static final ResourceLocation DISCORD_TEXTURE =
             new ResourceLocation( "textures/gui/title/discord.png");
     private static final ResourceLocation LILYPAD_TEXTURE =
-            new ResourceLocation( "textures/gui/title/reign_of_nether.png");
+            new ResourceLocation( "textures/gui/title/lilypad.png");
+
+    private static final String VERSION_STRING = "1.0.6";
 
     @Shadow @Final private PanoramaRenderer panorama;
     @Shadow @Final private boolean fading;
@@ -66,13 +69,51 @@ public class TitleScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo ci) {
-        int buttonWidth = 125;
-        int buttonHeight = 20;
+        int lilypadX = this.width - 100;
+        int lilypadY = this.height - 57;
 
-        int discordX = this.width - buttonWidth - 10;
-        int discordY = this.height - buttonHeight - 30;
+        this.lilypadButton = new AbstractWidget(lilypadX, lilypadY, 110, 40, Component.empty()) {
+            @Override
+            public void onClick(double pMouseX, double pMouseY) {
+                openLink("https://lilypad.gg/reignofnether");
+            }
 
-        this.discordButton = new AbstractWidget(discordX, discordY, 130, 42, Component.empty()) {
+            @Override
+            public void updateNarration(NarrationElementOutput output) {
+                output.add(NarratedElementType.TITLE, Component.literal("Choose Lilypad Hosting"));
+            }
+
+            @Override
+            public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderTexture(0, LILYPAD_TEXTURE);
+
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+
+                pPoseStack.pushPose();
+                float scale = 0.8f;
+                pPoseStack.translate(this.x, this.y, 0);
+                pPoseStack.scale(scale, scale, 1.0f);
+
+                blit(pPoseStack, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
+
+                if (isHoveredOrFocused())
+                    GuiComponent.fill(pPoseStack, // x1,y1, x2,y2,
+                            0,0,
+                            this.width,
+                            this.height,
+                            0x32FFFFFF); //ARGB(hex); note that alpha ranges between ~0-16, not 0-255
+
+                pPoseStack.popPose();
+            }
+        };
+
+
+        int discordX = lilypadX - 2;
+        int discordY = lilypadY - 38;
+
+        this.discordButton = new AbstractWidget(discordX, discordY, 114, 38, Component.empty()) {
             @Override
             public void onClick(double pMouseX, double pMouseY) {
                 openLink("https://discord.gg/uR6FWdUcw3");
@@ -100,41 +141,16 @@ public class TitleScreenMixin extends Screen {
 
                 blit(pPoseStack, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
-                pPoseStack.popPose();
-            }
-        };
-
-        int lilypadX = discordX-265;
-        int lilypadY = discordY-60;
-
-        this.lilypadButton = new AbstractWidget(lilypadX, lilypadY, 200, 43, Component.empty()) {
-            @Override
-            public void onClick(double pMouseX, double pMouseY) {
-                openLink("https://lilypad.gg/reignofnether");
-            }
-
-            @Override
-            public void updateNarration(NarrationElementOutput output) {
-                output.add(NarratedElementType.TITLE, Component.literal("Choose Lilypad Hosting"));
-            }
-
-            @Override
-            public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                RenderSystem.setShaderTexture(0, LILYPAD_TEXTURE);
-
-                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-
-                pPoseStack.pushPose();
-                float scale = 0.8f;
-                pPoseStack.translate(this.x, this.y, 0);
-                pPoseStack.scale(scale, scale, 1.0f);
-
-                blit(pPoseStack, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
+                if (isHoveredOrFocused())
+                    GuiComponent.fill(pPoseStack, // x1,y1, x2,y2,
+                            0,0,
+                            this.width,
+                            this.height,
+                            0x32FFFFFF); //ARGB(hex); note that alpha ranges between ~0-16, not 0-255
 
                 pPoseStack.popPose();
             }
+
         };
 
         this.addRenderableWidget(this.lilypadButton);
@@ -202,13 +218,16 @@ public class TitleScreenMixin extends Screen {
 
             // Render branding lines
             BrandingControl.forEachLine(true, true, (line, text) -> {
+                if (line == 1) {
+                    text = "Reign of Nether " + VERSION_STRING;
+                }
                 drawString(pPoseStack, this.font, text, 2, this.height - (10 + line * (9 + 1)), 16777215 | alphaMask);
             });
 
-            BrandingControl.forEachAboveCopyrightLine((line, text) -> {
-                int xPos = this.width - this.font.width(text);
-                drawString(pPoseStack, this.font, text, xPos, this.height - (10 + (line + 1) * (9 + 1)), 16777215 | alphaMask);
-            });
+            //BrandingControl.forEachAboveCopyrightLine((line, text) -> {
+            //    int xPos = this.width - this.font.width(text);
+            //    drawString(pPoseStack, this.font, text, xPos, this.height - (10 + (line + 1) * (9 + 1)), 16777215 | alphaMask);
+            //});
 
             // Adjust widget transparency
             for (GuiEventListener child : this.children()) {
@@ -230,4 +249,3 @@ public class TitleScreenMixin extends Screen {
         }
     }
 }
-

@@ -128,7 +128,7 @@ public class GhastUnit extends Ghast implements Unit, AttackerUnit, RangedAttack
 
     // endregion
 
-    final static public float attackDamage = 6.0f;
+    final static public float attackDamage = 8.0f;
     final static public float attacksPerSecond = 0.15f;
     final static public float attackRange = 30; // only used by ranged units or melee building attackers
     final static public float aggroRange = 30;

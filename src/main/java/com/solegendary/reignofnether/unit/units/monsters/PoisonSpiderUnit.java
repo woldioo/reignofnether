@@ -2,10 +2,10 @@ package com.solegendary.reignofnether.unit.units.monsters;
 
 import com.solegendary.reignofnether.ability.Ability;
 import com.solegendary.reignofnether.ability.abilities.Eject;
-import com.solegendary.reignofnether.building.BuildingUtils;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.resources.ResourceCosts;
+import com.solegendary.reignofnether.time.NightUtils;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.goals.*;
 import com.solegendary.reignofnether.unit.interfaces.AttackerUnit;
@@ -166,7 +166,7 @@ public class PoisonSpiderUnit extends CaveSpider implements Unit, AttackerUnit {
         AttackerUnit.tick(this);
 
         // apply slowness level 2 during daytime for a short time repeatedly
-        if (!this.level.isClientSide() && this.level.isDay() && !BuildingUtils.isInRangeOfNightSource(this.getEyePosition(), false))
+        if (!this.level.isClientSide() && this.level.isDay() && !NightUtils.isInRangeOfNightSource(this.getEyePosition(), false))
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 1));
     }
 

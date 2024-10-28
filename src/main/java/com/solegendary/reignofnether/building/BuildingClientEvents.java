@@ -24,6 +24,7 @@ import com.solegendary.reignofnether.unit.interfaces.WorkerUnit;
 import com.solegendary.reignofnether.util.MiscUtil;
 import com.solegendary.reignofnether.util.MyRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -280,6 +281,9 @@ public class BuildingClientEvents {
 
     // disallow any building block from clipping into any other existing blocks
     private static boolean isBuildingPlacementClipping(BlockPos originPos) {
+        if (MC.level == null)
+            return false;
+
         if (isBuildingToPlaceABridge())
             return false;
 
@@ -299,9 +303,6 @@ public class BuildingClientEvents {
         if (isBuildingToPlaceABridge())
             return false;
 
-        if (buildingToPlace.getName().toLowerCase().contains("piglins.portal"))
-            return false;
-
         int solidBlocksBelow = 0;
         int blocksBelow = 0;
         for (BuildingBlock block : blocksToDraw) {
@@ -311,10 +312,10 @@ public class BuildingClientEvents {
                 BlockState bsBelow = MC.level.getBlockState(bp.below()); // world block
 
                 if (bs.getMaterial().isSolid() &&
-                    !(bsBelow.getBlock() instanceof IceBlock) &&
-                    !(bsBelow.getBlock() instanceof LeavesBlock)) {
+                    !(bsBelow.getBlock() instanceof IceBlock)) {
                     blocksBelow += 1;
-                    if (bsBelow.getMaterial().isSolid())
+                    if (bsBelow.getMaterial().isSolid() &&
+                        !(bsBelow.getBlock() instanceof LeavesBlock))
                         solidBlocksBelow += 1;
                 }
             }
@@ -352,12 +353,16 @@ public class BuildingClientEvents {
             return true;
         if (!buildingName.contains("buildings.piglins.") || buildingName.contains("centralportal"))
             return true;
-        if (buildingName.contains("portal") && ResearchClient.hasResearch(ResearchAdvancedPortals.itemName))
+        if (buildingName.contains("portal"))
             return true;
 
+        return isOnNetherBlocks(blocksToDraw, originPos);
+    }
+
+    public static boolean isOnNetherBlocks(List<BuildingBlock> blocks, BlockPos originPos) {
         int netherBlocksBelow = 0;
         int blocksBelow = 0;
-        for (BuildingBlock block : blocksToDraw) {
+        for (BuildingBlock block : blocks) {
             if (block.getBlockPos().getY() == 0 && MC.level != null) {
                 BlockPos bp = block.getBlockPos().offset(originPos).offset(0,1,0);
                 BlockState bs = block.getBlockState(); // building block
@@ -799,8 +804,7 @@ public class BuildingClientEvents {
     // on closing a chest screen check that it could be a stockpile chest so they can be consumed for resources
     @SubscribeEvent
     public static void onScreenClose(ScreenEvent.Closing evt) {
-        String screenName = evt.getScreen().getTitle().getString();
-        if ((screenName.equals("Chest") || screenName.equals("Large Chest")) && MC.level != null && MC.player != null) {
+        if (evt.getScreen() instanceof ContainerScreen && MC.level != null && MC.player != null) {
             BlockPos bp = Item.getPlayerPOVHitResult(MC.level, MC.player, ClipContext.Fluid.NONE).getBlockPos();
             BuildingServerboundPacket.checkStockpileChests(bp);
         }

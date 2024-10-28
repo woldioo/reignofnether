@@ -4,32 +4,36 @@ import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.resources.ResourceCost;
-import com.solegendary.reignofnether.unit.UnitServerEvents;
-import com.solegendary.reignofnether.unit.interfaces.Unit;
+import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.unit.units.monsters.ZombieVillagerProd;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.util.Faction;
+import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.solegendary.reignofnether.building.BuildingUtils.getAbsoluteBlockData;
 
-public class Mausoleum extends ProductionBuilding {
+public class Mausoleum extends ProductionBuilding implements NightSource {
 
     public final static String buildingName = "Mausoleum";
     public final static String structureName = "mausoleum";
     public final static ResourceCost cost = ResourceCosts.MAUSOLEUM;
     public final static int nightRange = 80;
+
+    private final Set<BlockPos> nightBorderBps = new HashSet<>();
 
     public Mausoleum(Level level, BlockPos originPos, Rotation rotation, String ownerName) {
         super(level, originPos, rotation, ownerName, getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation), true);
@@ -55,6 +59,30 @@ public class Mausoleum extends ProductionBuilding {
             this.productionButtons = List.of(
                 ZombieVillagerProd.getStartButton(this, Keybindings.keyQ)
             );
+        updateNightBorderBps();
+    }
+
+    public int getNightRange() { return nightRange; }
+
+    @Override
+    public void updateNightBorderBps() {
+        if (!level.isClientSide())
+            return;
+        this.nightBorderBps.clear();
+        this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos,
+                getNightRange() - TimeClientEvents.VISIBLE_BORDER_ADJ, level));
+    }
+
+    @Override
+    public Set<BlockPos> getNightBorderBps() {
+        return nightBorderBps;
+    }
+
+    @Override
+    public void tick(Level tickLevel) {
+        super.tick(tickLevel);
+        if (tickLevel.isClientSide && tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 100 == 0)
+            updateNightBorderBps();
     }
 
     public Faction getFaction() {return Faction.MONSTERS;}

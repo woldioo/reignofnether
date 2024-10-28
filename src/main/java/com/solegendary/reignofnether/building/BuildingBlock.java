@@ -4,13 +4,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+
+import java.util.List;
 
 public class BuildingBlock {
     private BlockPos blockPos;
     private BlockState blockState; // ideal blockstate when placed, not actual world state
+
+    private List<Block> blocksThatIgnoreState = List.of(Blocks.SCULK_SHRIEKER, Blocks.SCULK_SENSOR);
 
     public BuildingBlock(BlockPos blockPos, BlockState blockState) {
         this.blockPos = blockPos;
@@ -47,6 +54,15 @@ public class BuildingBlock {
 
         // wall blockstates don't match unless the block above them is placed
         boolean isMatchingWallBlock = this.blockState.getBlock() instanceof WallBlock && bs.getBlock() == this.blockState.getBlock();
+
+        // account for sculk sensors turning on and off constantly
+        if (this.blocksThatIgnoreState.contains(this.blockState.getBlock()) &&
+            this.blocksThatIgnoreState.contains(bs.getBlock()))
+            return true;
+
+        if (this.blockState.getMaterial() == Material.LEAVES &&
+            bs.getMaterial() == Material.LEAVES)
+            return true;
 
         return !this.blockState.isAir() && (bs == this.blockState || isMatchingWallBlock);
     }

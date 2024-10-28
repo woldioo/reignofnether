@@ -117,17 +117,19 @@ public class HoglinUnit extends Hoglin implements Unit, AttackerUnit {
     // endregion
 
     final static public float attackDamage = 6.0f;
-    final static public float attacksPerSecond = 0.4f;
+    final static public float attacksPerSecond = 0.5f;
     final static public float attackRange = 2; // only used by ranged units or melee building attackers
     final static public float aggroRange = 10;
     final static public boolean willRetaliate = true; // will attack when hurt by an enemy
     final static public boolean aggressiveWhenIdle = true;
 
-    final static public float maxHealth = 65.0f;
+    final static public float maxHealth = 70.0f;
     final static public float armorValue = 0.0f;
     final static public float movementSpeed = 0.30f;
     final static public int popCost = ResourceCosts.HOGLIN.population;
     public int maxResources = 100;
+
+    final static public float BUILDING_DAMAGE_MULTIPLIER = 1.5f;
 
     private final List<AbilityButton> abilityButtons = new ArrayList<>();
     private final List<Ability> abilities = new ArrayList<>();
