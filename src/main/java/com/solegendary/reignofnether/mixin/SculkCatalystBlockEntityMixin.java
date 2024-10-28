@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(SculkCatalystBlockEntity.class)
 public abstract class SculkCatalystBlockEntityMixin extends BlockEntity {
 
-    private @Final SculkSpreader sculkSpreader;
+    private final @Final SculkSpreader sculkSpreader = SculkSpreader.createLevelSpreader();
 
     public SculkCatalystBlockEntityMixin(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
