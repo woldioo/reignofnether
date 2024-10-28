@@ -69,11 +69,10 @@ public class TitleScreenMixin extends Screen {
         int buttonWidth = 125;
         int buttonHeight = 20;
 
-        // Position Discord button in its original location
         int discordX = this.width - buttonWidth - 10;
         int discordY = this.height - buttonHeight - 30;
 
-        this.discordButton = new AbstractWidget(discordX, discordY, 150, 48, Component.empty()) {
+        this.discordButton = new AbstractWidget(discordX, discordY, 130, 42, Component.empty()) {
             @Override
             public void onClick(double pMouseX, double pMouseY) {
                 openLink("https://discord.gg/uR6FWdUcw3");
