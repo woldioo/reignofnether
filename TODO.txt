@@ -18,16 +18,13 @@ Changes since beta
 [✔] Fixed ticking entity crash related to Pillagers
 [✔] Fixed a crash related to building ticking
 [✔] Fixed Zombies spawning as neutral baby zombies
+[✔] Fixed some building block bugs in Barracks and Town Centres
 [✔] Two or more Sculk Catalysts that are too close to each are no longer indestructible
 [✔] Sculk Catalysts show how much extra HP they have on their health number
 [✔] Sculk is removed more consistently upon deleting a catalyst
-[❌] Sculk can now spread on dirt paths and tall grass
-    - mixin SculkCatalystBlockEntity ?
-    - https://www.reddit.com/r/Minecraft/comments/vhh9sp/what_blocks_cannot_be_turned_into_sculk/
-[❌] Sculk Catalysts now have a sacrifice ability to kill units in case you don't want to use the delete button
+[✔] Sculk can now spread on dirt paths and tall grass
+[✔] Sculk spread now stops once there are 200 total blocks around it (150% of what you need for max night range)
 [✔] Can no longer build on Portals on leaves
-[✔] Removed some tall grass that was part of the barracks structure
-[✔] Falling logs now break if they fall into buildings
 [✔] Falling logs now break if they fall into buildings
 
 

@@ -10,6 +10,7 @@
         "EvokerFangsMixin",
         "LeavesBlockMixin",
         "PlayerMixin",
+        "SculkCatalystBlockEntityMixin",
         "ThrownPotionMixin",
         "WitchMixin",
         "firedamage.BaseFireBlockMixin",

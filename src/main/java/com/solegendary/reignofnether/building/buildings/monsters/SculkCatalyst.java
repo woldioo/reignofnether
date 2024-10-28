@@ -32,6 +32,10 @@ public class SculkCatalyst extends Building implements NightSource {
     public final static String structureName = "sculk_catalyst";
     public final static ResourceCost cost = ResourceCosts.SCULK_CATALYST;
 
+    // vanilla logic determines the actual range, but this is what we're guessing it to be for the range limiter
+    // mixin and the dirt path fix
+    public final static int ESTIMATED_RANGE = 10;
+
     private final static Random random = new Random();
 
     public final static int nightRangeMin = 25;
@@ -42,7 +46,7 @@ public class SculkCatalyst extends Building implements NightSource {
     private final static float HP_PER_SCULK = 0.5f;
     private final static float RANGE_PER_SCULK = 0.25f;
 
-    private final ArrayList<BlockPos> sculkBps = new ArrayList<>();
+    public final ArrayList<BlockPos> sculkBps = new ArrayList<>();
 
     // for some reason, destroy() does not restore sculk unless restoreRandomSculk was run at least once before
     private boolean didSculkFix = false;
@@ -62,6 +66,13 @@ public class SculkCatalyst extends Building implements NightSource {
         this.buildTimeModifier = 2.5f;
 
         this.startingBlockTypes.add(Blocks.POLISHED_BLACKSTONE);
+    }
+
+    public int getUncappedNightRange() {
+        if (isBuilt || isBuiltServerside) {
+            return (int) (sculkBps.size() * RANGE_PER_SCULK) + nightRangeMin;
+        }
+        return 0;
     }
 
     public int getNightRange() {
@@ -94,8 +105,13 @@ public class SculkCatalyst extends Building implements NightSource {
     @Override
     public void tick(Level tickLevel) {
         super.tick(tickLevel);
-        if (tickLevel.isClientSide && tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 100 == 0)
-            updateNightBorderBps();
+
+        if (tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 100 == 0) {
+            if (tickLevel.isClientSide())
+                updateNightBorderBps();
+            else
+                updateSculkBps();
+        }
     }
 
     @Override
@@ -126,7 +142,7 @@ public class SculkCatalyst extends Building implements NightSource {
                     bs = level.getBlockState(bp);
                 } while (bs.isAir() && y < 10);
 
-                if (bs.getBlock() == Blocks.SCULK || bs.getBlock() == Blocks.SCULK_VEIN)
+                if (bs.getMaterial() == Material.SCULK)
                     sculkBps.add(bp);
             }
         }
@@ -139,11 +155,13 @@ public class SculkCatalyst extends Building implements NightSource {
     public void destroy(ServerLevel serverLevel) {
         super.destroy(serverLevel);
 
-        updateSculkBps();
-        int i = 0;
-        while (sculkBps.size() > 0 && i < 10) {
-            restoreRandomSculk(100);
-            i += 1;
+        if (isBuilt) {
+            updateSculkBps();
+            int i = 0;
+            while (sculkBps.size() > 0 && i < 10) {
+                restoreRandomSculk(100);
+                i += 1;
+            }
         }
     }
 
@@ -174,7 +192,7 @@ public class SculkCatalyst extends Building implements NightSource {
                     }
                 }
             }
-            else if (bs.getBlock() == Blocks.SCULK_VEIN) {
+            else if (bs.getBlock() == Blocks.SCULK_VEIN || bs.getBlock() == Blocks.SCULK_SENSOR) {
                 level.destroyBlock(bp, false);
                 restoredSculk += 1;
             }
