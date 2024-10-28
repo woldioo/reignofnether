@@ -707,27 +707,22 @@ public abstract class Building {
 
         EntityType<? extends Animal> animalType = null;
         int spawnQty = 1;
-        switch (random.nextInt(6)) {
+        switch (random.nextInt(4)) {
             case 0 -> {
                 animalType = EntityType.COW;
-                spawnQty += random.nextInt(2);
             }
             case 1 -> {
                 animalType = EntityType.PIG;
-                spawnQty += random.nextInt(2);
             }
             case 2 -> {
                 animalType = EntityType.SHEEP;
-                spawnQty += random.nextInt(2);
             }
-            case 4 -> {
+            case 3 -> {
                 animalType = EntityType.CHICKEN;
-                spawnQty = 3;
-                spawnQty += random.nextInt(3);
+                spawnQty += 1;
             }
         }
-        if (animalType != null)
-            UnitServerEvents.spawnMobs(animalType, (ServerLevel) level, spawnBp.above(), spawnQty, "");
+        UnitServerEvents.spawnMobs(animalType, (ServerLevel) level, spawnBp.above(), spawnQty, "");
     }
 
     // returns each blockpos origin of 16x16x16 renderchunks that this building overlaps

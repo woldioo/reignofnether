@@ -211,7 +211,7 @@ public class ResourceSources {
             ),
             new ResourceSource("Extra large food item",
                     List.of(),
-                    List.of(Items.COOKED_BEEF,  Items.COOKED_CHICKEN, Items.COOKED_PORKCHOP, Items.COOKED_RABBIT,
+                    List.of(Items.COOKED_BEEF,  Items.COOKED_CHICKEN, Items.COOKED_PORKCHOP, Items.COOKED_RABBIT, Items.CHICKEN,
                             Items.COOKED_MUTTON, Items.CAKE, Items.PUMPKIN_PIE, Items.RABBIT_STEW, Items.ENCHANTED_GOLDEN_APPLE),
                     0,
                     75,
@@ -219,7 +219,7 @@ public class ResourceSources {
             ),
             new ResourceSource("Large food item",
                     List.of(),
-                    List.of(Items.BEEF,Items.CHICKEN, Items.PORKCHOP, Items.MUTTON, Items.RABBIT, Items.MUSHROOM_STEW, Items.BEETROOT_SOUP, Items.GOLDEN_APPLE, Items.GOLDEN_CARROT),
+                    List.of(Items.BEEF, Items.PORKCHOP, Items.MUTTON, Items.RABBIT, Items.MUSHROOM_STEW, Items.BEETROOT_SOUP, Items.GOLDEN_APPLE, Items.GOLDEN_CARROT),
                     0,
                     50,
                     ResourceName.FOOD

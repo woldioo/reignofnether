@@ -38,6 +38,7 @@ Changes since beta
     - This includes all modded and vanilla mobs and defeated players' units
     - Excludes vexes and huntable animals
 [✔] Added Discord invite, Lilypad.gg link and RoN version to the main menu
+[✔] Random animal spawns around your capitol are now much more consistent and chickens are now worth 75 food
 
 
 🎉 Features 🎉
