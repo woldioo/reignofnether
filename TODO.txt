@@ -28,19 +28,19 @@ Changes since beta
 
 ⚙ Quality of Life Features ⚙
 [✔] Night circle borders that are overlapping can now be hidden by clicking the clock
-    - tons of exceptions when building a catalyst
 [✔] Night circle borders are now highlighted in green when their source building is selected
 [✔] Visible borders have been shrunk so the line itself is (usually) safe to walk on
 [✔] New /gamerule neutralAggro used to allow treating of all neutral mobs as enemies
-    - Allows attacking neutral mobs using right-click, attack move or when a military unit is idle
+    - Allows attacking neutral mobs using attack move or when a military unit is idle
+    - Unfortunately due to an annoying bug this currently does not work with right click
     - This includes all modded and vanilla mobs and defeated players' units
     - Excludes vexes and huntable animals
-[✔] Random animal spawns around your capitol are now much more consistent and chickens are now worth 75 food
+[✔] Random animal spawns around your capitol are now much more consistent and
 
 ⚙ Miscellaneous ⚙
 [✔] Added Discord invite, Lilypad.gg link and RoN version to the main menu
 [✔] Laboratories now require a Graveyard to be built
-
+- Chickens are now worth 75 food
 
 
 🎉 Features 🎉
