@@ -23,12 +23,13 @@ Changes since beta
     - if the catalyst is deleted before it ever took any damage, the sculk is not removed until another catalyst nearby is deleted again
 [❌] Sculk can now spread on dirt paths and tall grass
     - mixin SculkCatalystBlockEntity ?
+    - https://www.reddit.com/r/Minecraft/comments/vhh9sp/what_blocks_cannot_be_turned_into_sculk/
 [❌] Sculk Catalysts now have a sacrifice ability to kill units in case you don't want to use the delete button
 [✔] Can no longer build on Portals on leaves
 [✔] Removed some tall grass that was part of the barracks structure
 [✔] Falling logs now break if they fall into buildings
 [🟡] Fixed the title menu being squished sometimes ?
-
+- title goes missing after you load into a world and quit
 
 
 ⚙ Quality of Life Features ⚙
@@ -41,7 +42,7 @@ Changes since beta
     - This includes all modded and vanilla mobs and defeated players' units
     - Excludes vexes and huntable animals
 [🟡] Added Discord and Lilypad.gg buttons to the main menu
-    - title goes missing after you load into a world and quit
+
 
 🎉 Features 🎉
 ---------------
