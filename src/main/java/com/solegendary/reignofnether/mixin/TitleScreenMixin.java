@@ -42,7 +42,7 @@ public class TitleScreenMixin extends Screen {
     private static final ResourceLocation DISCORD_TEXTURE =
             new ResourceLocation( "textures/gui/title/discord.png");
     private static final ResourceLocation LILYPAD_TEXTURE =
-            new ResourceLocation( "textures/gui/title/badge.png");
+            new ResourceLocation( "textures/gui/title/reign_of_nether.png");
 
     @Shadow @Final private PanoramaRenderer panorama;
     @Shadow @Final private boolean fading;
@@ -69,42 +69,9 @@ public class TitleScreenMixin extends Screen {
         int buttonWidth = 125;
         int buttonHeight = 20;
 
-        int lilypadX = this.width - buttonWidth - 10;
-        int lilypadY = this.height - buttonHeight - 30;
-
-        this.lilypadButton = new AbstractWidget(lilypadX, lilypadY, 150, 56, Component.empty()) {
-            @Override
-            public void onClick(double pMouseX, double pMouseY) {
-                openLink("https://lilypad.gg/reignofnether");
-            }
-
-            @Override
-            public void updateNarration(NarrationElementOutput output) {
-                output.add(NarratedElementType.TITLE, Component.literal("Choose Lilypad Hosting"));
-            }
-
-            @Override
-            public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                RenderSystem.setShaderTexture(0, LILYPAD_TEXTURE);
-
-                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-
-                pPoseStack.pushPose();
-                float scale = 0.8f;
-                pPoseStack.translate(this.x, this.y, 0);
-                pPoseStack.scale(scale, scale, 1.0f);
-
-                blit(pPoseStack, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
-
-                pPoseStack.popPose();
-            }
-
-        };
-
-        int discordX = lilypadX;
-        int discordY = lilypadY - 40;
+        // Position Discord button in its original location
+        int discordX = this.width - buttonWidth - 10;
+        int discordY = this.height - buttonHeight - 30;
 
         this.discordButton = new AbstractWidget(discordX, discordY, 150, 48, Component.empty()) {
             @Override
@@ -136,12 +103,45 @@ public class TitleScreenMixin extends Screen {
 
                 pPoseStack.popPose();
             }
+        };
 
+        int lilypadX = discordX-265;
+        int lilypadY = discordY-60;
+
+        this.lilypadButton = new AbstractWidget(lilypadX, lilypadY, 200, 43, Component.empty()) {
+            @Override
+            public void onClick(double pMouseX, double pMouseY) {
+                openLink("https://lilypad.gg/reignofnether");
+            }
+
+            @Override
+            public void updateNarration(NarrationElementOutput output) {
+                output.add(NarratedElementType.TITLE, Component.literal("Choose Lilypad Hosting"));
+            }
+
+            @Override
+            public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderTexture(0, LILYPAD_TEXTURE);
+
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+                RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+
+                pPoseStack.pushPose();
+                float scale = 0.8f;
+                pPoseStack.translate(this.x, this.y, 0);
+                pPoseStack.scale(scale, scale, 1.0f);
+
+                blit(pPoseStack, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
+
+                pPoseStack.popPose();
+            }
         };
 
         this.addRenderableWidget(this.lilypadButton);
         this.addRenderableWidget(this.discordButton);
     }
+
 
     private void openLink(String url) {
         try {
