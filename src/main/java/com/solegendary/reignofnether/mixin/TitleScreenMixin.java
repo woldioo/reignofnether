@@ -2,11 +2,13 @@ package com.solegendary.reignofnether.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import com.solegendary.reignofnether.hud.TitleClientEvents;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -19,6 +21,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.gui.TitleScreenModUpdateIndicator;
+import net.minecraftforge.internal.BrandingControl;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,14 +36,14 @@ import java.net.URI;
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
 
-    private static final ResourceLocation DEFAULT_LOGO =
-            new ResourceLocation("minecraft", "textures/gui/title/minecraft.png");
-    private static final ResourceLocation DEFAULT_EDITION =
-            new ResourceLocation("minecraft", "textures/gui/title/edition.png");
+    private static final ResourceLocation MINECRAFT_LOGO =
+            new ResourceLocation("textures/gui/title/minecraft.png");
+    private static final ResourceLocation MINECRAFT_EDITION =
+            new ResourceLocation("textures/gui/title/edition.png");
     private static final ResourceLocation DISCORD_TEXTURE =
-            new ResourceLocation("minecraft", "textures/gui/title/discord.png");
+            new ResourceLocation( "textures/gui/title/discord.png");
     private static final ResourceLocation LILYPAD_TEXTURE =
-            new ResourceLocation("minecraft", "textures/gui/title/badge.png");
+            new ResourceLocation( "textures/gui/title/lilypad.png");
 
     private static final String VERSION_STRING = "1.0.6";
 
@@ -48,7 +51,6 @@ public class TitleScreenMixin extends Screen {
     @Shadow @Final private boolean fading;
     @Shadow private long fadeInStart;
     @Nullable @Shadow private TitleScreenModUpdateIndicator modUpdateNotification;
-
     private AbstractWidget lilypadButton;
     private AbstractWidget discordButton;
 
@@ -68,7 +70,7 @@ public class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo ci) {
         int lilypadX = this.width - 100;
-        int lilypadY = this.height - 50;
+        int lilypadY = this.height - 57;
 
         this.lilypadButton = new AbstractWidget(lilypadX, lilypadY, 110, 40, Component.empty()) {
             @Override
@@ -107,10 +109,11 @@ public class TitleScreenMixin extends Screen {
             }
         };
 
-        int discordX = lilypadX - 7;
-        int discordY = lilypadY - 40;
 
-        this.discordButton = new AbstractWidget(discordX, discordY, 128, 45, Component.empty()) {
+        int discordX = lilypadX - 2;
+        int discordY = lilypadY - 38;
+
+        this.discordButton = new AbstractWidget(discordX, discordY, 114, 38, Component.empty()) {
             @Override
             public void onClick(double pMouseX, double pMouseY) {
                 openLink("https://discord.gg/uR6FWdUcw3");
@@ -154,6 +157,7 @@ public class TitleScreenMixin extends Screen {
         this.addRenderableWidget(this.discordButton);
     }
 
+
     private void openLink(String url) {
         try {
             URI uri = new URI(url);
@@ -166,51 +170,82 @@ public class TitleScreenMixin extends Screen {
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void render(PoseStack pPoseStack, int pMouseX, int pMouseY,
                         float pPartialTick, CallbackInfo ci) {
-
-        boolean canRenderCustom = textureExists(DEFAULT_LOGO) && textureExists(DEFAULT_EDITION);
-
-        if (!canRenderCustom) {
-            System.out.println("[WARNING] Custom textures not found. Falling back to vanilla rendering.");
-            return;
-        }
-
         ci.cancel();
 
+        // Handle fade-in effect
         if (this.fadeInStart == 0L && this.fading) {
             this.fadeInStart = Util.getMillis();
         }
         float fadeProgress = this.fading
                 ? (float) (Util.getMillis() - this.fadeInStart) / 1000.0F
                 : 1.0F;
-        float alpha = Mth.clamp(fadeProgress - 1.0F, 0.0F, 1.0F);
-        int alphaMask = Mth.ceil(alpha * 255.0F) << 24;
 
         TitleClientEvents.getPanorama().render(pPartialTick, Mth.clamp(fadeProgress, 0.0F, 1.0F));
         int logoX = this.width / 2 - 137;
 
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        float alpha = this.fading ? Mth.clamp(fadeProgress - 1.0F, 0.0F, 1.0F) : 1.0F;
+        int alphaMask = Mth.ceil(alpha * 255.0F) << 24;
 
-        RenderSystem.setShaderTexture(0, DEFAULT_LOGO);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-        blit(pPoseStack, logoX - 54, 30, 0, 0, 380, 36, 380, 36);
+        if ((alphaMask & -67108864) != 0) {
+            // Ensure proper blending and color state
+            RenderSystem.enableBlend();
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-        RenderSystem.setShaderTexture(0, DEFAULT_EDITION);
-        blit(pPoseStack, logoX + 44, 67, 0.0F, 0.0F, 186, 14, 186, 16);
+            // Render Minecraft logo
+            RenderSystem.setShaderTexture(0, MINECRAFT_LOGO);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+            blit(pPoseStack, logoX - 54, 30, 0, 0, 380, 36, 380, 36);
 
-        ForgeHooksClient.renderMainMenu((TitleScreen) Minecraft.getInstance().screen,
-                pPoseStack, this.font, this.width, this.height, alphaMask);
+            // Render Edition logo
+            RenderSystem.setShaderTexture(0, MINECRAFT_EDITION);
+            blit(pPoseStack, logoX + 44, 67, 0.0F, 0.0F, 186, 14, 186, 16);
 
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            // Render main menu elements and splash text
+            ForgeHooksClient.renderMainMenu((TitleScreen) Minecraft.getInstance().screen,
+                    pPoseStack, this.font, this.width, this.height, alphaMask);
 
-        if (alpha >= 1.0F && this.modUpdateNotification != null) {
-            this.modUpdateNotification.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            if (TitleClientEvents.splash != null) {
+                pPoseStack.pushPose();
+                pPoseStack.translate(this.width / 2 + 90, 70.0, 0.0);
+                pPoseStack.mulPose(Vector3f.ZP.rotationDegrees(-20.0F));
+                float scale = 1.8F - Mth.abs(Mth.sin((float) (Util.getMillis() % 1000L) / 1000.0F * 6.2831855F) * 0.1F);
+                scale = scale * 100.0F / (float) (this.font.width(TitleClientEvents.splash) + 32);
+                pPoseStack.scale(scale, scale, scale);
+                int splashX = Math.max(0, this.font.width(TitleClientEvents.splash) / 5);
+                drawCenteredString(pPoseStack, this.font, TitleClientEvents.splash, splashX + 14, splashX - 2, 16776960 | alphaMask);
+                pPoseStack.popPose();
+            }
+
+            // Render branding lines
+            BrandingControl.forEachLine(true, true, (line, text) -> {
+                if (line == 1) {
+                    text = "Reign of Nether " + VERSION_STRING;
+                }
+                drawString(pPoseStack, this.font, text, 2, this.height - (10 + line * (9 + 1)), 16777215 | alphaMask);
+            });
+
+            //BrandingControl.forEachAboveCopyrightLine((line, text) -> {
+            //    int xPos = this.width - this.font.width(text);
+            //    drawString(pPoseStack, this.font, text, xPos, this.height - (10 + (line + 1) * (9 + 1)), 16777215 | alphaMask);
+            //});
+
+            // Adjust widget transparency
+            for (GuiEventListener child : this.children()) {
+                if (child instanceof AbstractWidget widget) {
+                    widget.setAlpha(alpha);
+                }
+            }
+
+            // Call the superclass render
+            super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+
+            // Render mod update notification
+            if (alpha >= 1.0F && this.modUpdateNotification != null) {
+                this.modUpdateNotification.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            }
+
+            // Disable blending after rendering
+            RenderSystem.disableBlend();
         }
-
-        if (this.minecraft != null && this.minecraft.screen != null)
-            GuiComponent.drawString(pPoseStack, font, "Version " + VERSION_STRING, 5, this.minecraft.screen.height - 10, 0xFFFFFF);
-
-        RenderSystem.disableBlend();
-        RenderSystem.defaultBlendFunc();
     }
 }
