@@ -39,6 +39,8 @@ Changes since beta
 
 ⚙ Miscellaneous ⚙
 [✔] Added Discord invite, Lilypad.gg link and RoN version to the main menu
+[✔] Laboratories now require a Graveyard to be built
+
 
 
 🎉 Features 🎉

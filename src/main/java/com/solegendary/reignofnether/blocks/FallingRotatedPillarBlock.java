@@ -64,7 +64,7 @@ public class FallingRotatedPillarBlock extends FallingBlock {
         if (tickAge < 1201)
             tickAge += 1;
         if (tickAge < 1200)
-            if (BuildingUtils.isPosInsideAnyBuilding(true, pPos))
+            if (BuildingUtils.isPosInsideAnyBuilding(pLevel.isClientSide(), pPos))
                 pLevel.destroyBlock(pPos, false);
     }
 

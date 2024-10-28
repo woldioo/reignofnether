@@ -1,6 +1,7 @@
 package com.solegendary.reignofnether.building.buildings.monsters;
 
 import com.solegendary.reignofnether.building.*;
+import com.solegendary.reignofnether.building.buildings.villagers.Blacksmith;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.keybinds.Keybindings;
@@ -108,7 +109,8 @@ public class Laboratory extends ProductionBuilding {
             hotkey,
             () -> BuildingClientEvents.getBuildingToPlace() == Laboratory.class,
             () -> false,
-            () -> BuildingClientEvents.hasFinishedBuilding(Mausoleum.buildingName) ||
+            () -> (BuildingClientEvents.hasFinishedBuilding(Mausoleum.buildingName) &&
+                    BuildingClientEvents.hasFinishedBuilding(Blacksmith.buildingName)) ||
                     ResearchClient.hasCheat("modifythephasevariance"),
             () -> BuildingClientEvents.setBuildingToPlace(Laboratory.class),
             null,
@@ -117,7 +119,9 @@ public class Laboratory extends ProductionBuilding {
                 ResourceCosts.getFormattedCost(cost),
                 FormattedCharSequence.forward("", Style.EMPTY),
                 FormattedCharSequence.forward("A sinister lab that can research new technologies", Style.EMPTY),
-                FormattedCharSequence.forward("based on the other buildings that have been built.", Style.EMPTY)
+                FormattedCharSequence.forward("based on the other buildings that have been built.", Style.EMPTY),
+                FormattedCharSequence.forward("", Style.EMPTY),
+                FormattedCharSequence.forward("Requires a Graveyard", Style.EMPTY)
             ),
             null
         );
