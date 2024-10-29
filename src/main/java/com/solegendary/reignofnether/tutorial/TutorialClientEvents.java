@@ -144,7 +144,7 @@ public class TutorialClientEvents {
     public static void setEnabled(boolean value) {
         if (value && !enabled && MC.player != null) {
             MC.player.sendSystemMessage(Component.literal(""));
-            MC.player.sendSystemMessage(Component.translatable("Welcome to the Reign of Nether Tutorial!")
+            MC.player.sendSystemMessage(Component.translatable("tutorial.reignofnether.welcome2")
                 .withStyle(Style.EMPTY.withBold(true)));
             MC.player.sendSystemMessage(Component.translatable("tutorial.reignofnether.get_started"));
             MC.player.sendSystemMessage(Component.literal(""));

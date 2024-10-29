@@ -442,6 +442,7 @@
     "resources.reignofnether.wood": "Wood",
     "resources.reignofnether.ore": "Ore",
     "resources.reignofnether.population": "Population",
+    "resources.reignofnether.none": "None",
 
     "time.reignofnether.game_time": "Game time: %s",
     "time.reignofnether.time": "Time: %s",
