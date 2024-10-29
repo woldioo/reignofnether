@@ -4,6 +4,7 @@ package com.solegendary.reignofnether.mixin;
 import com.solegendary.reignofnether.building.Building;
 import com.solegendary.reignofnether.building.BuildingClientEvents;
 import com.solegendary.reignofnether.building.BuildingServerEvents;
+import com.solegendary.reignofnether.building.BuildingUtils;
 import com.solegendary.reignofnether.building.buildings.monsters.SculkCatalyst;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -41,22 +42,6 @@ public abstract class SculkCatalystBlockEntityMixin extends BlockEntity {
         super(pType, pPos, pBlockState);
     }
 
-    private boolean isWithinRangeOfMaxedCatalystBuilding(LivingEntity entity) {
-        if (entity.level.isClientSide()) {
-            return true;
-        }
-        else {
-            for (Building building : BuildingServerEvents.getBuildings()) {
-                if (building instanceof SculkCatalyst sc && entity.distanceToSqr(Vec3.atCenterOf(sc.centrePos)) <
-                        SculkCatalyst.ESTIMATED_RANGE * SculkCatalyst.ESTIMATED_RANGE) {
-                    if (sc.getUncappedNightRange() >= SculkCatalyst.nightRangeMax * 1.5f)
-                        return true;
-                }
-            }
-        }
-        return false;
-    }
-
     @Inject(
             method = "handleGameEvent",
             at = @At("HEAD"),
@@ -77,7 +62,7 @@ public abstract class SculkCatalystBlockEntityMixin extends BlockEntity {
                 Entity var5 = $$2.sourceEntity();
                 if (var5 instanceof LivingEntity) {
                     LivingEntity $$3 = (LivingEntity)var5;
-                    if (isWithinRangeOfMaxedCatalystBuilding($$3)) {
+                    if (BuildingUtils.isWithinRangeOfMaxedCatalyst($$3)) {
                         cir.setReturnValue(false);
                         return;
                     }
