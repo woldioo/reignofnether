@@ -439,6 +439,9 @@
     "time.reignofnether.day": "day",
     "time.reignofnether.night": "night",
     "time.reignofnether.night_circles": "Night Circles: %s",
+    "time.reignofnether.night_circle_mode_all": "All",
+    "time.reignofnether.night_circle_mode_no_overlaps": "No overlaps",
+    "time.reignofnether.night_circle_mode_off": "Off",
 
     "tutorial.reignofnether.tutorial_help": "Tutorial Help",
     "tutorial.reignofnether.welcome": "Welcome to Reign of Nether",

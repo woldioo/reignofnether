@@ -135,6 +135,18 @@ public class TimeClientEvents {
                 );
             }
 
+            String nightCircleModeName;
+            switch (nightCircleMode) {
+                case NightCircleMode.ALL:
+                    nightCircleModeName = I18n.get("time.reignofnether.night_circle_mode_all");
+                    break;
+                case NightCircleMode.NO_OVERLAPS:
+                    nightCircleModeName = I18n.get("time.reignofnether.night_circle_mode_no_overlaps");
+                    break;
+                case NightCircleMode.OFF:
+                    nightCircleModeName = I18n.get("time.reignofnether.night_circle_mode_off");
+                    break;
+            }
             List<FormattedCharSequence> tooltip = List.of(FormattedCharSequence.forward(
                     I18n.get("time.reignofnether.time", timeStr),
                     Style.EMPTY
@@ -142,7 +154,7 @@ public class TimeClientEvents {
                 timeUntilStr,
                 FormattedCharSequence.forward(timeStr, Style.EMPTY),
                 gameLengthStr,
-                FormattedCharSequence.forward(I18n.get("time.reignofnether.night_circles", nightCircleMode.name()), Style.EMPTY)
+                FormattedCharSequence.forward(I18n.get("time.reignofnether.night_circles", nightCircleModeName), Style.EMPTY)
             );
             if (targetClientTime != serverTime) {
                 tooltip = List.of(
@@ -152,7 +164,7 @@ public class TimeClientEvents {
                     FormattedCharSequence.forward(I18n.get("time.reignofnether.real_time", timeStr), Style.EMPTY),
                     timeUntilStr,
                     gameLengthStr,
-                    FormattedCharSequence.forward(I18n.get("time.reignofnether.night_circles", nightCircleMode.name().replace("_"," ")), Style.EMPTY)
+                    FormattedCharSequence.forward(I18n.get("time.reignofnether.night_circles", nightCircleModeName), Style.EMPTY)
                 );
             }
 
