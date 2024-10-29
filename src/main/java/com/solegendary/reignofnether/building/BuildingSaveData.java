@@ -36,7 +36,7 @@ public class BuildingSaveData extends SavedData {
     }
 
     public static BuildingSaveData load(CompoundTag tag) {
-        System.out.println("BuildingSaveData.load");
+        ReignOfNether.LOGGER.info("BuildingSaveData.load");
 
         BuildingSaveData data = create();
         ListTag ltag = (ListTag) tag.get("buildings");
@@ -73,7 +73,7 @@ public class BuildingSaveData extends SavedData {
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        System.out.println("BuildingSaveData.save");
+        ReignOfNether.LOGGER.info("BuildingSaveData.save");
 
         ListTag list = new ListTag();
         this.buildings.forEach(b -> {

@@ -55,10 +55,10 @@ public class Sacrifice extends Ability {
                 () -> CursorClientEvents.setLeftClickAction(UnitAction.SACRIFICE),
                 null,
                 List.of(
-                        FormattedCharSequence.forward("Sacrifice", Style.EMPTY.withBold(true)),
-                        FormattedCharSequence.forward("\uE005  " + RANGE, MyRenderer.iconStyle),
+                        FormattedCharSequence.forward(I18n.get("abilities.reignofnether.sacrifice"), Style.EMPTY.withBold(true)),
+                        FormattedCharSequence.forward(I18n.get("abilities.reignofnether.sacrifice.tooltip1", RANGE), MyRenderer.iconStyle),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Kill a nearby friendly unit to spread sculk.", Style.EMPTY)
+                        FormattedCharSequence.forward(I18n.get("abilities.reignofnether.sacrifice.tooltip2"), Style.EMPTY)
                 ),
                 this
         );
@@ -80,13 +80,13 @@ public class Sacrifice extends Ability {
         } else if (level.isClientSide()) {
             if (!(targetEntity instanceof Unit unit &&
                 unit.getOwnerName().equals(buildingUsing.ownerName))) {
-                HudClientEvents.showTemporaryMessage("Can only sacrifice your own units");
+                HudClientEvents.showTemporaryMessage(I18n.get("abilities.reignofnether.sacrifice.only_own"));
             } else if (targetEntity.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) >= RANGE * RANGE) {
-                HudClientEvents.showTemporaryMessage("Unit is out of range");
+                HudClientEvents.showTemporaryMessage(I18n.get("abilities.reignofnether.sacrifice.out_of_range"));
             } else if (level.getBlockState(targetEntity.getOnPos()).isAir()) {
-                HudClientEvents.showTemporaryMessage("Can't sacrifice units in the air");
+                HudClientEvents.showTemporaryMessage(I18n.get("abilities.reignofnether.sacrifice.in_air"));
             } else if (BuildingUtils.isWithinRangeOfMaxedCatalyst(targetEntity)) {
-                HudClientEvents.showTemporaryMessage("Already at max sculk spread");
+                HudClientEvents.showTemporaryMessage(I18n.get("abilities.reignofnether.sacrifice.max_spread"));
             }
         }
     }

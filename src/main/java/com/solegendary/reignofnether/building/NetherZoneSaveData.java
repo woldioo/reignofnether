@@ -29,7 +29,7 @@ public class NetherZoneSaveData extends SavedData {
     }
 
     public static NetherZoneSaveData load(CompoundTag tag) {
-        System.out.println("NetherZoneSaveData.load");
+        ReignOfNether.LOGGER.info("NetherZoneSaveData.load");
 
         NetherZoneSaveData data = create();
         ListTag ltag = (ListTag) tag.get("netherzones");
@@ -50,7 +50,7 @@ public class NetherZoneSaveData extends SavedData {
 
                 data.netherZones.add(NetherZone.getFromSave(origin, maxRange, range, isRestoring, ticksLeft, converts));
 
-                System.out.println("NetherZoneSaveData.load: " + origin + "|" + range + "/" + maxRange + "|" + isRestoring);
+                ReignOfNether.LOGGER.info("NetherZoneSaveData.load: " + origin + "|" + range + "/" + maxRange + "|" + isRestoring);
             }
         }
         return data;
@@ -58,7 +58,7 @@ public class NetherZoneSaveData extends SavedData {
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        System.out.println("NetherZoneSaveData.save");
+        ReignOfNether.LOGGER.info("NetherZoneSaveData.save");
 
         ListTag list = new ListTag();
         this.netherZones.forEach(nz -> {
@@ -73,7 +73,7 @@ public class NetherZoneSaveData extends SavedData {
             cTag.putInt("converts", nz.getConvertsAfterConstantRange());
             list.add(cTag);
 
-            System.out.println("NetherZoneSaveData.save: " + nz.getOrigin() + "|" + (int) nz.getRange() + "/" + (int) nz.getMaxRange() + "|" + nz.isRestoring());
+            ReignOfNether.LOGGER.info("NetherZoneSaveData.save: " + nz.getOrigin() + "|" + (int) nz.getRange() + "/" + (int) nz.getMaxRange() + "|" + nz.isRestoring());
         });
         tag.put("netherzones", list);
         return tag;

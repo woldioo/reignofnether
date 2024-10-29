@@ -235,14 +235,14 @@ public class SculkCatalyst extends Building implements NightSource {
                 () -> BuildingClientEvents.setBuildingToPlace(SculkCatalyst.class),
                 null,
                 List.of(
-                        FormattedCharSequence.forward(SculkCatalyst.buildingName, Style.EMPTY.withBold(true)),
+                        FormattedCharSequence.forward(I18n.get("buildings.monsters.reignofnether.sculk_catalyst"), Style.EMPTY.withBold(true)),
                         ResourceCosts.getFormattedCost(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("A pillar which spreads sculk when nearby units die.", Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("buildings.monsters.reignofnether.sculk_catalyst.tooltip1"), Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Distorts time to midnight within a " + nightRangeMin + " block radius.", Style.EMPTY),
-                        FormattedCharSequence.forward("Nearby sculk extends this range up to " + nightRangeMax + " and ", Style.EMPTY),
-                        FormattedCharSequence.forward("provides absorption health.", Style.EMPTY)
+                        FormattedCharSequence.forward(I18n.get("buildings.monsters.reignofnether.sculk_catalyst.tooltip2", nightRangeMin), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("buildings.monsters.reignofnether.sculk_catalyst.tooltip3", nightRangeMax), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("buildings.monsters.reignofnether.sculk_catalyst.tooltip4"), Style.EMPTY)
                 ),
                 null
         );
