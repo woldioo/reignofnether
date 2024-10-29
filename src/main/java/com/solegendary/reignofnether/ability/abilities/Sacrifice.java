@@ -69,7 +69,8 @@ public class Sacrifice extends Ability {
         if (!level.isClientSide() &&
             buildingUsing instanceof SculkCatalyst &&
             targetEntity instanceof Unit unit &&
-            unit.getOwnerName().equals(buildingUsing.ownerName)) {
+            unit.getOwnerName().equals(buildingUsing.ownerName) &&
+            !level.getBlockState(targetEntity.getOnPos()).isAir()) {
 
             if (targetEntity.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) < RANGE * RANGE) {
                 targetEntity.kill();
@@ -80,6 +81,8 @@ public class Sacrifice extends Ability {
                 HudClientEvents.showTemporaryMessage("Can only sacrifice your own units");
             } else if (targetEntity.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) >= RANGE * RANGE) {
                 HudClientEvents.showTemporaryMessage("Unit is out of range");
+            } else if (level.getBlockState(targetEntity.getOnPos()).isAir()) {
+                HudClientEvents.showTemporaryMessage("Can't sacrifice units in the air");
             }
         }
     }
