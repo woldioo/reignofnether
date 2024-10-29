@@ -102,11 +102,26 @@ public class OrthoviewClientEvents {
     public static void updateOrthoviewY() {
         if (MC.player != null && MC.level != null) {
             BlockPos playerPos = MC.player.blockPosition();
-            int highestBlockY = MC.level.getHeight(Heightmap.Types.MOTION_BLOCKING, playerPos.getX(), playerPos.getZ());
+            int radius = 5; // Defines the area around the player to sample heights
+            int sumHeights = 0;
+            int count = 0;
 
-            // Always update with the new values
-            ORTHOVIEW_PLAYER_BASE_Y = highestBlockY + 30;
-            ORTHOVIEW_PLAYER_MAX_Y = highestBlockY + 100;
+            // Iterate through a square area around the player
+            for (int x = -radius; x <= radius; x++) {
+                for (int z = -radius; z <= radius; z++) {
+                    int blockX = playerPos.getX() + x;
+                    int blockZ = playerPos.getZ() + z;
+                    int height = MC.level.getHeight(Heightmap.Types.MOTION_BLOCKING, blockX, blockZ);
+                    sumHeights += height;
+                    count++;
+                }
+            }
+            // Calculate the average height
+            int avgHeight = count > 0 ? sumHeights / count : playerPos.getY();
+
+            // Update ORTHOVIEW values based on the average height
+            ORTHOVIEW_PLAYER_BASE_Y = avgHeight + 40;
+            ORTHOVIEW_PLAYER_MAX_Y = avgHeight + 100;
         }
     }
     public static boolean isEnabled() {
