@@ -676,9 +676,11 @@ public class HudClientEvents {
                             "textures/icons/items/pickaxe.png"
                         );
                     }
+                    String resourceName = UnitClientEvents.getSelectedUnitResourceTarget().toString();
+                    String key = String.format("resources.reignofnether.%s", resourceName.toLowerCase());
                     actionButton.tooltipLines = List.of(FormattedCharSequence.forward(I18n.get(
                             "hud.reignofnether.gather_resources",
-                            UnitClientEvents.getSelectedUnitResourceTarget().toString()
+                            I18n.get(key)
                         ), Style.EMPTY),
                         FormattedCharSequence.forward(I18n.get("hud.reignofnether.change_target_resource"), Style.EMPTY)
                     );
@@ -904,12 +906,14 @@ public class HudClientEvents {
             for (String resourceName : new String[] { "food", "wood", "ore", "population" }) {
                 String locName = I18n.get("resources.reignofnether." + resourceName);
                 List<FormattedCharSequence> tooltip;
+                String key = String.format("resources.reignofnether.%s", resourceName);
                 if (resourceName.equals("population")) {
                     tooltip = List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether.max_resources",
+                        I18n.get(key),
                         maxPopulation
                     ), Style.EMPTY));
                 } else {
-                    tooltip = List.of(FormattedCharSequence.forward(resourceName, Style.EMPTY));
+                    tooltip = List.of(FormattedCharSequence.forward(I18n.get(key), Style.EMPTY));
                 }
                 if (mouseX >= blitX && mouseY >= blitY && mouseX < blitX + iconFrameSize
                     && mouseY < blitY + iconFrameSize) {
