@@ -1,6 +1,7 @@
 package com.solegendary.reignofnether.building.buildings.monsters;
 
 import com.solegendary.reignofnether.building.*;
+import com.solegendary.reignofnether.building.buildings.villagers.Blacksmith;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.keybinds.Keybindings;
@@ -62,7 +63,8 @@ public class Laboratory extends ProductionBuilding {
                 ResearchSpiderJockeys.getStartButton(this, Keybindings.keyR),
                 ResearchPoisonSpiders.getStartButton(this, Keybindings.keyT),
                 ResearchLabLightningRod.getStartButton(this, Keybindings.keyY),
-                ResearchSilverfish.getStartButton(this, Keybindings.keyU)
+                ResearchSilverfish.getStartButton(this, Keybindings.keyU),
+                ResearchSculkAmplifiers.getStartButton(this, Keybindings.keyI)
             );
             this.abilityButtons.add(callLightning.getButton(Keybindings.keyL));
         }
@@ -108,7 +110,8 @@ public class Laboratory extends ProductionBuilding {
             hotkey,
             () -> BuildingClientEvents.getBuildingToPlace() == Laboratory.class,
             () -> false,
-            () -> BuildingClientEvents.hasFinishedBuilding(Mausoleum.buildingName) ||
+            () -> (BuildingClientEvents.hasFinishedBuilding(Mausoleum.buildingName) &&
+                    BuildingClientEvents.hasFinishedBuilding(Graveyard.buildingName)) ||
                     ResearchClient.hasCheat("modifythephasevariance"),
             () -> BuildingClientEvents.setBuildingToPlace(Laboratory.class),
             null,
@@ -117,7 +120,9 @@ public class Laboratory extends ProductionBuilding {
                 ResourceCosts.getFormattedCost(cost),
                 FormattedCharSequence.forward("", Style.EMPTY),
                 FormattedCharSequence.forward(I18n.get("buildings.monsters.reignofnether.laboratory.tooltip1"), Style.EMPTY),
-                FormattedCharSequence.forward(I18n.get("buildings.monsters.reignofnether.laboratory.tooltip2"), Style.EMPTY)
+                FormattedCharSequence.forward(I18n.get("buildings.monsters.reignofnether.laboratory.tooltip2"), Style.EMPTY),
+                FormattedCharSequence.forward("", Style.EMPTY),
+                FormattedCharSequence.forward(I18n.get("buildings.monsters.reignofnether.laboratory.tooltip3"), Style.EMPTY)
             ),
             null
         );

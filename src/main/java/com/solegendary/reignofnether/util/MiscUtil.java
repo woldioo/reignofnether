@@ -1,11 +1,15 @@
 package com.solegendary.reignofnether.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.cursor.CursorClientEvents;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
-import com.solegendary.reignofnether.resources.BlockUtils;
+import com.solegendary.reignofnether.registrars.GameRuleRegistrar;
+import com.solegendary.reignofnether.resources.ResourceSources;
+import com.solegendary.reignofnether.time.NightCircleMode;
+import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.unit.Relationship;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.UnitServerEvents;
@@ -18,7 +22,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
@@ -26,11 +29,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
@@ -187,7 +192,16 @@ public class MiscUtil {
             if (tMob instanceof Unit unit && unit.getMoveGoal() instanceof FlyingMoveToTargetGoal &&
                     unitMob instanceof AttackerUnit attackerUnit && attackerUnit.getAttackGoal() instanceof MeleeAttackUnitGoal)
                 continue;
-            if (rs == Relationship.HOSTILE && tMob.getId() != unitMob.getId() && hasLineOfSightForAttacks(unitMob, tMob))
+
+            boolean neutralAggro = unitMob.getLevel().getGameRules().getRule(GameRuleRegistrar.NEUTRAL_AGGRO).get();
+
+            boolean canAttackNeutral =
+                    rs == Relationship.NEUTRAL &&
+                    neutralAggro && !(tMob instanceof Vex) &&
+                    !ResourceSources.isHuntableAnimal(tMob);
+
+            if ((rs == Relationship.HOSTILE || canAttackNeutral) &&
+                tMob.getId() != unitMob.getId() && hasLineOfSightForAttacks(unitMob, tMob))
                 nearbyHostileMobs.add(tMob);
         }
         // find the closest mob
@@ -338,44 +352,109 @@ public class MiscUtil {
         return CursorClientEvents.getRefinedCursorWorldPos(cursorWorldPosNear, cursorWorldPosFar);
     }
 
-
-    // highlight the tops of all blocks which are of at a certain horizontal distance away from the centrePos
-    public static List<BlockPos> getGroundCircleBlocks(BlockPos centrePos, int radius, Level level) {
+    // get the tops of all blocks which are of at a certain horizontal distance away from the centrePos
+    public static Set<BlockPos> getNightCircleBlocks(BlockPos centrePos, int radius, Level level) {
         if (radius <= 0)
-            return List.of();
+            return Set.of();
 
         ArrayList<BlockPos> bps = new ArrayList<>();
 
-        for (BlockPos bp : CircleUtil.getCircle(centrePos, radius)) {
-            int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, bp.getX(), bp.getZ()) - 1;
-            BlockPos groundBp = new BlockPos(bp.getX(), groundY, bp.getZ());
+        Set<BlockPos> nightCircleBps;
+        if (TimeClientEvents.nightCircleMode == NightCircleMode.NO_OVERLAPS)
+            nightCircleBps = MiscUtil.CircleUtil.getCircleWithCulledOverlaps(centrePos, radius, TimeClientEvents.nightSourceOrigins);
+        else
+            nightCircleBps = MiscUtil.CircleUtil.getCircle(centrePos, radius);
 
-            int y = 1;
-            while (y < 10 && (level.getBlockState(groundBp).isAir() ||
-                    BlockUtils.isLeafBlock(level.getBlockState(groundBp)) ||
-                    BuildingUtils.isPosInsideAnyBuilding(true, groundBp))) {
-                groundBp = groundBp.offset(0,-y,0);
-                y += 1;
+        for (BlockPos bp : nightCircleBps) {
+            for (int i = 0; i < 3 ; i++) {
+                int x = bp.getX();
+                int z = bp.getZ();
+                if (i == 1)
+                    x += 1;
+                else if (i == 2)
+                    z += 1;
+
+                int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+                BlockPos topBp = new BlockPos(x, groundY, z);
+                bps.add(topBp);
+
+                int y = 1;
+                if (level.getBlockState(topBp).getBlock() instanceof LeavesBlock) {
+                    BlockPos bottomBp;
+                    BlockState bs;
+                    do {
+                        bottomBp = topBp.offset(0,-y,0);
+                        bs = level.getBlockState(bottomBp);
+                        y += 1;
+                    } while (y < 30 && bs.getBlock() instanceof LeavesBlock || !bs.getMaterial().isSolid());
+                    if (!level.getBlockState(bottomBp.above()).getMaterial().isSolid())
+                        bps.add(bottomBp);
+                }
             }
-            bps.add(groundBp);
         }
-        return bps;
+        return new HashSet<>(bps);
     }
+
+
+
 
     public static class CircleUtil {
 
-        private static final Map<Integer, List<BlockPos>> circleCache = new HashMap<>();
+        private static final Map<Integer, Set<BlockPos>> circleCache = new HashMap<>();
 
-        public static List<BlockPos> getCircle(BlockPos center, int radius) {
+        private static final int HASH_GRID_SIZE = 5;
+
+        private static final Map<String, Set<BlockPos>> spatialHashMap = new HashMap<>();
+
+        private static String getHashKey(BlockPos point) {
+            int x = point.getX() / HASH_GRID_SIZE;
+            int z = point.getZ() / HASH_GRID_SIZE;
+            return x + ":" + z;
+        }
+
+        private static void addPointToSpatialHashMap(BlockPos point, String hashKey) {
+            spatialHashMap.putIfAbsent(hashKey, new HashSet<>());
+            spatialHashMap.get(hashKey).add(point);
+        }
+
+        public static Set<BlockPos> getCircleWithCulledOverlaps(BlockPos center, int radius, List<Pair<BlockPos, Integer>> overlapSources) {
+            if (radius <= 0)
+                return new HashSet<>();
+
+            // skip rendering entirely if we are fully inside another circle
+            if (TimeClientEvents.nightCircleMode == NightCircleMode.NO_OVERLAPS) {
+                for (Pair<BlockPos, Integer> os : overlapSources) {
+                    Vec2 centre1 = new Vec2(center.getX(),center.getZ());
+                    Vec2 centre2 = new Vec2(os.getFirst().getX(), os.getFirst().getZ());
+                    int overlapRange = os.getSecond();
+                    if (!center.equals(os.getFirst()) && radius < overlapRange && centre1.distanceToSqr(centre2) < radius * radius)
+                        return Set.of();
+                }
+            }
+            Set<BlockPos> circleBps = getCircle(center, radius);
+
+            for (Pair<BlockPos, Integer> os : overlapSources) {
+                circleBps.removeIf(bp -> {
+                    Vec2 centre1 = new Vec2(bp.getX(), bp.getZ());
+                    Vec2 centre2 = new Vec2(os.getFirst().getX(), os.getFirst().getZ());
+                    int range = os.getSecond();
+                    return !center.equals(os.getFirst()) && centre1.distanceToSqr(centre2) < range * range;
+                });
+            }
+            return circleBps;
+        }
+
+        public static Set<BlockPos> getCircle(BlockPos center, int radius) {
+            if (radius <= 0)
+                return new HashSet<>();
+
             if (!circleCache.containsKey(radius)) {
-                // If not cached, compute and store it
                 circleCache.put(radius, computeCircleEdge(radius));
             }
-            // Retrieve precomputed circle edge points
-            List<BlockPos> cachedCircle = circleCache.get(radius);
 
-            // Translate the circle to the given center position
-            List<BlockPos> translatedCircle = new ArrayList<>(cachedCircle.size());
+            Set<BlockPos> cachedCircle = circleCache.get(radius);
+            Set<BlockPos> translatedCircle = new HashSet<>(cachedCircle.size());
+
             int cx = center.getX();
             int cy = center.getY();
             int cz = center.getZ();
@@ -383,16 +462,17 @@ public class MiscUtil {
             for (BlockPos pos : cachedCircle) {
                 translatedCircle.add(new BlockPos(cx + pos.getX(), cy, cz + pos.getZ()));
             }
+
             return translatedCircle;
         }
-        private static List<BlockPos> computeCircleEdge(int radius) {
-            List<BlockPos> circleBlocks = new ArrayList<>(8 * radius);
+
+        private static Set<BlockPos> computeCircleEdge(int radius) {
+            Set<BlockPos> circleBlocks = new HashSet<>(8 * radius);
 
             int x = radius;
             int z = 0;
             int decisionOver2 = 1 - x;
 
-            // Bresenham's circle algorithm to compute the edge points
             while (x >= z) {
                 addSymmetricPoints(circleBlocks, x, z);
                 z++;
@@ -406,8 +486,8 @@ public class MiscUtil {
 
             return circleBlocks;
         }
-        private static void addSymmetricPoints(List<BlockPos> circleBlocks, int x, int z) {
-            // Adding symmetric points in 8 octants
+
+        private static void addSymmetricPoints(Set<BlockPos> circleBlocks, int x, int z) {
             circleBlocks.add(new BlockPos(x, 0, z));
             circleBlocks.add(new BlockPos(-x, 0, z));
             circleBlocks.add(new BlockPos(x, 0, -z));
@@ -421,4 +501,6 @@ public class MiscUtil {
             }
         }
     }
+
+
 }

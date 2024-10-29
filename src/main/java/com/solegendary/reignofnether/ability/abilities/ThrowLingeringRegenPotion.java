@@ -21,14 +21,15 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public class ThrowHealingPotion extends Ability {
+public class ThrowLingeringRegenPotion extends Ability {
 
     public static final int CD_MAX_SECONDS = 10;
 
     private final WitchUnit witchUnit;
 
-    public ThrowHealingPotion(WitchUnit witchUnit) {
-        super(UnitAction.THROW_HEALING_POTION,
+    public ThrowLingeringRegenPotion(WitchUnit witchUnit) {
+        super(
+            UnitAction.THROW_LINGERING_REGEN_POTION,
             CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND,
             witchUnit.getPotionThrowRange(),
             0,
@@ -39,40 +40,43 @@ public class ThrowHealingPotion extends Ability {
 
     @Override
     public AbilityButton getButton(Keybinding hotkey) {
-        return new AbilityButton("Healing Potion",
-            new ResourceLocation(ReignOfNether.MOD_ID, "textures/icons/items/splash_potion_healing.png"),
+        return new AbilityButton(
+            "Lingering Regen Potion",
+            new ResourceLocation(ReignOfNether.MOD_ID, "textures/icons/items/lingering_potion_regeneration.png"),
             hotkey,
-            () -> CursorClientEvents.getLeftClickAction() == UnitAction.THROW_HEALING_POTION,
+            () -> CursorClientEvents.getLeftClickAction() == UnitAction.THROW_LINGERING_REGEN_POTION,
+            () -> false, //!ResearchClient.hasResearch(ResearchLingeringPotions.itemName),
             () -> true,
-            //ResearchClient.hasResearch(ResearchLingeringPotions.itemName),
-            () -> true,
-            () -> CursorClientEvents.setLeftClickAction(UnitAction.THROW_HEALING_POTION),
+            () -> CursorClientEvents.setLeftClickAction(UnitAction.THROW_LINGERING_REGEN_POTION),
             null,
             List.of(FormattedCharSequence.forward(
-                    I18n.get("abilities.reignofnether.healing_potion"),
+                    I18n.get("abilities.reignofnether.lingering_regen_potion"),
                     Style.EMPTY.withBold(true)
                 ),
                 FormattedCharSequence.forward(
-                    I18n.get("abilities.reignofnether.healing_potion.tooltip1", CD_MAX_SECONDS)
-                        + witchUnit.getPotionThrowRange(),
+                    I18n.get("abilities.reignofnether.lingering_regen_potion.tooltip1", CD_MAX_SECONDS, witchUnit.getPotionThrowRange()),
                     MyRenderer.iconStyle
                 ),
-                FormattedCharSequence.forward(I18n.get("abilities.reignofnether.healing_potion.tooltip2"), Style.EMPTY)
+                FormattedCharSequence.forward(
+                    I18n.get("abilities.reignofnether.lingering_regen_potion.tooltip2"),
+                    Style.EMPTY
+                )
             ),
             this
         );
     }
 
+    // lingering vs splash is set in WitchUnit.throwPotion
     @Override
     public void use(Level level, Unit unitUsing, BlockPos targetBp) {
-        ((WitchUnit) unitUsing).getThrowPotionGoal().setPotion(Potions.STRONG_HEALING);
+        ((WitchUnit) unitUsing).getThrowPotionGoal().setPotion(Potions.STRONG_REGENERATION);
         ((WitchUnit) unitUsing).getThrowPotionGoal().setAbility(this);
         ((WitchUnit) unitUsing).getThrowPotionGoal().setTarget(targetBp);
     }
 
     @Override
     public void use(Level level, Unit unitUsing, LivingEntity targetEntity) {
-        ((WitchUnit) unitUsing).getThrowPotionGoal().setPotion(Potions.STRONG_HEALING);
+        ((WitchUnit) unitUsing).getThrowPotionGoal().setPotion(Potions.STRONG_REGENERATION);
         ((WitchUnit) unitUsing).getThrowPotionGoal().setAbility(this);
         ((WitchUnit) unitUsing).getThrowPotionGoal().setTarget(targetEntity);
     }

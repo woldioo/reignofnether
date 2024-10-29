@@ -1,7 +1,13 @@
 package com.solegendary.reignofnether.blocks;
 
+import com.solegendary.reignofnether.building.BuildingUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.Rotation;
@@ -16,6 +22,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 public class FallingRotatedPillarBlock extends FallingBlock {
 
     public static final EnumProperty<Direction.Axis> AXIS;
+    private long tickAge = 0;
 
     public FallingRotatedPillarBlock(BlockBehaviour.Properties pProperties) {
         super(pProperties);
@@ -49,6 +56,16 @@ public class FallingRotatedPillarBlock extends FallingBlock {
 
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         return (BlockState)this.defaultBlockState().setValue(AXIS, pContext.getClickedFace().getAxis());
+    }
+
+    @Override
+    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+        super.tick(pState, pLevel, pPos, pRandom);
+        if (tickAge < 1201)
+            tickAge += 1;
+        if (tickAge < 1200)
+            if (BuildingUtils.isPosInsideAnyBuilding(pLevel.isClientSide(), pPos))
+                pLevel.destroyBlock(pPos, false);
     }
 
     static {

@@ -164,7 +164,10 @@ public class HealthBarClientEvents {
 
     public static void renderForBuilding(PoseStack matrix, Building building, double x, double y,
                                          float width, RenderMode renderMode) {
-        float percent = (float) building.getHealth() / (float) building.getMaxHealth();
+        float health = building.getHealth();
+        if (health > building.getMaxHealth())
+            health = building.getMaxHealth();
+        float percent = health / (float) building.getMaxHealth();
         render(matrix, percent, percent, x, y, width, renderMode);
     }
 

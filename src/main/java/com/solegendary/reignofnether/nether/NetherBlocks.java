@@ -171,7 +171,10 @@ public class NetherBlocks {
                 Blocks.DIRT_PATH,
                 Blocks.ROOTED_DIRT,
                 Blocks.FARMLAND,
-                Blocks.PODZOL
+                Blocks.PODZOL,
+                Blocks.MUD,
+                Blocks.MOSS_BLOCK,
+                Blocks.MYCELIUM
             ));
         MAPPINGS.put(Blocks.NETHERRACK,
             List.of(
@@ -219,6 +222,16 @@ public class NetherBlocks {
             List.of(
                 Blocks.OAK_LOG, Blocks.BIRCH_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG,
                 Blocks.JUNGLE_LOG, Blocks.MANGROVE_LOG, Blocks.SPRUCE_LOG
+            ));
+        MAPPINGS.put(BlockRegistrar.FALLING_CRIMSON_STEM.get(),
+            List.of(
+                BlockRegistrar.FALLING_OAK_LOG.get(),
+                BlockRegistrar.FALLING_ACACIA_LOG.get(),
+                BlockRegistrar.FALLING_BIRCH_LOG.get(),
+                BlockRegistrar.FALLING_MANGROVE_LOG.get(),
+                BlockRegistrar.FALLING_DARK_OAK_LOG.get(),
+                BlockRegistrar.FALLING_JUNGLE_LOG.get(),
+                BlockRegistrar.FALLING_SPRUCE_LOG.get()
             ));
         MAPPINGS.put(Blocks.STRIPPED_CRIMSON_STEM,
             List.of(

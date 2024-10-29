@@ -321,7 +321,10 @@ public class BuildingClientEvents {
 
     // disallow any building block from clipping into any other existing blocks
     private static boolean isBuildingPlacementClipping(BlockPos originPos) {
-        if (isBuildingToPlaceABridge()) {
+        if (MC.level == null)
+            return false;
+
+        if (isBuildingToPlaceABridge())
             return false;
         }
 
@@ -343,10 +346,6 @@ public class BuildingClientEvents {
             return false;
         }
 
-        if (buildingToPlace.getName().toLowerCase().contains("piglins.portal")) {
-            return false;
-        }
-
         int solidBlocksBelow = 0;
         int blocksBelow = 0;
         for (BuildingBlock block : blocksToDraw) {
@@ -355,10 +354,11 @@ public class BuildingClientEvents {
                 BlockState bs = block.getBlockState(); // building block
                 BlockState bsBelow = MC.level.getBlockState(bp.below()); // world block
 
-                if (bs.getMaterial().isSolid() && !(bsBelow.getBlock() instanceof IceBlock)
-                    && !(bsBelow.getBlock() instanceof LeavesBlock)) {
+                if (bs.getMaterial().isSolid() &&
+                    !(bsBelow.getBlock() instanceof IceBlock)) {
                     blocksBelow += 1;
-                    if (bsBelow.getMaterial().isSolid()) {
+                    if (bsBelow.getMaterial().isSolid() &&
+                        !(bsBelow.getBlock() instanceof LeavesBlock))
                         solidBlocksBelow += 1;
                     }
                 }

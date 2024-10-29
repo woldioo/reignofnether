@@ -1,6 +1,9 @@
 package com.solegendary.reignofnether.orthoview;
 
 import com.mojang.math.Matrix4f;
+import com.solegendary.reignofnether.building.Building;
+import com.solegendary.reignofnether.building.BuildingClientEvents;
+import com.solegendary.reignofnether.building.NightSource;
 import com.solegendary.reignofnether.fogofwar.FogOfWarClientEvents;
 import com.solegendary.reignofnether.guiscreen.TopdownGui;
 import com.solegendary.reignofnether.guiscreen.TopdownGuiServerboundPacket;
@@ -18,6 +21,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
@@ -91,17 +96,32 @@ public class OrthoviewClientEvents {
     private static float mouseLeftDownY = 0;
 
     // by default orthoview players stay at BASE_Y, but can be raised to as high as MAX_Y if they are clipping terrain
-    public static double ORTHOVIEW_PLAYER_BASE_Y;
-    public static double ORTHOVIEW_PLAYER_MAX_Y;
+    public static double ORTHOVIEW_PLAYER_BASE_Y=100;
+    public static double ORTHOVIEW_PLAYER_MAX_Y=160;
 
     public static void updateOrthoviewY() {
         if (MC.player != null && MC.level != null) {
             BlockPos playerPos = MC.player.blockPosition();
-            int highestBlockY = MC.level.getHeight(Heightmap.Types.MOTION_BLOCKING, playerPos.getX(), playerPos.getZ());
+            int radius = 5; // Defines the area around the player to sample heights
+            int sumHeights = 0;
+            int count = 0;
 
-            // Always update with the new values
-            ORTHOVIEW_PLAYER_BASE_Y = highestBlockY + 30;
-            ORTHOVIEW_PLAYER_MAX_Y = highestBlockY + 100;
+            // Iterate through a square area around the player
+            for (int x = -radius; x <= radius; x++) {
+                for (int z = -radius; z <= radius; z++) {
+                    int blockX = playerPos.getX() + x;
+                    int blockZ = playerPos.getZ() + z;
+                    int height = MC.level.getHeight(Heightmap.Types.MOTION_BLOCKING, blockX, blockZ);
+                    sumHeights += height;
+                    count++;
+                }
+            }
+            // Calculate the average height
+            int avgHeight = count > 0 ? sumHeights / count : playerPos.getY();
+
+            // Update ORTHOVIEW values based on the average height
+            ORTHOVIEW_PLAYER_BASE_Y = avgHeight + 40;
+            ORTHOVIEW_PLAYER_MAX_Y = avgHeight + 100;
         }
     }
 
@@ -243,6 +263,10 @@ public class OrthoviewClientEvents {
             return;
         }
 
+        for (Building building : BuildingClientEvents.getBuildings())
+            if (building instanceof NightSource ns)
+                ns.updateNightBorderBps();
+
         enabled = !enabled;
 
         if (enabled) {
@@ -254,15 +278,10 @@ public class OrthoviewClientEvents {
             MC.options.cloudStatus().set(CloudStatus.OFF);
             MC.options.hideGui = false; // for some reason, when gui is hidden, shape rendering goes whack
             MC.options.setCameraType(CameraType.FIRST_PERSON);
+            switchToEasyIfPeaceful();
         } else {
             PlayerServerboundPacket.disableOrthoview();
             TopdownGuiServerboundPacket.closeTopdownGui(MC.player.getId());
-            if (!MC.level.getBlockState(MC.player.getOnPos()).isAir()) {
-                BlockPos tp = MiscUtil.getHighestNonAirBlock(MC.level, MC.player.getOnPos());
-                PlayerServerboundPacket.teleportPlayer((double) tp.getX(), (double) tp.getY() + 2, (double) tp.getZ());
-            } else {
-                PlayerServerboundPacket.teleportPlayer(MC.player.getX(), MC.player.getY(), MC.player.getZ());
-            }
         }
         TutorialClientEvents.updateStage();
     }
@@ -295,16 +314,24 @@ public class OrthoviewClientEvents {
     @SubscribeEvent
     // can't use ScreenEvent.KeyboardKeyPressedEvent as that only happens when a screen is up
     public static void onInput(InputEvent.Key evt) {
-        if (evt.getAction() == GLFW.GLFW_PRESS) { // prevent repeated key actions
-            if (evt.getKey() == Keybindings.getFnum(12).key && !OrthoviewClientEvents.isCameraLocked()
-                && MC.gameMode != null && MC.gameMode.getPlayerMode() != GameType.SURVIVAL) {
-                toggleEnable();
-            }
+        // Prevent repeated key actions
+        if (evt.getAction() == GLFW.GLFW_PRESS) {
 
+            if (evt.getKey() == Keybindings.getFnum(12).key &&
+                !OrthoviewClientEvents.isCameraLocked() &&
+                MC.gameMode != null) {
+                if (MC.gameMode.getPlayerMode() == GameType.SURVIVAL && MC.player != null) {
+                    MC.player.sendSystemMessage(Component.literal(""));
+                    MC.player.sendSystemMessage(Component.literal("Cannot switch to RTS mode while in survival mode."));
+                    MC.player.sendSystemMessage(Component.literal(""));
+                }
+                else
+                    toggleEnable();
+            }
             if (evt.getKey() == Keybindings.getFnum(6).key) {
                 FogOfWarClientEvents.resetFogChunks();
-
                 UnitClientEvents.windowUpdateTicks = 0;
+
                 if (hideLeavesMethod == LeafHideMethod.NONE) {
                     hideLeavesMethod = LeafHideMethod.AROUND_UNITS_AND_CURSOR;
                     HudClientEvents.showTemporaryMessage(I18n.get("hud.orthoview.reignofnether.hiding_leaves_around"));
@@ -317,8 +344,25 @@ public class OrthoviewClientEvents {
                         + ".disabled_hiding_leaves"));
                 }
             }
+
             if (evt.getKey() == Keybindings.reset.key) {
                 reset();
+            }
+        }
+    }
+
+    // Method to switch difficulty to Easy if it is currently set to Peaceful
+    private static void switchToEasyIfPeaceful() {
+        Minecraft minecraft = Minecraft.getInstance();
+
+        // Ensure this only runs in single-player mode
+        if (minecraft.getSingleplayerServer() != null) {
+            Difficulty currentDifficulty = minecraft.level.getDifficulty();
+
+            // If the current difficulty is Peaceful, switch to Easy
+            if (currentDifficulty == Difficulty.PEACEFUL) {
+                minecraft.getSingleplayerServer().setDifficulty(Difficulty.EASY, true);
+                HudClientEvents.showTemporaryMessage("RTS units cannot spawn in Peaceful. Your difficulty has been set to Easy.");
             }
         }
     }

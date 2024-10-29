@@ -6,6 +6,7 @@
 [🟡] Partially done, only has a workaround and/or needs testing
 [❌] Not done, top ones are roughly of higher priority
 
+
 Features
 --------
 [❌] Wave Survival
@@ -15,9 +16,26 @@ Features
         - But won't work on sky maps
     - play a random cave ambience sound at the start of each night and title function
     - start off doing only monster enemies
-    - roguelike features?
+
+    - lose if your capitol dies
+    - need to make sure enemies don't spawn too close to your buildings
+    - might need improved pathfinding
 
 
+
+[❌] King of the Beacon
+    - simple pyramid made of 4 layers + beacon block (9x9 minimum)
+    - need to be neutral placeable at the start of a match
+    - logic to change ownership to whoever has the most units nearby, with some slight inertia
+    - timer to determine who wins (win via total time accumulated)
+    - must ignore all attack commands and be indestructible
+    - starts out entirely made of stone brick, but deposit ore to be upgraded into ore blocks from the top down
+        - level 1: regen
+        - level 2: strength
+        - level 3: resistance
+        - level 4: speed
+    - instead of scaffolding underneath, place some other brick blocks
+    - add a UI later to show the effects, for now just have a number next to name showing how much ore to next tier)
 
 Bugfixes
 --------
@@ -35,12 +53,17 @@ Bugfixes
 [❌] On a server, unloaded workers stop gathering stuff
     - Relook at forced chunks?
 
+[❌] Made building on tall grass easier
 
 
 Quality of Life Features
 ------------------------
 
-[❌] Right click the bridge icon to remove fences
+[❌] Teams using vanilla teams functionality
+
+[❌] Shift queueing movements and buildings (not just placement)
+
+[❌] The world generation datapack is now hardcoded into the mod by default
 
 [❌] Flatten terrain ability
     - Require that villagers work on it like a building
@@ -48,22 +71,11 @@ Quality of Life Features
 
 [❌] Amethyst is now mineable, and regenerates automatically after 1min
 
+[❌] Reduce web slowness by a lot
 
 
 Balancing
 ---------
-
-[❌] Sculk catalyst, cheap building you can sacrifice units to spread a night zone
-    - Starts off at 10 radius, goes up to 40 (~200 max sculk blocks, +1 radius per 4 sculk blocks or veins)
-        - Need to give more sculk per unit than vanilla
-    - The more sculk blocks around, the wider the night radius, up to a limit of 20 blocks
-    - Sonic boom them to split the boom into two random nearby enemies within the night radius
-    - range equal to night radius
-    - Sculk blocks are unconvertible by portals
-
-    - Incorporate sculk into monster buildings to show they spread night
-
-[❌] The Silverfish upgrade is now given by default to monster players
 
 [❌] An upgrade at the lab now upgrades silverfish to endermites for +1 attack and +5 movespeed
 

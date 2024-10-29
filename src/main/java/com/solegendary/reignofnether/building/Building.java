@@ -37,6 +37,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -47,6 +48,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.world.ForgeChunkManager;
 
 import java.util.*;
@@ -105,6 +108,7 @@ public abstract class Building {
     private long ticksToSpawnAnimals = 0; // spawn once soon after placement
     private final int MAX_ANIMALS = 8;
     private final int ANIMAL_SPAWN_RANGE = 80; // block range to check and spawn animals in
+    protected long tickAgeAfterBuilt = 0; // not saved
 
     public int foodCost;
     public int woodCost;
@@ -161,18 +165,19 @@ public abstract class Building {
 
         // get min/max/centre positions
         this.minCorner = new BlockPos(
-            blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getX())).get().getBlockPos().getX(),
-            blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getY())).get().getBlockPos().getY(),
-            blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getZ())).get().getBlockPos().getZ()
+                blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getX())).get().getBlockPos().getX(),
+                blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getY())).get().getBlockPos().getY(),
+                blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getZ())).get().getBlockPos().getZ()
         );
         this.maxCorner = new BlockPos(
-            blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getX())).get().getBlockPos().getX(),
-            blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getY())).get().getBlockPos().getY(),
-            blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getZ())).get().getBlockPos().getZ()
+                blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getX())).get().getBlockPos().getX(),
+                blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getY())).get().getBlockPos().getY(),
+                blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getZ())).get().getBlockPos().getZ()
         );
-        this.centrePos = new BlockPos((float) (this.minCorner.getX() + this.maxCorner.getX()) / 2,
-            (float) (this.minCorner.getY() + this.maxCorner.getY()) / 2,
-            (float) (this.minCorner.getZ() + this.maxCorner.getZ()) / 2
+        this.centrePos = new BlockPos(
+                (float) (this.minCorner.getX() + this.maxCorner.getX()) / 2,
+                (float) (this.minCorner.getY() + this.maxCorner.getY()) / 2,
+                (float) (this.minCorner.getZ() + this.maxCorner.getZ()) / 2
         );
 
         // re-hide players if they were revealed
@@ -619,8 +624,9 @@ public abstract class Building {
         isBuilt = true;
         if (!this.level.isClientSide()) {
             FrozenChunkClientboundPacket.setBuildingBuiltServerside(this.originPos);
-            for (int i = 0; i < 3; i++)
-                spawnHuntableAnimalsNearby(ANIMAL_SPAWN_RANGE / 2);
+            if (isCapitol)
+                for (int i = 0; i < 3; i++)
+                    spawnHuntableAnimalsNearby(ANIMAL_SPAWN_RANGE / 2);
         } else {
             TutorialClientEvents.updateStage();
         }
@@ -654,96 +660,14 @@ public abstract class Building {
         }
 
         if (tickLevel.isClientSide()) {
-            if (blockPlaceQueue.size() > 0) {
-                blockPlaceQueue.remove(0);
-            }
-        } else {
-            ServerLevel serverLevel = (ServerLevel) tickLevel;
-            ArrayList<WorkerUnit> workerUnits = getBuilders(serverLevel);
-            int builderCount = workerUnits.size();
-
-            // place a block if the tick has run down
-            if (blocksPlaced < blocksTotal && builderCount > 0) {
-                this.ticksToExtinguish += 1;
-                if (ticksToExtinguish >= TICKS_TO_EXTINGUISH) {
-                    if (!(this instanceof FlameSanctuary) && !(this instanceof Fortress)) {
-                        extinguishFires(serverLevel);
-                    }
-                    ticksToExtinguish = 0;
-                }
-                // AoE 2 speed:
-                // 1 builder  - 3/3 (100%)
-                // 2 builders - 3/4 (75%)
-                // 3 builders - 3/5 (60%)
-                // 4 builders - 3/6 (50%)
-                // 5 builders - 3/7 (43%)
-                // Our speed:
-                // 1 builder  - 2/2 (100%)
-                // 2 builders - 2/3 (67%)
-                // 3 builders - 2/4 (50%)
-                // 4 builders - 2/5 (40%)
-                // 5 builders - 2/6 (33%)
-                int msPerBuild = (2 * BASE_MS_PER_BUILD) / (builderCount + 1);
-                if (!isBuilt) {
-                    msPerBuild *= buildTimeModifier;
-                } else {
-                    msPerBuild *= repairTimeModifier;
-                }
-
-                if (this instanceof Portal && !BuildingClientEvents.isOnNetherBlocks(blocks, originPos)
-                    && !ResearchServerEvents.playerHasResearch(ownerName, ResearchAdvancedPortals.itemName)) {
-                    msPerBuild *= Portal.NON_NETHER_BUILD_TIME_MODIFIER;
-                }
-
-                if (msToNextBuild > msPerBuild) {
-                    msToNextBuild = msPerBuild;
-                }
-
-                if (ResearchServerEvents.playerHasCheat(this.ownerName, "warpten")) {
-                    msToNextBuild -= 500;
-                } else {
-                    msToNextBuild -= 50;
-                }
-
-                if (msToNextBuild <= 0) {
-                    msToNextBuild = msPerBuild;
-                    String builderName = ((Unit) workerUnits.get(new Random().nextInt(builderCount))).getOwnerName();
-                    buildNextBlock(serverLevel, builderName);
-                }
-            } else {
-                this.ticksToExtinguish = 0;
-            }
-
-            // blocks that will build themselves on each tick (eg. foundations from placement, upgrade sections)
-            if (blockPlaceQueue.size() > 0) {
-                BuildingBlock nextBlock = blockPlaceQueue.get(0);
-                BlockPos bp = nextBlock.getBlockPos();
-                BlockState bs = nextBlock.getBlockState();
-                if (level.isLoaded(bp)) {
-                    level.setBlockAndUpdate(bp, bs);
-
-                    // avoid creating a bubble column block
-                    if (bs.getMaterial() == Material.WATER) {
-                        if (level.getBlockState(bp.below()).getBlock() == Blocks.SOUL_SAND) {
-                            level.setBlockAndUpdate(bp.below(), Blocks.SOUL_SOIL.defaultBlockState());
-                        } else if (level.getBlockState(bp.below()).getBlock() == Blocks.MAGMA_BLOCK) {
-                            level.setBlockAndUpdate(bp.below(), Blocks.COBBLESTONE.defaultBlockState());
-                        }
-                    }
-                    level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, bp, Block.getId(bs));
-                    level.levelEvent(bs.getSoundType().getPlaceSound().hashCode(), bp, Block.getId(bs));
-                    blockPlaceQueue.removeIf(i -> i.equals(nextBlock));
-                    onBlockBuilt(bp, bs);
-                    if (this.getBlocksPlaced() > highestBlockCountReached) {
-                        highestBlockCountReached = this.getBlocksPlaced();
-                    }
-                }
-            }
+            handleClientTick();
+        }
+        else {
+            handleServerTick((ServerLevel) tickLevel, blocksPlaced, blocksTotal);
         }
 
-        if (this.level.isClientSide && (
-            !FogOfWarClientEvents.isEnabled() || FogOfWarClientEvents.isInBrightChunk(originPos)
-        )) {
+        if (this.level.isClientSide &&
+                (!FogOfWarClientEvents.isEnabled() || FogOfWarClientEvents.isInBrightChunk(originPos))) {
             isExploredClientside = true;
         }
 
@@ -755,6 +679,90 @@ public abstract class Building {
                 spawnHuntableAnimalsNearby(ANIMAL_SPAWN_RANGE);
             }
         }
+        if (isBuilt)
+            tickAgeAfterBuilt += 1;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void handleClientTick() {
+        if (blockPlaceQueue.size() > 0)
+            blockPlaceQueue.remove(0);
+    }
+
+    private void handleServerTick(ServerLevel serverLevel, float blocksPlaced, float blocksTotal) {
+        ArrayList<WorkerUnit> workerUnits = getBuilders(serverLevel);
+        int builderCount = workerUnits.size();
+
+        // place a block if the tick has run down
+        if (blocksPlaced < blocksTotal && builderCount > 0) {
+            this.ticksToExtinguish += 1;
+            if (ticksToExtinguish >= TICKS_TO_EXTINGUISH) {
+                if (!(this instanceof FlameSanctuary) && !(this instanceof Fortress))
+                    extinguishFires(serverLevel);
+                ticksToExtinguish = 0;
+            }
+            // AoE 2 speed:
+            // 1 builder  - 3/3 (100%)
+            // 2 builders - 3/4 (75%)
+            // 3 builders - 3/5 (60%)
+            // 4 builders - 3/6 (50%)
+            // 5 builders - 3/7 (43%)
+            // Our speed:
+            // 1 builder  - 2/2 (100%)
+            // 2 builders - 2/3 (67%)
+            // 3 builders - 2/4 (50%)
+            // 4 builders - 2/5 (40%)
+            // 5 builders - 2/6 (33%)
+            int msPerBuild = (2 * BASE_MS_PER_BUILD) / (builderCount + 1);
+            if (!isBuilt)
+                msPerBuild *= buildTimeModifier;
+            else
+                msPerBuild *= repairTimeModifier;
+
+            if (this instanceof Portal && !BuildingServerEvents.isOnNetherBlocks(blocks, originPos, serverLevel) &&
+                    !ResearchServerEvents.playerHasResearch(ownerName, ResearchAdvancedPortals.itemName))
+                msPerBuild *= Portal.NON_NETHER_BUILD_TIME_MODIFIER;
+
+            if (msToNextBuild > msPerBuild)
+                msToNextBuild = msPerBuild;
+
+            if (ResearchServerEvents.playerHasCheat(this.ownerName, "warpten"))
+                msToNextBuild -= 500;
+            else
+                msToNextBuild -= 50;
+
+            if (msToNextBuild <= 0) {
+                msToNextBuild = msPerBuild;
+                String builderName = ((Unit) workerUnits.get(new Random().nextInt(builderCount))).getOwnerName();
+                buildNextBlock(serverLevel, builderName);
+            }
+        } else {
+            this.ticksToExtinguish = 0;
+        }
+
+        // blocks that will build themselves on each tick (eg. foundations from placement, upgrade sections)
+        if (blockPlaceQueue.size() > 0) {
+            BuildingBlock nextBlock = blockPlaceQueue.get(0);
+            BlockPos bp = nextBlock.getBlockPos();
+            BlockState bs = nextBlock.getBlockState();
+            if (level.isLoaded(bp)) {
+                level.setBlockAndUpdate(bp, bs);
+
+                // avoid creating a bubble column block
+                if (bs.getMaterial() == Material.WATER) {
+                    if (level.getBlockState(bp.below()).getBlock() == Blocks.SOUL_SAND)
+                        level.setBlockAndUpdate(bp.below(), Blocks.SOUL_SOIL.defaultBlockState());
+                    else if (level.getBlockState(bp.below()).getBlock() == Blocks.MAGMA_BLOCK)
+                        level.setBlockAndUpdate(bp.below(), Blocks.COBBLESTONE.defaultBlockState());
+                }
+                level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, bp, Block.getId(bs));
+                level.levelEvent(bs.getSoundType().getPlaceSound().hashCode(), bp, Block.getId(bs));
+                blockPlaceQueue.removeIf(i -> i.equals(nextBlock));
+                onBlockBuilt(bp, bs);
+                if (this.getBlocksPlaced() > highestBlockCountReached)
+                    highestBlockCountReached = this.getBlocksPlaced();
+            }
+        }
     }
 
     // if there aren't already too many animals nearby, spawn some random huntable animals
@@ -763,15 +771,20 @@ public abstract class Building {
             return;
         }
 
-        int numNearbyAnimals = MiscUtil.getEntitiesWithinRange(new Vector3d(centrePos.getX(),
-                centrePos.getY(),
-                centrePos.getZ()
-            ), range, Animal.class, level)
-            .stream()
-            .filter(ResourceSources::isHuntableAnimal)
-            .toList()
-            .size();
-        if (numNearbyAnimals >= MAX_ANIMALS) {
+        int numNearbyAnimals = MiscUtil.getEntitiesWithinRange(
+                new Vector3d(centrePos.getX(), centrePos.getY(), centrePos.getZ()),
+                range,
+                Animal.class,
+                level
+        ).stream().filter(ResourceSources::isHuntableAnimal).toList().size();
+        int numNearbyChickens = MiscUtil.getEntitiesWithinRange(
+                new Vector3d(centrePos.getX(), centrePos.getY(), centrePos.getZ()),
+                range,
+                Chicken.class,
+                level
+        ).stream().toList().size();
+
+        if (numNearbyAnimals - (numNearbyChickens / 2) >= MAX_ANIMALS)
             return;
         }
 
@@ -806,28 +819,22 @@ public abstract class Building {
 
         EntityType<? extends Animal> animalType = null;
         int spawnQty = 1;
-        switch (random.nextInt(6)) {
+        switch (random.nextInt(4)) {
             case 0 -> {
                 animalType = EntityType.COW;
-                spawnQty += random.nextInt(2);
             }
             case 1 -> {
                 animalType = EntityType.PIG;
-                spawnQty += random.nextInt(2);
             }
             case 2 -> {
                 animalType = EntityType.SHEEP;
-                spawnQty += random.nextInt(2);
             }
-            case 4 -> {
+            case 3 -> {
                 animalType = EntityType.CHICKEN;
-                spawnQty = 3;
-                spawnQty += random.nextInt(3);
+                spawnQty = 2;
             }
         }
-        if (animalType != null) {
-            UnitServerEvents.spawnMobs(animalType, (ServerLevel) level, spawnBp.above(), spawnQty, "");
-        }
+        UnitServerEvents.spawnMobs(animalType, (ServerLevel) level, spawnBp.above(), spawnQty, "");
     }
 
     // returns each blockpos origin of 16x16x16 renderchunks that this building overlaps

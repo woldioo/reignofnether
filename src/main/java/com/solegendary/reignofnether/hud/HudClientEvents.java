@@ -1201,7 +1201,7 @@ public class HudClientEvents {
             return;
         }
 
-        // prevent spectator mode options from showing up
+        // Prevent spectator mode options from showing up
         if (OrthoviewClientEvents.isEnabled()) {
             for (Keybinding numKey : Keybindings.nums)
                 if (numKey.key == evt.getKeyCode()) {
@@ -1209,34 +1209,37 @@ public class HudClientEvents {
                 }
         }
 
-        // deselect everything
+        // Deselect everything
         if (evt.getKeyCode() == Keybindings.deselect.key) {
             UnitClientEvents.clearSelectedUnits();
             BuildingClientEvents.clearSelectedBuildings();
             BuildingClientEvents.setBuildingToPlace(null);
         }
 
-        // initialise with empty arrays
-        if (controlGroups.size() == 0) {
-            for (Keybinding keybinding : Keybindings.nums)
+        // Initialize controlGroups with empty arrays if not already initialized
+        if (controlGroups.size() < Keybindings.nums.length) {
+            controlGroups.clear(); // Clear in case of a previous partial initialization
+            for (Keybinding keybinding : Keybindings.nums) {
                 controlGroups.add(new ControlGroup());
-        }
-
-        for (Keybinding keybinding : Keybindings.nums) {
-            int index = Integer.parseInt(keybinding.buttonLabel);
-
-            // loadToSelected is handled by renderedButtons
-            if (Keybindings.ctrlMod.isDown() && evt.getKeyCode() == keybinding.key) {
-                controlGroups.get(index).saveFromSelected(keybinding);
             }
         }
-        // open chat while orthoview is enabled
+
+        // Access and save to controlGroups if index is within bounds
+        for (Keybinding keybinding : Keybindings.nums) {
+            int index = Integer.parseInt(keybinding.buttonLabel);
+            if (index >= 0 && index < controlGroups.size()) {  // Bounds check
+                if (Keybindings.ctrlMod.isDown() && evt.getKeyCode() == keybinding.key) {
+                    controlGroups.get(index).saveFromSelected(keybinding);
+                }
+            }
+        }
+
+        // Open chat while orthoview is enabled
         if (OrthoviewClientEvents.isEnabled() && evt.getKeyCode() == Keybindings.chat.key) {
             MC.setScreen(new ChatScreen(""));
         }
 
-
-        // press again to cycle between selected unit type in the group
+        // Cycle through selected units
         if (evt.getKeyCode() == Keybindings.tab.key) {
             List<LivingEntity> entities = new ArrayList<>(getSelectedUnits().stream()
                 .filter(e -> e instanceof Unit)
@@ -1266,6 +1269,7 @@ public class HudClientEvents {
             }
         }
     }
+
 
     // newUnitIds are replacing oldUnitIds - replace them in every control group while retaining their index
     public static void convertControlGroups(int[] oldUnitIds, int[] newUnitIds) {

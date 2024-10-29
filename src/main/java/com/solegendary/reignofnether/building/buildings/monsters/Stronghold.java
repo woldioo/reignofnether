@@ -7,6 +7,7 @@ import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.research.ResearchClient;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
+import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.unit.units.monsters.WardenProd;
 import com.solegendary.reignofnether.util.Faction;
 import com.solegendary.reignofnether.util.MiscUtil;
@@ -21,8 +22,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.solegendary.reignofnether.building.BuildingUtils.getAbsoluteBlockData;
 
@@ -32,10 +32,8 @@ public class Stronghold extends ProductionBuilding implements GarrisonableBuildi
     public final static String structureName = "stronghold";
     public final static ResourceCost cost = ResourceCosts.STRONGHOLD;
     public final static int nightRange = 60;
-
+    private final Set<BlockPos> nightBorderBps = new HashSet<>();
     private final static int MAX_OCCUPANTS = 7;
-
-    private final ArrayList<BlockPos> nightBorderBps = new ArrayList<>();
 
     public Stronghold(Level level, BlockPos originPos, Rotation rotation, String ownerName) {
         super(level,
@@ -71,23 +69,35 @@ public class Stronghold extends ProductionBuilding implements GarrisonableBuildi
         return (isBuilt || isBuiltServerside) ? nightRange : 0;
     }
 
-    public BlockPos getNightCentre() {
-        return centrePos;
+    @Override
+    public void onBuilt() {
+        super.onBuilt();
+        updateNightBorderBps();
     }
 
     @Override
     public void updateNightBorderBps() {
+        if (!level.isClientSide())
+            return;
         this.nightBorderBps.clear();
-        this.nightBorderBps.addAll(MiscUtil.getGroundCircleBlocks(centrePos, getNightRange(), level));
+        this.nightBorderBps.addAll(MiscUtil.getNightCircleBlocks(centrePos,
+                getNightRange() - TimeClientEvents.VISIBLE_BORDER_ADJ, level));
     }
 
     @Override
-    public List<BlockPos> getNightBorderBps() {
+    public Set<BlockPos> getNightBorderBps() {
         return nightBorderBps;
     }
 
     public Faction getFaction() {
         return Faction.MONSTERS;
+    }
+    
+    @Override
+    public void tick(Level tickLevel) {
+        super.tick(tickLevel);
+        if (tickLevel.isClientSide && tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 100 == 0)
+            updateNightBorderBps();
     }
 
     // don't use this for abilities as it may not be balanced

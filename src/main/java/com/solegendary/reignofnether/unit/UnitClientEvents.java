@@ -12,6 +12,7 @@ import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.minimap.MinimapClientEvents;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
 import com.solegendary.reignofnether.player.PlayerServerboundPacket;
+import com.solegendary.reignofnether.registrars.GameRuleRegistrar;
 import com.solegendary.reignofnether.registrars.PacketHandler;
 import com.solegendary.reignofnether.resources.*;
 import com.solegendary.reignofnether.tutorial.TutorialClientEvents;
@@ -21,6 +22,7 @@ import com.solegendary.reignofnether.unit.interfaces.ConvertableUnit;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.interfaces.WorkerUnit;
 import com.solegendary.reignofnether.unit.packets.UnitActionServerboundPacket;
+import com.solegendary.reignofnether.unit.units.monsters.CreeperUnit;
 import com.solegendary.reignofnether.unit.units.monsters.WardenUnit;
 import com.solegendary.reignofnether.unit.units.monsters.ZoglinUnit;
 import com.solegendary.reignofnether.unit.units.piglins.BruteUnit;
@@ -416,6 +418,7 @@ public class UnitClientEvents {
     @SubscribeEvent
     public static void onMouseClick(ScreenEvent.MouseButtonPressed.Post evt) {
         if (!OrthoviewClientEvents.isEnabled()) return;
+        if (MC.level == null) return;
 
         // prevent clicking behind HUDs
         if (HudClientEvents.isMouseOverAnyButtonOrHud()) {
@@ -498,14 +501,14 @@ public class UnitClientEvents {
                 BuildingClientEvents.setBuildingToPlace(null);
                 return;
             }
-
             if (selectedUnits.size() > 0) {
                 Building preSelBuilding = BuildingClientEvents.getPreselectedBuilding();
 
                 // right click -> attack unfriendly unit
                 if (preselectedUnits.size() == 1 &&
                     !targetingSelf() &&
-                    (getPlayerToEntityRelationship(preselectedUnits.get(0)) == Relationship.HOSTILE ||
+                    (MC.level.getGameRules().getRule(GameRuleRegistrar.NEUTRAL_AGGRO).get() ||
+                     getPlayerToEntityRelationship(preselectedUnits.get(0)) == Relationship.HOSTILE ||
                      ResourceSources.isHuntableAnimal(preselectedUnits.get(0)))) {
 
                     sendUnitCommand(UnitAction.ATTACK);
@@ -666,7 +669,8 @@ public class UnitClientEvents {
     public static void onButtonPress(ScreenEvent.KeyPressed.Pre evt) {
         if (evt.getKeyCode() == GLFW.GLFW_KEY_DELETE) {
             LivingEntity entity = hudSelectedEntity;
-            if (entity != null && getPlayerToEntityRelationship(entity) == Relationship.OWNED)
+            if (entity != null && getPlayerToEntityRelationship(entity) == Relationship.OWNED &&
+                    !(entity instanceof CreeperUnit))
                 sendUnitCommand(UnitAction.DELETE);
         }
     }
