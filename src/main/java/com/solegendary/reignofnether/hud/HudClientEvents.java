@@ -44,10 +44,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static com.solegendary.reignofnether.hud.buttons.HelperButtons.*;
 import static com.solegendary.reignofnether.tutorial.TutorialClientEvents.helpButton;
@@ -678,8 +675,8 @@ public class HudClientEvents {
                     }
                     String resourceName = UnitClientEvents.getSelectedUnitResourceTarget().toString();
                     String key = String.format("resources.reignofnether.%s", resourceName.toLowerCase(Locale.ENGLISH));
-                    actionButton.tooltipLines = List.of(FormattedCharSequence.forward(I18n.get(
-                            "hud.reignofnether.gather_resources",
+                    actionButton.tooltipLines = List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether"
+                                + ".gather_resources",
                             I18n.get(key)
                         ), Style.EMPTY),
                         FormattedCharSequence.forward(I18n.get("hud.reignofnether.change_target_resource"), Style.EMPTY)
@@ -929,13 +926,13 @@ public class HudClientEvents {
                                 && UnitClientEvents.getPlayerToEntityRelationship(u) == Relationship.OWNED)
                             .toList()
                             .size();
-                        tooltipWorkersAssigned =
-                            List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether.total_workers",
+                        tooltipWorkersAssigned = List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether"
+                                + ".total_workers",
                             numWorkers
                         ), Style.EMPTY));
                     } else {
-                        tooltipWorkersAssigned =
-                            List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether.workers_on",
+                        tooltipWorkersAssigned = List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether"
+                                + ".workers_on",
                             locName
                         ), Style.EMPTY));
                     }
