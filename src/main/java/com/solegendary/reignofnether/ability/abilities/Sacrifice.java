@@ -2,6 +2,7 @@ package com.solegendary.reignofnether.ability.abilities;
 
 import com.solegendary.reignofnether.ReignOfNether;
 import com.solegendary.reignofnether.building.Building;
+import com.solegendary.reignofnether.building.BuildingUtils;
 import com.solegendary.reignofnether.building.buildings.monsters.Laboratory;
 import com.solegendary.reignofnether.building.buildings.monsters.SculkCatalyst;
 import com.solegendary.reignofnether.cursor.CursorClientEvents;
@@ -69,7 +70,9 @@ public class Sacrifice extends Ability {
         if (!level.isClientSide() &&
             buildingUsing instanceof SculkCatalyst &&
             targetEntity instanceof Unit unit &&
-            unit.getOwnerName().equals(buildingUsing.ownerName)) {
+            unit.getOwnerName().equals(buildingUsing.ownerName) &&
+            !level.getBlockState(targetEntity.getOnPos()).isAir() &&
+            !BuildingUtils.isWithinRangeOfMaxedCatalyst(targetEntity)) {
 
             if (targetEntity.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) < RANGE * RANGE) {
                 targetEntity.kill();
@@ -80,6 +83,10 @@ public class Sacrifice extends Ability {
                 HudClientEvents.showTemporaryMessage("Can only sacrifice your own units");
             } else if (targetEntity.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) >= RANGE * RANGE) {
                 HudClientEvents.showTemporaryMessage("Unit is out of range");
+            } else if (level.getBlockState(targetEntity.getOnPos()).isAir()) {
+                HudClientEvents.showTemporaryMessage("Can't sacrifice units in the air");
+            } else if (BuildingUtils.isWithinRangeOfMaxedCatalyst(targetEntity)) {
+                HudClientEvents.showTemporaryMessage("Already at max sculk spread");
             }
         }
     }
