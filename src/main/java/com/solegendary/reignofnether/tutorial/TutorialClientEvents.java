@@ -276,8 +276,8 @@ public class TutorialClientEvents {
         MC.player.sendSystemMessage(Component.literal(""));
     }
 
-    private static void msg(String msg, Object... params) {
-        msg(msg, false, CHAT, params);
+    private static void msg(String msg) {
+        msg(msg, false, CHAT);
     }
 
     private static void specialMsg(String msg, Object... params) {
@@ -685,7 +685,7 @@ public class TutorialClientEvents {
                             LivingEntity targetEntity = villager.getTarget();
                             if (ResourceSources.isHuntableAnimal(targetEntity)
                                 && targetEntity.getHealth() < targetEntity.getMaxHealth()) {
-                                msg(    "tutorial.reignofnether.tip.dropped");
+                                msg("tutorial.reignofnether.tip.dropped");
                                 progressStage();
                                 break;
                             }
@@ -697,7 +697,7 @@ public class TutorialClientEvents {
                             LivingEntity targetEntity = villager.getTarget();
                             if (ResourceSources.isHuntableAnimal(targetEntity)
                                 && targetEntity.getHealth() < targetEntity.getMaxHealth() / 2) {
-                                msg(    "tutorial.reignofnether.tip.pick_up");
+                                msg("tutorial.reignofnether.tip.pick_up");
                                 progressStage();
                                 break;
                             }
@@ -713,13 +713,13 @@ public class TutorialClientEvents {
                         }
 
                     if (villagersHoldingFood > 0) {
-                        specialMsg(    "tutorial.reignofnether.great_work");
+                        specialMsg("tutorial.reignofnether.great_work");
                         clearHelpButtonText();
                         progressStageAfterDelay(100);
                     }
                 } else if (stageProgress == 7) {
-                    msg(    "tutorial.reignofnether.return_food");
-                    setHelpButtonText(    "tutorial.reignofnether.return_food2");
+                    msg("tutorial.reignofnether.return_food");
+                    setHelpButtonText("tutorial.reignofnether.return_food2");
                     progressStage();
                 } else if (stageProgress == 8) {
                     int villagersHoldingFoodNow = 0;
@@ -739,35 +739,35 @@ public class TutorialClientEvents {
                         progressStageAfterDelay(100);
                     }
                 } else if (stageProgress == 9) {
-                    msg(    "tutorial.reignofnether.tip.max_carry");
+                    msg("tutorial.reignofnether.tip.max_carry");
                     nextStageAfterSpace();
                 }
             }
             case EXPLAIN_BUILDINGS -> {
                 if (stageProgress == 0) {
                     TutorialServerboundPacket.doServerAction(TutorialAction.SET_DAY_TIME);
-                    msg(    "tutorial.reignofnether.expand_base");
-                    setHelpButtonText(    "tutorial.reignofnether.new_buildings");
+                    msg("tutorial.reignofnether.expand_base");
+                    setHelpButtonText("tutorial.reignofnether.new_buildings");
                     shouldPauseTicking = () -> UnitClientEvents.getSelectedUnits().isEmpty()
                         || !(UnitClientEvents.getSelectedUnits().get(0) instanceof VillagerUnit)
                         || BuildingClientEvents.getBuildingToPlace() != null;
                     progressStageAfterDelay(140);
                 } else if (stageProgress == 1 && hasUnitSelected("villager")) {
                     TutorialRendering.setButtonName(OakStockpile.buildingName);
-                    msg(    "tutorial.reignofnether.stockpiles");
+                    msg("tutorial.reignofnether.stockpiles");
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 2 && hasUnitSelected("villager")) {
                     TutorialRendering.setButtonName(VillagerHouse.buildingName);
-                    msg(    "tutorial.reignofnether.houses");
+                    msg("tutorial.reignofnether.houses");
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 3 && hasUnitSelected("villager")) {
                     TutorialRendering.setButtonName(WheatFarm.buildingName);
-                    msg(    "tutorial.reignofnether.farms");
+                    msg("tutorial.reignofnether.farms");
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 4 && hasUnitSelected("villager")) {
                     clearHelpButtonText();
                     TutorialRendering.setButtonName(Barracks.buildingName);
-                    msg(    "tutorial.reignofnether.barracks");
+                    msg("tutorial.reignofnether.barracks");
                     progressStageAfterDelay(160);
                 } else {
                     nextStage();
@@ -777,11 +777,11 @@ public class TutorialClientEvents {
                 if (stageProgress == 0) {
                     TutorialServerboundPacket.doServerAction(TutorialAction.SET_DAY_TIME);
                     TutorialRendering.clearButtonName();
-                    msg(    "tutorial.reignofnether.check_out_buildings");
+                    msg("tutorial.reignofnether.check_out_buildings");
                     progressStageAfterDelay(120);
                 } else if (stageProgress == 1) {
-                    msg(    "tutorial.reignofnether.build_barracks");
-                    setHelpButtonText(    "tutorial.reignofnether.build_barracks2");
+                    msg("tutorial.reignofnether.build_barracks");
+                    setHelpButtonText("tutorial.reignofnether.build_barracks2");
                     progressStage();
                 } else if (stageProgress == 2) {
                     for (Building building : BuildingClientEvents.getBuildings()) {
@@ -796,19 +796,19 @@ public class TutorialClientEvents {
             case EXPLAIN_BARRACKS -> {
                 if (stageProgress == 0) {
                     TutorialServerboundPacket.doServerAction(TutorialAction.SET_DAY_TIME);
-                    msg(    "tutorial.reignofnether.select_barracks");
-                    setHelpButtonText(    "tutorial.reignofnether.select_barracks2");
+                    msg("tutorial.reignofnether.select_barracks");
+                    setHelpButtonText("tutorial.reignofnether.select_barracks2");
                     shouldPauseTicking = () -> BuildingClientEvents.getSelectedBuildings().isEmpty()
                         || !(BuildingClientEvents.getSelectedBuildings().get(0) instanceof Barracks);
                     progressStageAfterDelay(140);
                 } else if (stageProgress == 1 && hasBuildingSelected(Barracks.buildingName)) {
                     TutorialRendering.setButtonName(VindicatorProd.itemName);
-                    msg(    "tutorial.reignofnether.vindicators");
+                    msg("tutorial.reignofnether.vindicators");
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 2 && hasBuildingSelected(Barracks.buildingName)) {
                     clearHelpButtonText();
                     TutorialRendering.setButtonName(PillagerProd.itemName);
-                    msg(    "tutorial.reignofnether.pillagers");
+                    msg("tutorial.reignofnether.pillagers");
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 3) {
                     nextStage();
@@ -817,10 +817,9 @@ public class TutorialClientEvents {
             case BUILD_ARMY -> {
                 if (stageProgress == 0) {
                     TutorialServerboundPacket.doServerAction(TutorialAction.SET_DAY_TIME);
-                    setHelpButtonText(
-                        "tutorial.reignofnether.produce_illagers");
+                    setHelpButtonText("tutorial.reignofnether.produce_illagers");
                     TutorialRendering.clearButtonName();
-                    msg(    "tutorial.reignofnether.three_units");
+                    msg("tutorial.reignofnether.three_units");
                     progressStage();
                 } else if (stageProgress == 1) {
                     int armyCount = 0;
@@ -829,27 +828,27 @@ public class TutorialClientEvents {
                             armyCount += 1;
                         }
                     if (armyCount >= 3) {
-                        specialMsg(    "tutorial.reignofnether.awesome");
+                        specialMsg("tutorial.reignofnether.awesome");
                         progressStageAfterDelay(100);
                         TutorialServerboundPacket.doServerAction(TutorialAction.SPAWN_MONSTER_WORKERS);
                     }
                 } else if (stageProgress == 2) {
-                    msg(    "tutorial.reignofnether.tip.select_military");
+                    msg("tutorial.reignofnether.tip.select_military");
                     nextStageAfterDelay(200);
                     TutorialServerboundPacket.doServerAction(TutorialAction.START_MONSTER_BASE);
                 }
             }
             case DEFEND_BASE -> {
                 if (stageProgress == 0) {
-                    msg(    "tutorial.reignofnether.monster_attack");
+                    msg("tutorial.reignofnether.monster_attack");
                     TutorialServerboundPacket.doServerAction(TutorialAction.SET_NIGHT_TIME);
                     TutorialServerboundPacket.doServerAction(TutorialAction.SPAWN_MONSTERS_A);
                     OrthoviewClientEvents.forceMoveCam(MONSTER_CAMERA_POS, 50);
                     progressStageAfterDelay(120);
                 }
                 if (stageProgress == 1) {
-                    setHelpButtonText(    "tutorial.reignofnether.attack");
-                    msg(    "tutorial.reignofnether.attack");
+                    setHelpButtonText("tutorial.reignofnether.attack");
+                    msg("tutorial.reignofnether.attack");
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 2) {
                     TutorialServerboundPacket.doServerAction(TutorialAction.ATTACK_WITH_MONSTERS_A);
@@ -867,7 +866,7 @@ public class TutorialClientEvents {
                         .filter(u -> u instanceof ZombieUnit || u instanceof SkeletonUnit)
                         .toList()
                         .isEmpty()) {
-                        msg(    "tutorial.reignofnether.more_incoming");
+                        msg("tutorial.reignofnether.more_incoming");
                         TutorialServerboundPacket.doServerAction(TutorialAction.SPAWN_MONSTERS_B);
                         OrthoviewClientEvents.forceMoveCam(MONSTER_CAMERA_POS, 50);
                         progressStageAfterDelay(100);
@@ -878,7 +877,7 @@ public class TutorialClientEvents {
                 } else if (stageProgress == 5) {
                     TutorialServerboundPacket.doServerAction(TutorialAction.EXPAND_MONSTER_BASE_A);
                     TutorialServerboundPacket.doServerAction(TutorialAction.SET_DAY_TIME);
-                    specialMsg(    "tutorial.reignofnether.dawn_breaks");
+                    specialMsg("tutorial.reignofnether.dawn_breaks");
                     progressStage();
                 } else if (stageProgress == 6) {
                     if (UnitClientEvents.getAllUnits()
@@ -886,12 +885,12 @@ public class TutorialClientEvents {
                         .filter(u -> u instanceof ZombieUnit || u instanceof SkeletonUnit)
                         .toList()
                         .isEmpty()) {
-                        specialMsg(    "tutorial.reignofnether.defended");
+                        specialMsg("tutorial.reignofnether.defended");
                         clearHelpButtonText();
                         progressStageAfterDelay(100);
                     }
                 } else if (stageProgress == 7) {
-                    msg(    "tutorial.reignofnether.tip.death_drops");
+                    msg("tutorial.reignofnether.tip.death_drops");
                     nextStageAfterDelay(200);
                 }
             }
@@ -906,25 +905,24 @@ public class TutorialClientEvents {
                     if (damagedBuildings.isEmpty()) {
                         nextStage();
                     } else {
-                        msg(    "tutorial.reignofnether.buildings_damaged");
+                        msg("tutorial.reignofnether.buildings_damaged");
                         progressStageAfterDelay(100);
                     }
                 } else if (stageProgress == 1) {
-                    msg(    "tutorial.reignofnether.repair_buildings");
-                    setHelpButtonText(
-                        "tutorial.reignofnether.repair_buildings2");
+                    msg("tutorial.reignofnether.repair_buildings");
+                    setHelpButtonText("tutorial.reignofnether.repair_buildings2");
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 2) {
                     for (Building building : damagedBuildings) {
                         if (building.getHealth() >= building.getMaxHealth()) {
-                            specialMsg(    "tutorial.reignofnether.good_job");
+                            specialMsg("tutorial.reignofnether.good_job");
                             clearHelpButtonText();
                             progressStageAfterDelay(100);
                             break;
                         }
                     }
                 } else if (stageProgress == 3) {
-                    msg(    "tutorial.reignofnether.tip.building_health");
+                    msg("tutorial.reignofnether.tip.building_health");
                     progressStageAfterDelay(200);
                 } else if (stageProgress == 4) {
                     TutorialServerboundPacket.doServerAction(TutorialAction.SPAWN_MONSTER_BASE_ARMY);
@@ -935,24 +933,23 @@ public class TutorialClientEvents {
                 if (stageProgress == 0) {
                     OrthoviewClientEvents.forceMoveCam(MONSTER_BASE_POS, 80);
                     if (FogOfWarClientEvents.isEnabled()) {
-                        msg(    "tutorial.reignofnether.monster_base");
+                        msg("tutorial.reignofnether.monster_base");
                     } else {
-                        msg(    "tutorial.reignofnether.monster_base2");
+                        msg("tutorial.reignofnether.monster_base2");
                     }
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 1) {
-                    msg(    "tutorial.reignofnether.build_bridge");
+                    msg("tutorial.reignofnether.build_bridge");
                     progressStageAfterDelay(100);
                 } else if (stageProgress == 2) {
                     OrthoviewClientEvents.forceMoveCam(BRIDGE_POS, 50);
-                    msg(    "tutorial.reignofnether.build_bridge2");
-                    setHelpButtonText(
-                        "tutorial.reignofnether.build_bridge3");
+                    msg("tutorial.reignofnether.build_bridge2");
+                    setHelpButtonText("tutorial.reignofnether.build_bridge3");
                     progressStage();
                 } else if (stageProgress == 3) {
                     for (Building building : BuildingClientEvents.getBuildings()) {
                         if (building instanceof OakBridge bridge) {
-                            msg(    "tutorial.reignofnether.tip.bridge_segments");
+                            msg("tutorial.reignofnether.tip.bridge_segments");
                             progressStage();
                             break;
                         }
@@ -960,16 +957,16 @@ public class TutorialClientEvents {
                 } else if (stageProgress == 4) {
                     for (Building building : BuildingClientEvents.getBuildings()) {
                         if (building instanceof OakBridge bridge && bridge.isBuilt) {
-                            specialMsg(    "tutorial.reignofnether.nice_job");
+                            specialMsg("tutorial.reignofnether.nice_job");
                             progressStageAfterDelay(100);
                             break;
                         }
                     }
                 } else if (stageProgress == 5) {
-                    msg(    "tutorial.reignofnether.tip.bridges_neutral");
+                    msg("tutorial.reignofnether.tip.bridges_neutral");
                     progressStageAfterDelay(200);
                 } else if (stageProgress == 6) {
-                    msg(    "tutorial.reignofnether.tip.crossing_bridges");
+                    msg("tutorial.reignofnether.tip.crossing_bridges");
                     progressStageAfterDelay(200);
                 } else if (stageProgress == 7) {
                     nextStage();
@@ -977,22 +974,22 @@ public class TutorialClientEvents {
             }
             case ATTACK_ENEMY_BASE -> {
                 if (stageProgress == 0) {
-                    msg(    "tutorial.reignofnether.reinforcements");
+                    msg("tutorial.reignofnether.reinforcements");
                     TutorialServerboundPacket.doServerAction(TutorialAction.SPAWN_FRIENDLY_ARMY);
                     OrthoviewClientEvents.forceMoveCam(ARMY_POS, 50);
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 1) {
-                    msg(    "tutorial.reignofnether.iron_golem");
-                    setHelpButtonText(    "tutorial.reignofnether.destroy_monster_base");
+                    msg("tutorial.reignofnether.iron_golem");
+                    setHelpButtonText("tutorial.reignofnether.destroy_monster_base");
                     progressStageAfterDelay(200);
                 } else if (stageProgress == 2) {
-                    msg(    "tutorial.reignofnether.tip.ranged_no_buildings");
+                    msg("tutorial.reignofnether.tip.ranged_no_buildings");
                     progressStageAfterDelay(200);
                 } else if (stageProgress == 3) {
                     for (Building building : BuildingClientEvents.getBuildings()) {
                         if (building.getFaction() == Faction.MONSTERS
                             && building.getHealth() < building.getMaxHealth()) {
-                            msg(    "tutorial.reignofnether.tip.monster_capitol");
+                            msg("tutorial.reignofnether.tip.monster_capitol");
                             progressStage();
                             break;
                         }
@@ -1014,22 +1011,22 @@ public class TutorialClientEvents {
             }
             case OUTRO -> {
                 if (stageProgress == 0) {
-                    specialMsg(    "tutorial.reignofnether.congratulations_tutorial");
+                    specialMsg("tutorial.reignofnether.congratulations_tutorial");
                     progressStageAfterDelay(100);
                 } else if (stageProgress == 1) {
-                    msg(    "tutorial.reignofnether.continue");
+                    msg("tutorial.reignofnether.continue");
                     progressStageAfterDelay(120);
                 } else if (stageProgress == 2) {
-                    msg(    "tutorial.reignofnether.reset_game");
+                    msg("tutorial.reignofnether.reset_game");
                     progressStageAfterDelay(120);
                 } else if (stageProgress == 3) {
-                    msg(    "tutorial.reignofnether.server_hosting");
+                    msg("tutorial.reignofnether.server_hosting");
                     progressStageAfterDelay(160);
                 } else if (stageProgress == 4) {
-                    msg(    "tutorial.reignofnether.good_luck");
+                    msg("tutorial.reignofnether.good_luck");
                     progressStageAfterDelay(100);
                 } else if (stageProgress == 5) {
-                    specialMsg(    "tutorial.reignofnether.tutorial_disabled");
+                    specialMsg("tutorial.reignofnether.tutorial_disabled");
                     nextStage();
                 }
             }

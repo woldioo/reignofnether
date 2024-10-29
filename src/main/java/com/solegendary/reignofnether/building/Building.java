@@ -29,6 +29,7 @@ import com.solegendary.reignofnether.unit.units.monsters.SilverfishUnit;
 import com.solegendary.reignofnether.util.Faction;
 import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -165,19 +166,18 @@ public abstract class Building {
 
         // get min/max/centre positions
         this.minCorner = new BlockPos(
-                blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getX())).get().getBlockPos().getX(),
-                blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getY())).get().getBlockPos().getY(),
-                blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getZ())).get().getBlockPos().getZ()
+            blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getX())).get().getBlockPos().getX(),
+            blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getY())).get().getBlockPos().getY(),
+            blocks.stream().min(Comparator.comparing(block -> block.getBlockPos().getZ())).get().getBlockPos().getZ()
         );
         this.maxCorner = new BlockPos(
-                blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getX())).get().getBlockPos().getX(),
-                blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getY())).get().getBlockPos().getY(),
-                blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getZ())).get().getBlockPos().getZ()
+            blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getX())).get().getBlockPos().getX(),
+            blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getY())).get().getBlockPos().getY(),
+            blocks.stream().max(Comparator.comparing(block -> block.getBlockPos().getZ())).get().getBlockPos().getZ()
         );
-        this.centrePos = new BlockPos(
-                (float) (this.minCorner.getX() + this.maxCorner.getX()) / 2,
-                (float) (this.minCorner.getY() + this.maxCorner.getY()) / 2,
-                (float) (this.minCorner.getZ() + this.maxCorner.getZ()) / 2
+        this.centrePos = new BlockPos((float) (this.minCorner.getX() + this.maxCorner.getX()) / 2,
+            (float) (this.minCorner.getY() + this.maxCorner.getY()) / 2,
+            (float) (this.minCorner.getZ() + this.maxCorner.getZ()) / 2
         );
 
         // re-hide players if they were revealed
@@ -523,6 +523,7 @@ public abstract class Building {
                 PlayerServerEvents.defeat(this.ownerName, "server.reignofnether.lost_buildings");
             } else if (this.isCapitol && FogOfWarServerEvents.isEnabled()) {
                 sendMessageToAllPlayers("server.reignofnether.lost_capitol",
+                    false,
                     this.ownerName,
                     PlayerServerEvents.TICKS_TO_REVEAL / ResourceCost.TICKS_PER_SECOND
                 );
@@ -624,9 +625,10 @@ public abstract class Building {
         isBuilt = true;
         if (!this.level.isClientSide()) {
             FrozenChunkClientboundPacket.setBuildingBuiltServerside(this.originPos);
-            if (isCapitol)
+            if (isCapitol) {
                 for (int i = 0; i < 3; i++)
                     spawnHuntableAnimalsNearby(ANIMAL_SPAWN_RANGE / 2);
+            }
         } else {
             TutorialClientEvents.updateStage();
         }
@@ -661,13 +663,13 @@ public abstract class Building {
 
         if (tickLevel.isClientSide()) {
             handleClientTick();
-        }
-        else {
+        } else {
             handleServerTick((ServerLevel) tickLevel, blocksPlaced, blocksTotal);
         }
 
-        if (this.level.isClientSide &&
-                (!FogOfWarClientEvents.isEnabled() || FogOfWarClientEvents.isInBrightChunk(originPos))) {
+        if (this.level.isClientSide && (
+            !FogOfWarClientEvents.isEnabled() || FogOfWarClientEvents.isInBrightChunk(originPos)
+        )) {
             isExploredClientside = true;
         }
 
@@ -679,14 +681,16 @@ public abstract class Building {
                 spawnHuntableAnimalsNearby(ANIMAL_SPAWN_RANGE);
             }
         }
-        if (isBuilt)
+        if (isBuilt) {
             tickAgeAfterBuilt += 1;
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
     private void handleClientTick() {
-        if (blockPlaceQueue.size() > 0)
+        if (blockPlaceQueue.size() > 0) {
             blockPlaceQueue.remove(0);
+        }
     }
 
     private void handleServerTick(ServerLevel serverLevel, float blocksPlaced, float blocksTotal) {
@@ -697,8 +701,9 @@ public abstract class Building {
         if (blocksPlaced < blocksTotal && builderCount > 0) {
             this.ticksToExtinguish += 1;
             if (ticksToExtinguish >= TICKS_TO_EXTINGUISH) {
-                if (!(this instanceof FlameSanctuary) && !(this instanceof Fortress))
+                if (!(this instanceof FlameSanctuary) && !(this instanceof Fortress)) {
                     extinguishFires(serverLevel);
+                }
                 ticksToExtinguish = 0;
             }
             // AoE 2 speed:
@@ -714,22 +719,26 @@ public abstract class Building {
             // 4 builders - 2/5 (40%)
             // 5 builders - 2/6 (33%)
             int msPerBuild = (2 * BASE_MS_PER_BUILD) / (builderCount + 1);
-            if (!isBuilt)
+            if (!isBuilt) {
                 msPerBuild *= buildTimeModifier;
-            else
+            } else {
                 msPerBuild *= repairTimeModifier;
+            }
 
-            if (this instanceof Portal && !BuildingServerEvents.isOnNetherBlocks(blocks, originPos, serverLevel) &&
-                    !ResearchServerEvents.playerHasResearch(ownerName, ResearchAdvancedPortals.itemName))
+            if (this instanceof Portal && !BuildingServerEvents.isOnNetherBlocks(blocks, originPos, serverLevel)
+                && !ResearchServerEvents.playerHasResearch(ownerName, ResearchAdvancedPortals.itemName)) {
                 msPerBuild *= Portal.NON_NETHER_BUILD_TIME_MODIFIER;
+            }
 
-            if (msToNextBuild > msPerBuild)
+            if (msToNextBuild > msPerBuild) {
                 msToNextBuild = msPerBuild;
+            }
 
-            if (ResearchServerEvents.playerHasCheat(this.ownerName, "warpten"))
+            if (ResearchServerEvents.playerHasCheat(this.ownerName, "warpten")) {
                 msToNextBuild -= 500;
-            else
+            } else {
                 msToNextBuild -= 50;
+            }
 
             if (msToNextBuild <= 0) {
                 msToNextBuild = msPerBuild;
@@ -750,17 +759,19 @@ public abstract class Building {
 
                 // avoid creating a bubble column block
                 if (bs.getMaterial() == Material.WATER) {
-                    if (level.getBlockState(bp.below()).getBlock() == Blocks.SOUL_SAND)
+                    if (level.getBlockState(bp.below()).getBlock() == Blocks.SOUL_SAND) {
                         level.setBlockAndUpdate(bp.below(), Blocks.SOUL_SOIL.defaultBlockState());
-                    else if (level.getBlockState(bp.below()).getBlock() == Blocks.MAGMA_BLOCK)
+                    } else if (level.getBlockState(bp.below()).getBlock() == Blocks.MAGMA_BLOCK) {
                         level.setBlockAndUpdate(bp.below(), Blocks.COBBLESTONE.defaultBlockState());
+                    }
                 }
                 level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, bp, Block.getId(bs));
                 level.levelEvent(bs.getSoundType().getPlaceSound().hashCode(), bp, Block.getId(bs));
                 blockPlaceQueue.removeIf(i -> i.equals(nextBlock));
                 onBlockBuilt(bp, bs);
-                if (this.getBlocksPlaced() > highestBlockCountReached)
+                if (this.getBlocksPlaced() > highestBlockCountReached) {
                     highestBlockCountReached = this.getBlocksPlaced();
+                }
             }
         }
     }
@@ -771,20 +782,23 @@ public abstract class Building {
             return;
         }
 
-        int numNearbyAnimals = MiscUtil.getEntitiesWithinRange(
-                new Vector3d(centrePos.getX(), centrePos.getY(), centrePos.getZ()),
-                range,
-                Animal.class,
-                level
-        ).stream().filter(ResourceSources::isHuntableAnimal).toList().size();
-        int numNearbyChickens = MiscUtil.getEntitiesWithinRange(
-                new Vector3d(centrePos.getX(), centrePos.getY(), centrePos.getZ()),
-                range,
-                Chicken.class,
-                level
-        ).stream().toList().size();
+        int numNearbyAnimals = MiscUtil.getEntitiesWithinRange(new Vector3d(centrePos.getX(),
+                centrePos.getY(),
+                centrePos.getZ()
+            ), range, Animal.class, level)
+            .stream()
+            .filter(ResourceSources::isHuntableAnimal)
+            .toList()
+            .size();
+        int numNearbyChickens = MiscUtil.getEntitiesWithinRange(new Vector3d(centrePos.getX(),
+                centrePos.getY(),
+                centrePos.getZ()
+            ), range, Chicken.class, level)
+            .stream()
+            .toList()
+            .size();
 
-        if (numNearbyAnimals - (numNearbyChickens / 2) >= MAX_ANIMALS)
+        if (numNearbyAnimals - (numNearbyChickens / 2) >= MAX_ANIMALS) {
             return;
         }
 
@@ -792,6 +806,7 @@ public abstract class Building {
         BlockState spawnBs;
         BlockPos spawnBp;
         Random random = new Random();
+
         do {
             int x = centrePos.getX() + random.nextInt(-range / 2, range / 2);
             int z = centrePos.getZ() + random.nextInt(-range / 2, range / 2);

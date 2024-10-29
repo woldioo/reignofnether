@@ -31,7 +31,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.MenuConstructor;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -316,7 +315,7 @@ public class PlayerServerEvents {
             if (!TutorialServerEvents.isEnabled()) {
                 serverPlayer.sendSystemMessage(Component.literal(""));
                 sendMessageToAllPlayers("server.reignofnether.started", true, playerName);
-                sendMessageToAllPlayers("server.reignofnether.total_players", rtsPlayers.size());
+                sendMessageToAllPlayers("server.reignofnether.total_players", false, rtsPlayers.size());
             }
             PlayerClientboundPacket.syncRtsGameTime(rtsGameTicks);
             saveRTSPlayers();
@@ -360,7 +359,7 @@ public class PlayerServerEvents {
 
             if (!TutorialServerEvents.isEnabled()) {
                 sendMessageToAllPlayers("server.reignofnether.bot_added", true, bot.name);
-                sendMessageToAllPlayers("server.reignofnether.total_players", rtsPlayers.size());
+                sendMessageToAllPlayers("server.reignofnether.total_players", false, rtsPlayers.size());
             }
             saveRTSPlayers();
         }
@@ -397,6 +396,7 @@ public class PlayerServerEvents {
                             ));
                             evt.setCanceled(true);
                             sendMessageToAllPlayers("server.reignofnether.cheat_used",
+                                false,
                                 playerName,
                                 words[0],
                                 Integer.toString(amount)
@@ -414,6 +414,7 @@ public class PlayerServerEvents {
                             }
                             evt.setCanceled(true);
                             sendMessageToAllPlayers("server.reignofnether.cheat_used",
+                                false,
                                 playerName,
                                 words[0],
                                 Integer.toString(amount)
@@ -432,12 +433,12 @@ public class PlayerServerEvents {
                         ResearchServerEvents.removeCheat(playerName, cheatName);
                         ResearchClientboundPacket.removeCheat(playerName, cheatName);
                         evt.setCanceled(true);
-                        sendMessageToAllPlayers("server.reignofnether.disabled_cheat", playerName, cheatName);
+                        sendMessageToAllPlayers("server.reignofnether.disabled_cheat", false, playerName, cheatName);
                     } else {
                         ResearchServerEvents.addCheat(playerName, cheatName);
                         ResearchClientboundPacket.addCheat(playerName, cheatName);
                         evt.setCanceled(true);
-                        sendMessageToAllPlayers("server.reignofnether.enabled_cheat", playerName, cheatName);
+                        sendMessageToAllPlayers("server.reignofnether.enabled_cheat", false, playerName, cheatName);
                     }
                 }
             }
@@ -455,7 +456,7 @@ public class PlayerServerEvents {
                     ResearchClientboundPacket.addCheat(playerName, cheatName);
                     evt.setCanceled(true);
                 }
-                sendMessageToAllPlayers("server.reignofnether.all_cheats", playerName);
+                sendMessageToAllPlayers("server.reignofnether.all_cheats", false, playerName);
             }
         }
     }
@@ -512,8 +513,8 @@ public class PlayerServerEvents {
         serverPlayer.moveTo(x, y, z);
     }
 
-    public static void sendMessageToAllPlayers(String msg, Object... formatArgs) {
-        sendMessageToAllPlayers(msg, false, formatArgs);
+    public static void sendMessageToAllPlayers(String msg) {
+        sendMessageToAllPlayers(msg, false);
     }
 
     public static void sendMessageToAllPlayers(String msg, boolean bold, Object... formatArgs) {
@@ -548,7 +549,7 @@ public class PlayerServerEvents {
                         playerName,
                         Component.translatable(reason)
                     );
-                    sendMessageToAllPlayers("server.reignofnether.players_remaining", rtsPlayers.size() - 1);
+                    sendMessageToAllPlayers("server.reignofnether.players_remaining", false, rtsPlayers.size() - 1);
 
                     PlayerClientboundPacket.defeat(playerName);
 
@@ -612,7 +613,7 @@ public class PlayerServerEvents {
             PlayerClientboundPacket.resetRTS();
 
             if (!TutorialServerEvents.isEnabled()) {
-                sendMessageToAllPlayers("server.reignofnether.match_reset", true);
+                sendMessageToAllPlayers("server.reignofnether.match_reset", true, null);
             }
 
             ResourcesServerEvents.resourcesList.clear();

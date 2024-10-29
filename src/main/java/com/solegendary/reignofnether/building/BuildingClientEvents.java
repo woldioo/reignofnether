@@ -165,8 +165,7 @@ public class BuildingClientEvents {
                 if (isBuildingToPlaceABridge()) {
                     Class<?>[] paramTypes = { LevelAccessor.class, boolean.class };
                     Method getRelativeBlockData = buildingToPlace.getMethod("getRelativeBlockData", paramTypes);
-                    blocksToDraw = (ArrayList<BuildingBlock>) getRelativeBlockData.invoke(
-                        null,
+                    blocksToDraw = (ArrayList<BuildingBlock>) getRelativeBlockData.invoke(null,
                         MC.level,
                         isBridgeDiagonal()
                     );
@@ -196,8 +195,7 @@ public class BuildingClientEvents {
             nativeimage.setPixelRGBA(0, 0, bgr | (0xB2 << 24));
             RenderSystem.activeTexture(33985);
             MC.gameRenderer.overlayTexture.texture.bind();
-            nativeimage.upload(
-                0,
+            nativeimage.upload(0,
                 0,
                 0,
                 0,
@@ -321,10 +319,11 @@ public class BuildingClientEvents {
 
     // disallow any building block from clipping into any other existing blocks
     private static boolean isBuildingPlacementClipping(BlockPos originPos) {
-        if (MC.level == null)
+        if (MC.level == null) {
             return false;
+        }
 
-        if (isBuildingToPlaceABridge())
+        if (isBuildingToPlaceABridge()) {
             return false;
         }
 
@@ -354,11 +353,9 @@ public class BuildingClientEvents {
                 BlockState bs = block.getBlockState(); // building block
                 BlockState bsBelow = MC.level.getBlockState(bp.below()); // world block
 
-                if (bs.getMaterial().isSolid() &&
-                    !(bsBelow.getBlock() instanceof IceBlock)) {
+                if (bs.getMaterial().isSolid() && !(bsBelow.getBlock() instanceof IceBlock)) {
                     blocksBelow += 1;
-                    if (bsBelow.getMaterial().isSolid() &&
-                        !(bsBelow.getBlock() instanceof LeavesBlock))
+                    if (bsBelow.getMaterial().isSolid() && !(bsBelow.getBlock() instanceof LeavesBlock)) {
                         solidBlocksBelow += 1;
                     }
                 }
@@ -683,8 +680,7 @@ public class BuildingClientEvents {
                 try {
                     Class<?>[] paramTypes = { LevelAccessor.class, boolean.class };
                     Method getRelativeBlockData = buildingToPlace.getMethod("getRelativeBlockData", paramTypes);
-                    blocksToDraw = (ArrayList<BuildingBlock>) getRelativeBlockData.invoke(
-                        null,
+                    blocksToDraw = (ArrayList<BuildingBlock>) getRelativeBlockData.invoke(null,
                         MC.level,
                         isBridgeDiagonal()
                     );
@@ -749,8 +745,7 @@ public class BuildingClientEvents {
                     for (LivingEntity entity : getSelectedUnits()) {
                         if (entity instanceof Unit unit) {
                             unit.getCheckpoints().removeIf(bp -> !BuildingUtils.isPosInsideAnyBuilding(true, bp));
-                            MiscUtil.addUnitCheckpoint(
-                                unit,
+                            MiscUtil.addUnitCheckpoint(unit,
                                 CursorClientEvents.getPreselectedBlockPos().above(),
                                 false
                             );
@@ -790,8 +785,7 @@ public class BuildingClientEvents {
                     lastLeftClickTime = 0;
                     Building selBuilding = selectedBuildings.get(0);
                     BlockPos centre = selBuilding.centrePos;
-                    ArrayList<Building> nearbyBuildings = getBuildingsWithinRange(new Vec3(
-                            centre.getX(),
+                    ArrayList<Building> nearbyBuildings = getBuildingsWithinRange(new Vec3(centre.getX(),
                             centre.getY(),
                             centre.getZ()
                         ),
@@ -955,8 +949,7 @@ public class BuildingClientEvents {
         boolean forPlayerLoggingIn
     ) {
 
-        Building newBuilding = BuildingUtils.getNewBuilding(
-            buildingName,
+        Building newBuilding = BuildingUtils.getNewBuilding(buildingName,
             MC.level,
             pos,
             rotation,
