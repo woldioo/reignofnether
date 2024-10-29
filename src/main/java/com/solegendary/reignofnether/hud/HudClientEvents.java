@@ -677,7 +677,7 @@ public class HudClientEvents {
                         );
                     }
                     String resourceName = UnitClientEvents.getSelectedUnitResourceTarget().toString();
-                    String key = String.format("resources.reignofnether.%s", resourceName.toLowerCase());
+                    String key = String.format("resources.reignofnether.%s", resourceName.toLowerCase(Locale.ENGLISH));
                     actionButton.tooltipLines = List.of(FormattedCharSequence.forward(I18n.get(
                             "hud.reignofnether.gather_resources",
                             I18n.get(key)
