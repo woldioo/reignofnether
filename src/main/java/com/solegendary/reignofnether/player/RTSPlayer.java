@@ -77,7 +77,7 @@ public class RTSPlayer {
                 this.ticksWithoutCapitol += 1;
                 if (ticksWithoutCapitol == TICKS_TO_REVEAL) {
                     if (FogOfWarServerEvents.isEnabled()) {
-                        PlayerServerEvents.sendMessageToAllPlayers("server.reignofnether.revealed", this.name);
+                        PlayerServerEvents.sendMessageToAllPlayers("server.reignofnether.revealed", false, this.name);
                     }
                     FogOfWarClientboundPacket.revealOrHidePlayer(true, this.name);
                 }

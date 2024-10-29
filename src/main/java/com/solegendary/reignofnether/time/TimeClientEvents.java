@@ -25,7 +25,9 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.solegendary.reignofnether.time.TimeUtils.*;
@@ -44,8 +46,7 @@ public class TimeClientEvents {
 
     public static NightCircleMode nightCircleMode = NightCircleMode.NO_OVERLAPS;
 
-    private static final Button CLOCK_BUTTON = new Button(
-        "Clock",
+    private static final Button CLOCK_BUTTON = new Button("Clock",
         14,
         null,
         null,
@@ -54,15 +55,17 @@ public class TimeClientEvents {
         () -> false,
         () -> true,
         () -> {
-            if (nightCircleMode == NightCircleMode.ALL)
+            if (nightCircleMode == NightCircleMode.ALL) {
                 nightCircleMode = NightCircleMode.NO_OVERLAPS;
-            else if (nightCircleMode == NightCircleMode.NO_OVERLAPS)
+            } else if (nightCircleMode == NightCircleMode.NO_OVERLAPS) {
                 nightCircleMode = NightCircleMode.OFF;
-            else if (nightCircleMode == NightCircleMode.OFF)
+            } else if (nightCircleMode == NightCircleMode.OFF) {
                 nightCircleMode = NightCircleMode.ALL;
+            }
             for (Building building : BuildingClientEvents.getBuildings())
-                if (building instanceof NightSource ns)
+                if (building instanceof NightSource ns) {
                     ns.updateNightBorderBps();
+                }
         },
         null,
         null
@@ -71,13 +74,17 @@ public class TimeClientEvents {
     // render directly above the minimap
     @SubscribeEvent
     public static void renderOverlay(RenderGuiOverlayEvent.Post evt) {
-        if (!OrthoviewClientEvents.isEnabled() || MC.isPaused() ||
-            !TutorialClientEvents.isAtOrPastStage(TutorialStage.MINIMAP_CLICK))
+        if (!OrthoviewClientEvents.isEnabled() || MC.isPaused()
+            || !TutorialClientEvents.isAtOrPastStage(TutorialStage.MINIMAP_CLICK)) {
             return;
         }
 
-        xPos = MC.getWindow().getGuiScaledWidth() - MinimapClientEvents.getMapGuiRadius() - (MinimapClientEvents.CORNER_OFFSET * 2) + 2;
-        yPos = MC.getWindow().getGuiScaledHeight() - (MinimapClientEvents.getMapGuiRadius() * 2) - (MinimapClientEvents.CORNER_OFFSET * 2) - 6;
+        xPos = MC.getWindow().getGuiScaledWidth() - MinimapClientEvents.getMapGuiRadius() - (
+            MinimapClientEvents.CORNER_OFFSET * 2
+        ) + 2;
+        yPos = MC.getWindow().getGuiScaledHeight() - (MinimapClientEvents.getMapGuiRadius() * 2) - (
+            MinimapClientEvents.CORNER_OFFSET * 2
+        ) - 6;
 
         ItemRenderer itemrenderer = MC.getItemRenderer();
 
@@ -86,20 +93,26 @@ public class TimeClientEvents {
 
     @SubscribeEvent
     public static void onDrawScreen(ScreenEvent.Render.Post evt) {
-        if (!OrthoviewClientEvents.isEnabled() || MC.isPaused() ||
-            !TutorialClientEvents.isAtOrPastStage(TutorialStage.MINIMAP_CLICK))
+        if (!OrthoviewClientEvents.isEnabled() || MC.isPaused()
+            || !TutorialClientEvents.isAtOrPastStage(TutorialStage.MINIMAP_CLICK)) {
             return;
+        }
 
-        xPos = MC.getWindow().getGuiScaledWidth() - MinimapClientEvents.getMapGuiRadius() - (MinimapClientEvents.CORNER_OFFSET * 2) + 2;
-        yPos = MC.getWindow().getGuiScaledHeight() - (MinimapClientEvents.getMapGuiRadius() * 2) - (MinimapClientEvents.CORNER_OFFSET * 2) - 6;
+        xPos = MC.getWindow().getGuiScaledWidth() - MinimapClientEvents.getMapGuiRadius() - (
+            MinimapClientEvents.CORNER_OFFSET * 2
+        ) + 2;
+        yPos = MC.getWindow().getGuiScaledHeight() - (MinimapClientEvents.getMapGuiRadius() * 2) - (
+            MinimapClientEvents.CORNER_OFFSET * 2
+        ) - 6;
 
-        CLOCK_BUTTON.render(evt.getPoseStack(), xPos-3, yPos-3, evt.getMouseX(), evt.getMouseY());
+        CLOCK_BUTTON.render(evt.getPoseStack(), xPos - 3, yPos - 3, evt.getMouseX(), evt.getMouseY());
     }
 
     @SubscribeEvent
     public static void onMousePress(ScreenEvent.MouseButtonPressed.Post evt) {
-        if (evt.getButton() == GLFW.GLFW_MOUSE_BUTTON_1)
+        if (evt.getButton() == GLFW.GLFW_MOUSE_BUTTON_1) {
             CLOCK_BUTTON.checkClicked((int) evt.getMouseX(), (int) evt.getMouseY(), true);
+        }
         //else if (evt.getButton() == GLFW.GLFW_MOUSE_BUTTON_2)
         //    CLOCK_BUTTON.checkClicked((int) evt.getMouseX(), (int) evt.getMouseY(), false);
     }
@@ -112,8 +125,8 @@ public class TimeClientEvents {
 
         final int GUI_LENGTH = 16;
 
-        if (evt.getMouseX() > xPos && evt.getMouseX() <= xPos + GUI_LENGTH &&
-            evt.getMouseY() > yPos && evt.getMouseY() <= yPos + GUI_LENGTH) {
+        if (evt.getMouseX() > xPos && evt.getMouseX() <= xPos + GUI_LENGTH && evt.getMouseY() > yPos
+            && evt.getMouseY() <= yPos + GUI_LENGTH) {
 
             // 'day' is when undead start burning, ~500
             // 'night' is when undead stop burning, ~12500
@@ -135,26 +148,21 @@ public class TimeClientEvents {
                 );
             }
 
-            String nightCircleModeName;
-            switch (nightCircleMode) {
-                case NightCircleMode.ALL:
-                    nightCircleModeName = I18n.get("time.reignofnether.night_circle_mode_all");
-                    break;
-                case NightCircleMode.NO_OVERLAPS:
-                    nightCircleModeName = I18n.get("time.reignofnether.night_circle_mode_no_overlaps");
-                    break;
-                case NightCircleMode.OFF:
-                    nightCircleModeName = I18n.get("time.reignofnether.night_circle_mode_off");
-                    break;
-            }
-            List<FormattedCharSequence> tooltip = List.of(FormattedCharSequence.forward(
-                    I18n.get("time.reignofnether.time", timeStr),
-                    Style.EMPTY
-                ),
+            String nightCircleModeName = switch (nightCircleMode) {
+                case ALL -> I18n.get("time.reignofnether.night_circle_mode_all");
+                case NO_OVERLAPS -> I18n.get("time.reignofnether.night_circle_mode_no_overlaps");
+                case OFF -> I18n.get("time.reignofnether.night_circle_mode_off");
+            };
+            List<FormattedCharSequence> tooltip =
+                List.of(FormattedCharSequence.forward(I18n.get("time.reignofnether" + ".time",
+                    timeStr
+                ), Style.EMPTY),
                 timeUntilStr,
                 FormattedCharSequence.forward(timeStr, Style.EMPTY),
                 gameLengthStr,
-                FormattedCharSequence.forward(I18n.get("time.reignofnether.night_circles", nightCircleModeName), Style.EMPTY)
+                FormattedCharSequence.forward(I18n.get("time.reignofnether.night_circles", nightCircleModeName),
+                    Style.EMPTY
+                )
             );
             if (targetClientTime != serverTime) {
                 tooltip = List.of(
@@ -164,7 +172,9 @@ public class TimeClientEvents {
                     FormattedCharSequence.forward(I18n.get("time.reignofnether.real_time", timeStr), Style.EMPTY),
                     timeUntilStr,
                     gameLengthStr,
-                    FormattedCharSequence.forward(I18n.get("time.reignofnether.night_circles", nightCircleModeName), Style.EMPTY)
+                    FormattedCharSequence.forward(I18n.get("time.reignofnether.night_circles", nightCircleModeName),
+                        Style.EMPTY
+                    )
                 );
             }
 
@@ -177,18 +187,21 @@ public class TimeClientEvents {
     public static void onRenderLevel(RenderLevelStageEvent evt) {
         if (evt.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
             return;
-        if (!OrthoviewClientEvents.isEnabled() || nightCircleMode == NightCircleMode.OFF || MC.level == null)
-            return;
+            //            if (!OrthoviewClientEvents.isEnabled() || nightCircleMode == NightCircleMode.OFF || MC
+            //            .level == null) {
+            //                return;
+            //            }
         }
 
         // draw night-ranges for monsters
         for (Building building : BuildingClientEvents.getBuildings())
             if (building instanceof NightSource ns) {
                 for (BlockPos bp : ns.getNightBorderBps()) {
-                    if (BuildingClientEvents.getSelectedBuildings().contains(building))
+                    if (BuildingClientEvents.getSelectedBuildings().contains(building)) {
                         MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.UP, bp, 0f, 0.8f, 0f, 0.3f);
-                    else
+                    } else {
                         MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.UP, bp, 0f, 0f, 0f, 0.6f);
+                    }
                     /* causes a lot of flickering
                     if (MC.level.getBlockState(bp.north()).isAir())
                         MyRenderer.drawBlockFace(evt.getPoseStack(), Direction.NORTH, bp, 0f, 0f, 0f, 0.5f);
@@ -220,8 +233,9 @@ public class TimeClientEvents {
 
             // get list of night source centre:range pairs
             for (Building building : BuildingClientEvents.getBuildings()) {
-                if (!building.isExploredClientside || !(building instanceof NightSource ns))
+                if (!building.isExploredClientside || !(building instanceof NightSource ns)) {
                     continue;
+                }
 
                 nightSourceOrigins.add(new Pair<>(building.centrePos, ns.getNightRange() - VISIBLE_BORDER_ADJ));
             }
