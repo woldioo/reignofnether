@@ -1,9 +1,14 @@
 package com.solegendary.reignofnether.building.buildings.monsters;
 
+import com.solegendary.reignofnether.ability.Ability;
+import com.solegendary.reignofnether.ability.abilities.CallLightning;
+import com.solegendary.reignofnether.ability.abilities.Sacrifice;
 import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.hud.AbilityButton;
+import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.research.ResearchClient;
+import com.solegendary.reignofnether.research.researchItems.*;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.time.TimeClientEvents;
@@ -66,6 +71,13 @@ public class SculkCatalyst extends Building implements NightSource {
         this.buildTimeModifier = 2.5f;
 
         this.startingBlockTypes.add(Blocks.POLISHED_BLACKSTONE);
+
+        Ability sacrifice = new Sacrifice();
+        this.abilities.add(sacrifice);
+
+        if (level.isClientSide()) {
+            this.abilityButtons.add(sacrifice.getButton(Keybindings.keyQ));
+        }
     }
 
     public int getUncappedNightRange() {
