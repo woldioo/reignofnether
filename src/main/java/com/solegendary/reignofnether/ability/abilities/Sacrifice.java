@@ -30,7 +30,7 @@ import java.util.List;
 public class Sacrifice extends Ability {
 
     private static final int CD_MAX = 0;
-    private static final int RANGE = 9;
+    private static final int RANGE = 8;
 
     public Sacrifice() {
         super(
