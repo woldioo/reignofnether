@@ -1,5 +1,6 @@
 package com.solegendary.reignofnether.unit;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.ReignOfNether;
@@ -58,6 +59,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import static com.solegendary.reignofnether.player.PlayerServerEvents.isRTSPlayer;
@@ -90,6 +92,16 @@ public class UnitServerEvents {
         data.units.clear();
         getAllUnits().forEach(e -> {
             if (e instanceof Unit unit) {
+                UUID ownerUUID = null;
+                GameProfile profile = serverLevel.getServer().getProfileCache().get(unit.getOwnerName()).orElse(null);
+                if (profile != null) {
+                    ownerUUID = profile.getId();
+                    e.getPersistentData().putUUID("OwnerUUID", ownerUUID);
+                } else {
+                    System.out.println("Could not find UUID for owner name: " + unit.getOwnerName());
+                }
+
+                // Save unit data as usual
                 data.units.add(new UnitSave(
                         e.getName().getString(),
                         unit.getOwnerName(),
@@ -101,6 +113,8 @@ public class UnitServerEvents {
         data.save();
         serverLevel.getDataStorage().save();
     }
+
+
 
     @SubscribeEvent
     public static void loadUnits(ServerStartedEvent evt) {

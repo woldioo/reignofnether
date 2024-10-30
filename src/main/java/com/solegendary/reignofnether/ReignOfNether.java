@@ -2,7 +2,9 @@ package com.solegendary.reignofnether;
 
 import com.solegendary.reignofnether.network.S2CReset;
 import com.solegendary.reignofnether.registrars.*;
+import com.solegendary.reignofnether.votesystem.VoteCommand;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
@@ -62,7 +64,6 @@ public class ReignOfNether {
         SoundRegistrar.init();
         BlockRegistrar.init();
         GameRuleRegistrar.init();
-
         final ClientEventRegistrar clientRegistrar = new ClientEventRegistrar();
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> clientRegistrar::registerClientEvents);
 
