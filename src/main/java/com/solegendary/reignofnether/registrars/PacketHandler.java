@@ -33,6 +33,7 @@ public final class PacketHandler {
             new ResourceLocation(ReignOfNether.MOD_ID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals);
 
+
     private PacketHandler() { }
 
     public static void init() {

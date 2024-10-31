@@ -15,7 +15,7 @@ import net.minecraftforge.fml.DistExecutor;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber
+
 public class VoteCommand {
 
     @SubscribeEvent
@@ -33,11 +33,7 @@ public class VoteCommand {
     @OnlyIn(Dist.CLIENT)
     private static void openMapSelectionScreen() {
         Minecraft minecraftInstance = Minecraft.getInstance();
-        ResourceManager resourceManager = minecraftInstance.getResourceManager();
-        List<MapData> maps = MapDataLoader.loadMaps(resourceManager);
+        List<MapData> maps = MapDataLoader.getLoadedMaps();  // Access loaded maps directly
         minecraftInstance.setScreen(new MapSelectionScreen(maps));
     }
-
-
 }
-
