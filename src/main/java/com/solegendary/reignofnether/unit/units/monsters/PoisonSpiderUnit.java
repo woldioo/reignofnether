@@ -166,7 +166,7 @@ public class PoisonSpiderUnit extends CaveSpider implements Unit, AttackerUnit {
         AttackerUnit.tick(this);
 
         // apply slowness level 2 during daytime for a short time repeatedly
-        if (!this.level.isClientSide() && this.level.isDay() && !NightUtils.isInRangeOfNightSource(this.getEyePosition(), false))
+        if (tickCount % 4 == 0 && !this.level.isClientSide() && this.level.isDay() && !NightUtils.isInRangeOfNightSource(this.getEyePosition(), false))
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 1));
     }
 

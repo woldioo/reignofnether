@@ -3,6 +3,8 @@ package com.solegendary.reignofnether.unit.goals;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.units.piglins.WitherSkeletonUnit;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -123,12 +125,14 @@ public abstract class AbstractMeleeAttackUnitGoal extends Goal {
         }
     }
 
-    protected void checkAndPerformAttack(LivingEntity p_25557_, double p_25558_) {
-        double d0 = this.getAttackReachSqr(p_25557_);
+    protected void checkAndPerformAttack(LivingEntity target, double p_25558_) {
+        double d0 = this.getAttackReachSqr(target);
         if (p_25558_ <= d0 && this.ticksUntilNextAttack <= 0) {
             this.ticksUntilNextAttack = this.adjustedTickDelay(attackInterval);
             this.mob.swing(InteractionHand.MAIN_HAND);
-            this.mob.doHurtTarget(p_25557_);
+            this.mob.doHurtTarget(target);
+            if (target instanceof WitherSkeletonUnit)
+                this.mob.addEffect(new MobEffectInstance(MobEffects.WITHER, (WitherSkeletonUnit.WITHER_SECONDS * 20) / 2, 1));
         }
     }
 

@@ -96,7 +96,7 @@ public class BruteUnit extends PiglinBrute implements Unit, AttackerUnit {
     }
 
     // combat stats
-    public float getMovementSpeed() {return isHoldingUpShield ? movementSpeed * 0.5f : movementSpeed;}
+    public float getMovementSpeed() {return isHoldingUpShield ? movementSpeed * SHIELD_MOVE_MULTIPLIER : movementSpeed;}
     public float getUnitMaxHealth() {return maxHealth;}
     public float getUnitArmorValue() {return armorValue;}
     public int getPopCost() {return popCost;}
@@ -115,6 +115,8 @@ public class BruteUnit extends PiglinBrute implements Unit, AttackerUnit {
     public void setFollowTarget(@Nullable LivingEntity target) { this.followTarget = target; }
 
     // endregion
+
+    final static public float SHIELD_MOVE_MULTIPLIER = 0.5f;
 
     final static public float attackDamage = 5.0f;
     final static public float attacksPerSecond = 0.5f;

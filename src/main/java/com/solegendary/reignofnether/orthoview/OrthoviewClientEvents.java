@@ -461,11 +461,12 @@ public class OrthoviewClientEvents {
         if (!enabled || isCameraLocked())
             return;
 
-        if (evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_1 && Keybindings.altMod.isDown()) {
+        if ((evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_1 && Keybindings.altMod.isDown()) ||
+            evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_3) {
             cameraMovingByMouse = true;
 
-            float moveX = (float) evt.getDragX() * 0.15f * (zoom/ZOOM_MAX); //* winWidth/1920;
-            float moveZ = (float) evt.getDragY() * 0.15f * (zoom/ZOOM_MAX); //* winHeight/1080;
+            float moveX = (float) evt.getDragX() * 0.20f * (zoom/ZOOM_MAX); //* winWidth/1920;
+            float moveZ = (float) evt.getDragY() * 0.20f * (zoom/ZOOM_MAX); //* winHeight/1080;
             panCam(moveX, 0, moveZ);
         }
         else if (evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_2 && Keybindings.altMod.isDown()) {

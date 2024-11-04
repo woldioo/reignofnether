@@ -61,19 +61,24 @@ Bugfixes
 
 
 Quality of Life Features
-------------------------
+------------------------]
+[🟡] Greatly improved performance for all monster units
+[🟡] Improved performance for fog of war
+
 [❌] Players on the same vanilla team see each other as blue on the minimap and are not aggressive to each other
 
 [❌] Casters should use abilities one by one
     - just swap out hudselectedentity for the the next one that has the same ability off cd if it exists
+    - set flag (default true) for whether an ability will cast one by one or not
 
-Added more splash lines
-
+[🟡] Sculk Catalyst sacrifice can no longer be used if the unit is standing on an unspreadable block
+[🟡] You can now move the camera by holding middle mouse click and its sensitivity has been raised
+[🟡] Added more title screen splash lines
 
 Balancing
 ---------
 
-[❌] Zombie villagers should be slow in the day like creepers and spiders
+[🟡] Zombie villagers should be slow in the day like creepers and spiders
 
 [❌] Lightning should only charge one creeper at a time
 
@@ -86,29 +91,25 @@ Balancing
         - includes rally points
     - need to balance for upgrade timings, maybe give a cheap but slow structure upgrade to unlock stronger enchants?
 
-Use Daratrix's spreadsheet for balancing
-https://cdn.discordapp.com/attachments/1298067891609927764/1301148405527085157/image.png?ex=67236c62&is=67221ae2&hm=658b65b8334bb08ad583cb2f9ddcd368e9b83aa2b1aa04168d89d0c54dff4b3b&
-1. wither skeletons do 50% more damage on average because of their passive ability, plus extra from wither
-2. pillagers have a charge up time that's not shown on their attack speed stat
+[✔] Default max population is now 150
 
-Raise default supply to 150
-
-Vindicator +5hp +1dmg, +30food, +5s, +1 pop
-Pillager +5hp +1dmg, +25food, +5wood, +5s, +1 pop
-Witch upgrade -50 all resources
-Evokers fangs -1s cooldown
-Make blaze able to use fire wall on layered snow
-Brute -5food
-Brute Shield should protect against ranged by 75%, lowers movespeed by 40%
-Hoglin -0.05as
-Headhunter -10wood, get heavy tridents by default
-    - Upgrade gives stimpacks (-10hp for 10s of double attack speed and speed buff, cant be used while mounted)
+[✔] Vindicator +1dmg, +30food, +5s, +1 pop
+[✔] Pillager +5hp +1dmg, +25food, +5wood, +5s, +1 pop
+[✔] Witch upgrade -50 all resources, -10s
+[✔] Evokers fangs -1s cooldown
+[❌] Make blaze able to use fire wall on layered snow
+[✔] Brute -5 food
+[✔] Brute Shield protects against ranged by 75% up from 67%
+[✔] Hoglin -0.05as
+[✔] Blaze firewall upgrade +100 ore, +10s, -4 range
+Headhunter
+[✔] - 10wood
+[❌] - Upgrade gives stimpacks (-10hp for 10s of double attack speed and speed buff, cant be used while mounted)
 Wither skeletons
-    - wither death clouds should be an activated ability to spread clouds around for 10s
-    - Any units attacking it should be withered
-    - +25hp, +2dmg, +50ore, +5s, +1pop
-Piglins should be immune to magma and soulsand by default, fire resistance should give total fire block and tick immunity
-Ghast upgrade: unlocks an attack mode that is larger and slower moving but has +1 explosion radius
-Spiders +0.05as
-Web upgrade: Spiders can cast a temporary field of webs onto an area
+[❌] - wither death clouds should be an activated ability to spread clouds around for 10s
+[🟡] - Any melee units attacking a wither skeleton get withered for half the duration that a direct attack does
+[✔] - +15hp, +2dmg, +50ore, +5s, +1pop
+[🟡] Piglins are immune to magma by default, fire resistance upgrade now gives total fire block and fire tick immunity
+[❌] Web upgrade: Spiders can cast a temporary field of webs onto an area
     - cannot be used while mounted
+    - placed on cooldown when eject is used to dismount

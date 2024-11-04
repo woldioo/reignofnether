@@ -31,7 +31,7 @@ public class ResourceCosts {
 
     public static final int REPLANT_WOOD_COST = 1;
     public static final int REDUCED_REPLANT_WOOD_COST = 0;
-    public static final int DEFAULT_HARD_CAP_POPULATION = 120;
+    public static final int DEFAULT_HARD_CAP_POPULATION = 150;
 
 
     // ******************* UNITS ******************* //
@@ -54,19 +54,19 @@ public class ResourceCosts {
     // Villagers
     public static ResourceCost VILLAGER = ResourceCost.Unit(50,0,0,15,1);
     public static ResourceCost IRON_GOLEM = ResourceCost.Unit(0,50,200,40,4);
-    public static ResourceCost PILLAGER = ResourceCost.Unit(100,80,0,30,2);
-    public static ResourceCost VINDICATOR = ResourceCost.Unit(150,0,0,30,2);
+    public static ResourceCost PILLAGER = ResourceCost.Unit(125,85,0,35,3);
+    public static ResourceCost VINDICATOR = ResourceCost.Unit(180,0,0,35,3);
     public static ResourceCost WITCH = ResourceCost.Unit(100,100,100,35,3);
     public static ResourceCost EVOKER = ResourceCost.Unit(150,0,150,35,3);
     public static ResourceCost RAVAGER = ResourceCost.Unit(400,50,150,60,7);
 
     // Piglins
     public static ResourceCost GRUNT = ResourceCost.Unit(50,0,0,15,1);
-    public static ResourceCost BRUTE = ResourceCost.Unit(125,0,0,25,2);
-    public static ResourceCost HEADHUNTER = ResourceCost.Unit(90,70,0,25,2);
+    public static ResourceCost BRUTE = ResourceCost.Unit(120,0,0,25,2);
+    public static ResourceCost HEADHUNTER = ResourceCost.Unit(90,60,0,25,2);
     public static ResourceCost HOGLIN = ResourceCost.Unit(150,0,75,35,3);
     public static ResourceCost BLAZE = ResourceCost.Unit(50,50,100,30,2);
-    public static ResourceCost WITHER_SKELETON = ResourceCost.Unit(200,0,100,35,3);
+    public static ResourceCost WITHER_SKELETON = ResourceCost.Unit(200,0,150,40,4);
     public static ResourceCost GHAST = ResourceCost.Unit(100,150,250,50,5);
 
     // ******************* BUILDINGS ******************* //
@@ -120,7 +120,7 @@ public class ResourceCosts {
     public static ResourceCost RESEARCH_HUSKS = ResourceCost.Research(500,0,500, 200);
     public static ResourceCost RESEARCH_DROWNED = ResourceCost.Research(500,0,500, 200);
     public static ResourceCost RESEARCH_STRAYS = ResourceCost.Research(500,500,0, 200);
-    public static ResourceCost RESEARCH_LINGERING_POTIONS = ResourceCost.Research(300,300,300, 150);
+    public static ResourceCost RESEARCH_LINGERING_POTIONS = ResourceCost.Research(250,250,250, 140);
     public static ResourceCost RESEARCH_EVOKER_VEXES = ResourceCost.Research(500,0,300, 120);
     public static ResourceCost RESEARCH_CASTLE_FLAG = ResourceCost.Research(200,0,100, 60);
     public static ResourceCost RESEARCH_SILVERFISH = ResourceCost.Research(0,300,300, 120);
@@ -129,7 +129,7 @@ public class ResourceCosts {
     public static ResourceCost RESEARCH_BRUTE_SHIELDS = ResourceCost.Research(0,300,300, 150);
     public static ResourceCost RESEARCH_HOGLIN_CAVALRY = ResourceCost.Research(300,250,0, 100);
     public static ResourceCost RESEARCH_HEAVY_TRIDENTS = ResourceCost.Research(0, 250, 250, 140);
-    public static ResourceCost RESEARCH_BLAZE_FIRE_WALL = ResourceCost.Research(400, 0, 200, 150);
+    public static ResourceCost RESEARCH_BLAZE_FIRE_WALL = ResourceCost.Research(400, 0, 300, 160);
     public static ResourceCost RESEARCH_FIRE_RESISTANCE = ResourceCost.Research(0, 200, 200, 100);
     public static ResourceCost RESEARCH_WITHER_CLOUDS = ResourceCost.Research(250, 0, 350, 150);
     public static ResourceCost RESEARCH_ADVANCED_PORTALS = ResourceCost.Research(0, 300, 300, 150);

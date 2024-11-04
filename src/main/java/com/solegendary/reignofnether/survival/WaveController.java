@@ -33,6 +33,7 @@ public class WaveController {
     public List<LivingEntity> generateNewEnemies() {
         // types are based on current wave (don't allow just 1 of a big enemy early on)
         // capped by nextPopulation
+        return null;
     }
 
     public void spawnIllagerWave() {

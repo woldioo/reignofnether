@@ -9,6 +9,7 @@ import com.solegendary.reignofnether.building.buildings.villagers.IronGolemBuild
 import com.solegendary.reignofnether.player.PlayerServerEvents;
 import com.solegendary.reignofnether.registrars.EntityRegistrar;
 import com.solegendary.reignofnether.research.ResearchServerEvents;
+import com.solegendary.reignofnether.research.researchItems.ResearchFireResistance;
 import com.solegendary.reignofnether.research.researchItems.ResearchHeavyTridents;
 import com.solegendary.reignofnether.research.researchItems.ResearchWitherClouds;
 import com.solegendary.reignofnether.resources.ResourceCosts;
@@ -22,6 +23,7 @@ import com.solegendary.reignofnether.unit.packets.*;
 import com.solegendary.reignofnether.unit.units.monsters.*;
 import com.solegendary.reignofnether.unit.units.piglins.*;
 import com.solegendary.reignofnether.unit.units.villagers.*;
+import com.solegendary.reignofnether.util.Faction;
 import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -524,7 +526,7 @@ public class UnitServerEvents {
             evt.setAmount(attackerUnit.getUnitAttackDamage());
 
         if (evt.getEntity() instanceof BruteUnit brute && brute.isHoldingUpShield && (evt.getSource().isProjectile()))
-            evt.setAmount(evt.getAmount() / 3);
+            evt.setAmount(evt.getAmount() / 4);
 
         if (evt.getEntity() instanceof CreeperUnit && (evt.getSource().isExplosion()))
             evt.setCanceled(true);
@@ -543,6 +545,14 @@ public class UnitServerEvents {
 
         if (evt.getEntity() instanceof Unit && (evt.getSource() == DamageSource.IN_WALL))
             evt.setCanceled(true);
+
+        // piglin fire immunity
+        if (evt.getEntity() instanceof Unit unit &&
+            (evt.getSource() == DamageSource.ON_FIRE || evt.getSource() == DamageSource.IN_FIRE)) {
+            boolean hasImmunityResearch = ResearchServerEvents.playerHasResearch(unit.getOwnerName(), ResearchFireResistance.itemName);
+            if (hasImmunityResearch)
+                evt.setCanceled(true);
+        }
 
         // prevent friendly fire damage from ranged units (unless specifically targeted)
         if (evt.getSource().isProjectile() && evt.getSource().getEntity() instanceof Unit unit)

@@ -116,14 +116,14 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
 
     // endregion
 
-    final static public float attackDamage = 6.0f;
+    final static public float attackDamage = 8.0f;
     final static public float attacksPerSecond = 0.4f;
     final static public float attackRange = 2; // only used by ranged units or melee building attackers
     final static public float aggroRange = 10;
     final static public boolean willRetaliate = true; // will attack when hurt by an enemy
     final static public boolean aggressiveWhenIdle = true;
 
-    final static public float maxHealth = 75.0f;
+    final static public float maxHealth = 90.0f;
     final static public float armorValue = 0.0f;
     final static public float movementSpeed = 0.28f;
     final static public int popCost = ResourceCosts.WITHER_SKELETON.population;
@@ -215,7 +215,7 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
         this.setItemSlot(EquipmentSlot.MAINHAND, swordStack);
     }
 
-    private static final int WITHER_SECONDS = 7;
+    public static final int WITHER_SECONDS = 7;
 
     @Override
     public boolean doHurtTarget(@NotNull Entity pEntity) {

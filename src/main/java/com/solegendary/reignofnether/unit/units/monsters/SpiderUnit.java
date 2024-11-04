@@ -178,7 +178,7 @@ public class SpiderUnit extends Spider implements Unit, AttackerUnit, Convertabl
             AttackerUnit.tick(this);
 
             // apply slowness level 2 during daytime for a short time repeatedly
-            if (!this.level.isClientSide() && this.level.isDay() && !NightUtils.isInRangeOfNightSource(this.getEyePosition(), false))
+            if (tickCount % 4 == 0 && !this.level.isClientSide() && this.level.isDay() && !NightUtils.isInRangeOfNightSource(this.getEyePosition(), false))
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 1));
         }
     }

@@ -20,7 +20,7 @@ import java.util.List;
 
 public class SetFangsCircle extends Ability {
 
-    public static final int CD_MAX_SECONDS = 8;
+    public static final int CD_MAX_SECONDS = 7;
 
     private final EvokerUnit evokerUnit;
 

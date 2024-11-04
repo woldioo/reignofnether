@@ -9,6 +9,7 @@ import com.solegendary.reignofnether.research.ResearchClient;
 import com.solegendary.reignofnether.research.ResearchServerEvents;
 import com.solegendary.reignofnether.research.researchItems.ResearchResourceCapacity;
 import com.solegendary.reignofnether.resources.ResourceCosts;
+import com.solegendary.reignofnether.time.NightUtils;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.goals.*;
 import com.solegendary.reignofnether.unit.interfaces.ArmSwingingUnit;
@@ -26,6 +27,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
@@ -242,9 +245,9 @@ public class ZombieVillagerUnit extends Vindicator implements Unit, WorkerUnit, 
         AttackerUnit.tick(this);
         WorkerUnit.tick(this);
 
-        // won't naturally burn since we've extended a Vindicator
-        if (this.isSunBurnTick())
-            this.setSecondsOnFire(8);
+        // apply slowness level 2 during daytime for a short time repeatedly
+        if (tickCount % 4 == 0 && !this.level.isClientSide() && this.level.isDay() && !NightUtils.isInRangeOfNightSource(this.getEyePosition(), false))
+            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 1));
     }
 
     @Override

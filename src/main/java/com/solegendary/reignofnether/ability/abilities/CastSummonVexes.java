@@ -34,6 +34,7 @@ public class CastSummonVexes extends Ability {
             CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND,
             0,
             0,
+            true,
             true
         );
         this.evokerUnit = evokerUnit;
