@@ -211,8 +211,8 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
     public void setupEquipmentAndUpgradesClient() {
         // weapon is purely visual, damage is based solely on entity attribute ATTACK_DAMAGE
         Item axe = Items.IRON_AXE;
-        if (ResearchClient.hasResearch(ResearchVindicatorAxes.itemName))
-            axe = Items.DIAMOND_AXE;
+        //if (ResearchClient.hasResearch(ResearchVindicatorAxes.itemName))
+        //    axe = Items.DIAMOND_AXE;
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(axe));
     }
 
@@ -221,10 +221,10 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
         // weapon is purely visual, damage is based solely on entity attribute ATTACK_DAMAGE
         Item axe = Items.IRON_AXE;
         int damageMod = 0;
-        if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchVindicatorAxes.itemName)) {
-            axe = Items.DIAMOND_AXE;
-            damageMod = 2;
-        }
+        //if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchVindicatorAxes.itemName)) {
+        //    axe = Items.DIAMOND_AXE;
+        //    damageMod = 2;
+        //}
         ItemStack axeStack = new ItemStack(axe);
         AttributeModifier mod = new AttributeModifier(UUID.randomUUID().toString(), damageMod, AttributeModifier.Operation.ADDITION);
         axeStack.addAttributeModifier(Attributes.ATTACK_DAMAGE, mod, EquipmentSlot.MAINHAND);

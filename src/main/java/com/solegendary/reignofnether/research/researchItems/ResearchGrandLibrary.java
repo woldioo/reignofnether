@@ -40,7 +40,7 @@ public class ResearchGrandLibrary extends ProductionItem {
         return new Button(
                 ResearchGrandLibrary.itemName,
                 14,
-                new ResourceLocation("minecraft", "textures/block/bookshelf_side.png"),
+                new ResourceLocation("minecraft", "textures/block/bookshelf.png"),
                 new ResourceLocation(ReignOfNether.MOD_ID, "textures/hud/icon_frame_bronze.png"),
                 hotkey,
                 () -> false,
@@ -63,7 +63,7 @@ public class ResearchGrandLibrary extends ProductionItem {
         return new Button(
                 ResearchGrandLibrary.itemName,
                 14,
-                new ResourceLocation("minecraft", "textures/block/bookshelf_side.png"),
+                new ResourceLocation("minecraft", "textures/block/bookshelf.png"),
                 new ResourceLocation(ReignOfNether.MOD_ID, "textures/hud/icon_frame_bronze.png"),
                 null,
                 () -> false,

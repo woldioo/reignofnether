@@ -1,6 +1,11 @@
 package com.solegendary.reignofnether.building.buildings.villagers;
 
+import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.ability.Ability;
+import com.solegendary.reignofnether.ability.EnchantAbility;
+import com.solegendary.reignofnether.ability.abilities.CallLightning;
+import com.solegendary.reignofnether.ability.abilities.EnchantMultishot;
+import com.solegendary.reignofnether.ability.abilities.EnchantSharpness;
 import com.solegendary.reignofnether.building.BuildingBlock;
 import com.solegendary.reignofnether.building.BuildingBlockData;
 import com.solegendary.reignofnether.building.BuildingClientEvents;
@@ -15,11 +20,15 @@ import com.solegendary.reignofnether.research.researchItems.ResearchLingeringPot
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.tutorial.TutorialClientEvents;
+import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.util.Faction;
+import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -38,7 +47,7 @@ public class Library extends ProductionBuilding {
     public final static String upgradedStructureName = "library_grand";
     public final static ResourceCost cost = ResourceCosts.LIBRARY;
 
-    public Ability autoCastEnchant = null;
+    public EnchantAbility autoCastEnchant = null;
 
     public Library(Level level, BlockPos originPos, Rotation rotation, String ownerName) {
         super(level, originPos, rotation, ownerName, getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation), false);
@@ -59,12 +68,43 @@ public class Library extends ProductionBuilding {
 
         this.explodeChance = 0.2f;
 
-        if (level.isClientSide())
+        Ability enchantMultishot = new EnchantMultishot(this);
+        this.abilities.add(enchantMultishot);
+        Ability enchantSharpness = new EnchantSharpness(this);
+        this.abilities.add(enchantSharpness);
+
+        if (level.isClientSide()) {
+            this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyQ));
+            this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyW));
+            this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyE));
+            this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyR));
+            this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyT));
             this.productionButtons = Arrays.asList(
-                ResearchLingeringPotions.getStartButton(this, Keybindings.keyQ),
-                ResearchEvokerVexes.getStartButton(this, Keybindings.keyW),
-                ResearchGrandLibrary.getStartButton(this, Keybindings.keyE)
+                    ResearchLingeringPotions.getStartButton(this, Keybindings.keyU),
+                    ResearchEvokerVexes.getStartButton(this, Keybindings.keyI),
+                    ResearchGrandLibrary.getStartButton(this, Keybindings.keyO)
             );
+        }
+    }
+
+    @Override
+    public void tick(Level tickLevel) {
+        super.tick(tickLevel);
+
+        if (!tickLevel.isClientSide() && tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 15 == 0 &&
+            isBuilt && autoCastEnchant != null && autoCastEnchant.isOffCooldown()) {
+
+            List<Mob> mobs = MiscUtil.getEntitiesWithinRange(new Vector3d(this.centrePos.getX(), this.centrePos.getY(), this.centrePos.getZ()),
+                autoCastEnchant.range, Mob.class, tickLevel)
+                    .stream().filter(e -> (autoCastEnchant.isCorrectUnitAndEquipment(e) &&
+                    autoCastEnchant.canAfford(this) &&
+                    !autoCastEnchant.hasAnyEnchant(e)))
+                    .toList();
+
+            if (!mobs.isEmpty()) {
+                autoCastEnchant.use(tickLevel, this, mobs.get(0));
+            }
+        }
     }
 
     public Faction getFaction() {return Faction.VILLAGERS;}

@@ -1,6 +1,7 @@
 package com.solegendary.reignofnether.ability;
 
 import com.solegendary.reignofnether.building.Building;
+import com.solegendary.reignofnether.building.buildings.villagers.Library;
 import com.solegendary.reignofnether.hud.HudClientEvents;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.Resources;
@@ -8,6 +9,7 @@ import com.solegendary.reignofnether.resources.ResourcesClientEvents;
 import com.solegendary.reignofnether.resources.ResourcesServerEvents;
 import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -16,9 +18,10 @@ public abstract class EnchantAbility extends Ability {
 
     public static final int CD_MAX = 1;
     public static final int RANGE = 10;
+    public final Library library;
     public final ResourceCost cost;
 
-    public EnchantAbility(UnitAction action, ResourceCost cost) {
+    public EnchantAbility(UnitAction action, Library library, ResourceCost cost) {
         super(
                 action,
                 CD_MAX,
@@ -27,6 +30,7 @@ public abstract class EnchantAbility extends Ability {
                 true,
                 true
         );
+        this.library = library;
         this.cost = cost;
     }
 
@@ -46,41 +50,50 @@ public abstract class EnchantAbility extends Ability {
         return false;
     }
 
-    protected boolean isCorrectUnitAndEquipment(LivingEntity entity) {
+    public boolean isCorrectUnitAndEquipment(LivingEntity entity) {
         return false;
     }
 
-    protected boolean hasEnchant(LivingEntity entity) {
+    public boolean hasAnyEnchant(LivingEntity entity) { return false; }
+
+    protected boolean hasSameEnchant(LivingEntity entity) {
         return false;
     }
 
     protected void doEnchant(LivingEntity entity) { }
 
     @Override
-    public void use(Level level, Building buildingUsing, LivingEntity targetEntity) {
+    public void use(Level level, Building buildingUsing, LivingEntity te) {
 
         if (!level.isClientSide() &&
-            targetEntity instanceof Unit unit &&
+            te instanceof Unit unit &&
             unit.getOwnerName().equals(buildingUsing.ownerName) &&
-            isCorrectUnitAndEquipment(targetEntity) &&
-            !hasEnchant(targetEntity) &&
+            isCorrectUnitAndEquipment(te) &&
+            !hasSameEnchant(te) &&
             canAfford(buildingUsing) &&
-            targetEntity.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) < RANGE * RANGE) {
+            te.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) < RANGE * RANGE) {
 
-            doEnchant(targetEntity);
+            doEnchant(te);
+            ResourcesServerEvents.addSubtractResources(new Resources(library.ownerName, -cost.food, -cost.wood, -cost.ore));
+            setToMaxCooldown();
+            level.playLocalSound(te.getX(), te.getY(), te.getZ(),
+                    SoundEvents.ENCHANTMENT_TABLE_USE, te.getSoundSource(), 1.0F + te.getRandom().nextFloat(),
+                    te.getRandom().nextFloat() * 0.7F + 0.3F, false);
 
         } else if (level.isClientSide()) {
-            if (!(targetEntity instanceof Unit unit &&
+            if (!(te instanceof Unit unit &&
                     unit.getOwnerName().equals(buildingUsing.ownerName))) {
                 HudClientEvents.showTemporaryMessage("Can only enchant your own units");
-            } else if (targetEntity.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) >= RANGE * RANGE) {
+            } else if (te.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) >= RANGE * RANGE) {
                 HudClientEvents.showTemporaryMessage("Unit is out of range");
-            } else if (!isCorrectUnitAndEquipment(targetEntity)) {
+            } else if (!isCorrectUnitAndEquipment(te)) {
                 HudClientEvents.showTemporaryMessage("Can't enchant that type of unit");
-            } else if (hasEnchant(targetEntity)) {
+            } else if (hasSameEnchant(te)) {
                 HudClientEvents.showTemporaryMessage("Unit already has this enchantment");
             } else if (!canAfford(buildingUsing)) {
                 HudClientEvents.showTemporaryMessage("Can't afford this enchantment");
+            } else {
+                setToMaxCooldown();
             }
         }
     }

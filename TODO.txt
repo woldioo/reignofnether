@@ -52,6 +52,22 @@
 
 
 
+[🟡] Vindicator and Pillager upgrades are now enchantments paid for per-unit from the library
+    - Diamond axes and Multishot blacksmith upgrades have been removed
+    - Libraries can now be upgraded to Grand Libraries for more options
+    - Basic libraries have:
+        - Anti-Knockback for Vindicators
+        - Piercing for Pillagers
+    - Grand libraries have:
+        - Sharpness for Vindicators
+        - Multishot for Pillagers
+        - Vigor for Evokers and Witches (-25% cooldown times)
+    - You can have only one enchantment at a time, and can be overridden, but no refunds are given
+    - Enchantment buttons can be right-clicked to auto enchant any nearby units (be careful, it'll spend all your resources!)
+
+    [🟡] Library keeps having falling logs in it
+    [🟡] Grand Library isn't saved or loaded properly
+
 Bugfixes
 --------
 [❌] Melee units take a while to attack while chasing moving enemies
@@ -82,19 +98,6 @@ Balancing
 [🟡] Zombie villagers are now slowed under sunlight like creepers and spiders
 
 [❌] Lightning should only charge one creeper at a time
-
-[❌] Vindicator and Pillager upgrades are now enchantments paid for per-unit from the library
-    - Diamond axes and Multishot blacksmith upgrades have been removed
-    - Libraries can now be upgraded to Grand Libraries for more options
-    - Basic libraries have:
-        - Anti-Knockback for Vindicators
-        - Seeking for Pillagers (improved accuracy, and arrows pass through any enemy that you didn't directly target)
-    - Grand libraries have:
-        - Sharpness for Vindicators
-        - Multishot for Pillagers
-        - Vigor for Evokers and Witches (-25% cooldown times)
-    - You can have only one enchantment at a time, and can be overridden, but no refunds are given
-    - Enchantment buttons can be right-clicked to auto enchant any nearby units (be careful, it'll spend all your resources!)
 
 [✔] Default max population is now 150
 [✔] Drowned turn illagers into Drowned now instead of regular zombies
