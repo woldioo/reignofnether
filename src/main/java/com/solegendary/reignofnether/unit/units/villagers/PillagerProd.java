@@ -8,6 +8,7 @@ import com.solegendary.reignofnether.hud.Button;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.registrars.EntityRegistrar;
 import com.solegendary.reignofnether.research.ResearchClient;
+import com.solegendary.reignofnether.research.researchItems.ResearchPillagerCrossbows;
 import com.solegendary.reignofnether.research.researchItems.ResearchVindicatorAxes;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
@@ -49,7 +50,7 @@ public class PillagerProd extends ProductionItem {
             FormattedCharSequence.forward("", Style.EMPTY),
             FormattedCharSequence.forward("A villager armed with a crossbow for ranged combat.", Style.EMPTY)
         ));
-        if (ResearchClient.hasResearch(ResearchVindicatorAxes.itemName)) {
+        if (ResearchClient.hasResearch(ResearchPillagerCrossbows.itemName)) {
             tooltipLines.add(FormattedCharSequence.forward("", Style.EMPTY));
             tooltipLines.add(FormattedCharSequence.forward("Upgraded with multishot crossbows that fire triple arrows", Style.EMPTY.withBold(true)));
         }

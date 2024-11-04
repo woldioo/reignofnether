@@ -201,7 +201,7 @@ public class PlayerServerEvents {
                 serverPlayer.sendSystemMessage(Component.literal("As a server op you may use:"));
                 serverPlayer.sendSystemMessage(Component.literal("/rts-fog enable | disable"));
                 serverPlayer.sendSystemMessage(Component.literal("/rts-lock enable | disable"));
-                serverPlayer.sendSystemMessage(Component.literal("/rts-syncing enable | disable"));
+                serverPlayer.sendSystemMessage(Component.literal("/rts-syncing enable | disable (experimental)"));
                 serverPlayer.sendSystemMessage(Component.literal("/rts-reset"));
                 serverPlayer.sendSystemMessage(Component.literal(""));
             }
