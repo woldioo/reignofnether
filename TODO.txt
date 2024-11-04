@@ -58,7 +58,7 @@ Bugfixes
 [❌] Ravager artilleries shoot themselves when targeting a building
 [❌] Ghasts can no longer attack other friendly ghasts to avoid an exploit where they get pushed out of range
 [❌] Tab causes crash somehow?
-
+[❌] Fix chunk forcing issue with workers
 
 Quality of Life Features
 ------------------------]
@@ -78,38 +78,39 @@ Quality of Life Features
 Balancing
 ---------
 
-[🟡] Zombie villagers should be slow in the day like creepers and spiders
+[🟡] Worker Carry Bags now makes workers return resources when holding above 100 total
+[🟡] Zombie villagers are now slowed under sunlight like creepers and spiders
 
 [❌] Lightning should only charge one creeper at a time
 
-[❌] Move diamond axes and multishot to enchantments at the library which cost extra to use and have a cooldown
-    - and only upgrade one unit per use, max 1 enchant each
-    - vindicators get sharpness OR sweeping edge
-    - pillagers get quick charge OR multishot
-    - give boots enchantment to evokers and witches for shorter cooldown
-    - right click any enchant ability to autoenchant - any unit that right clicks the library in range will be autoenchanted if you can afford it
-        - includes rally points
-    - need to balance for upgrade timings, maybe give a cheap but slow structure upgrade to unlock stronger enchants?
+[❌] Vindicator and Pillager upgrades are now enchantments paid for per-unit from the library
+    - Diamond axes and Multishot blacksmith upgrades have been removed
+    - Libraries can now be upgraded to Grand Libraries for more options
+    - Basic libraries have:
+        - Anti-Knockback for Vindicators
+        - Seeking for Pillagers (improved accuracy, and arrows pass through any enemy that you didn't directly target)
+    - Grand libraries have:
+        - Sharpness for Vindicators
+        - Multishot for Pillagers
+        - Vigor for Evokers and Witches (-25% cooldown times)
+    - You can have only one enchantment at a time, and can be overridden, but no refunds are given
+    - Enchantment buttons can be right-clicked to auto enchant any nearby units (be careful, it'll spend all your resources!)
 
 [✔] Default max population is now 150
-
+[✔] Drowned turn illagers into Drowned now instead of regular zombies
+[✔] Zombie Piglins +10 hp, +1dmg and Zoglins +15hp, +1dmg
 [✔] Vindicator +1dmg, +30food, +5s, +1 pop
-[✔] Pillager +5hp +1dmg, +25food, +5wood, +5s, +1 pop
+[✔] Pillager +5hp, +25food, +5wood, +5s, +1 pop
 [✔] Witch upgrade -50 all resources, -10s
-[✔] Evokers fangs -1s cooldown
-[❌] Make blaze able to use fire wall on layered snow
+[✔] Castle Officer's Quarters +150 wood, +50 ore, +30s
 [✔] Brute -5 food
 [✔] Brute Shield protects against ranged by 75% up from 67%
 [✔] Hoglin -0.05as
 [✔] Blaze firewall upgrade +100 ore, +10s, -4 range
-Headhunter
-[✔] - 10wood
+[✔] Headhunter -10wood
 [❌] - Upgrade gives stimpacks (-10hp for 10s of double attack speed and speed buff, cant be used while mounted)
 Wither skeletons
-[❌] - wither death clouds should be an activated ability to spread clouds around for 10s
+
 [🟡] - Any melee units attacking a wither skeleton get withered for half the duration that a direct attack does
 [✔] - +15hp, +2dmg, +50ore, +5s, +1pop
 [🟡] Piglins are immune to magma by default, fire resistance upgrade now gives total fire block and fire tick immunity
-[❌] Web upgrade: Spiders can cast a temporary field of webs onto an area
-    - cannot be used while mounted
-    - placed on cooldown when eject is used to dismount

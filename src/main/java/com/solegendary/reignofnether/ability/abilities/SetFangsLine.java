@@ -20,7 +20,7 @@ import java.util.List;
 
 public class SetFangsLine extends Ability {
 
-    public static final int CD_MAX_SECONDS = 7;
+    public static final int CD_MAX_SECONDS = 8;
 
     private final EvokerUnit evokerUnit;
 

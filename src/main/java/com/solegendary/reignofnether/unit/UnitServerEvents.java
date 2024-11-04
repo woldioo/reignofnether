@@ -330,7 +330,7 @@ public class UnitServerEvents {
                     evt.getEntity() instanceof PillagerUnit ||
                     evt.getEntity() instanceof EvokerUnit ||
                     evt.getEntity() instanceof WitchUnit)
-                entityType = EntityRegistrar.ZOMBIE_UNIT.get();
+                entityType = EntityRegistrar.DROWNED_UNIT.get();
 
             if (entityType != null && evt.getEntity().getLevel() instanceof ServerLevel serverLevel) {
                 Entity entity = entityType.spawn(serverLevel, null,
@@ -550,7 +550,7 @@ public class UnitServerEvents {
         if (evt.getEntity() instanceof Unit unit &&
             (evt.getSource() == DamageSource.ON_FIRE || evt.getSource() == DamageSource.IN_FIRE)) {
             boolean hasImmunityResearch = ResearchServerEvents.playerHasResearch(unit.getOwnerName(), ResearchFireResistance.itemName);
-            if (hasImmunityResearch)
+            if (hasImmunityResearch && unit.getFaction() == Faction.PIGLINS)
                 evt.setCanceled(true);
         }
 

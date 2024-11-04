@@ -1,5 +1,6 @@
 package com.solegendary.reignofnether.building.buildings.villagers;
 
+import com.solegendary.reignofnether.ability.Ability;
 import com.solegendary.reignofnether.building.BuildingBlock;
 import com.solegendary.reignofnether.building.BuildingBlockData;
 import com.solegendary.reignofnether.building.BuildingClientEvents;
@@ -9,6 +10,7 @@ import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.research.ResearchClient;
 import com.solegendary.reignofnether.research.researchItems.ResearchEvokerVexes;
+import com.solegendary.reignofnether.research.researchItems.ResearchGrandLibrary;
 import com.solegendary.reignofnether.research.researchItems.ResearchLingeringPotions;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
@@ -33,7 +35,10 @@ public class Library extends ProductionBuilding {
 
     public final static String buildingName = "Library";
     public final static String structureName = "library";
+    public final static String upgradedStructureName = "library_grand";
     public final static ResourceCost cost = ResourceCosts.LIBRARY;
+
+    public Ability autoCastEnchant = null;
 
     public Library(Level level, BlockPos originPos, Rotation rotation, String ownerName) {
         super(level, originPos, rotation, ownerName, getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation), false);
@@ -57,7 +62,8 @@ public class Library extends ProductionBuilding {
         if (level.isClientSide())
             this.productionButtons = Arrays.asList(
                 ResearchLingeringPotions.getStartButton(this, Keybindings.keyQ),
-                ResearchEvokerVexes.getStartButton(this, Keybindings.keyE)
+                ResearchEvokerVexes.getStartButton(this, Keybindings.keyW),
+                ResearchGrandLibrary.getStartButton(this, Keybindings.keyE)
             );
     }
 
@@ -89,5 +95,20 @@ public class Library extends ProductionBuilding {
             ),
             null
         );
+    }
+
+    public void changeStructure(String newStructureName) {
+        ArrayList<BuildingBlock> newBlocks = BuildingBlockData.getBuildingBlocks(newStructureName, this.getLevel());
+        this.blocks = getAbsoluteBlockData(newBlocks, this.getLevel(), originPos, rotation);
+        super.refreshBlocks();
+    }
+
+    // check that the flag is built based on existing placed blocks
+    @Override
+    public boolean isUpgraded() {
+        for (BuildingBlock block : blocks)
+            if (block.getBlockState().getBlock() == Blocks.GLOWSTONE)
+                return true;
+        return false;
     }
 }

@@ -76,10 +76,11 @@ Quality of Life Features
 Balancing
 ---------
 
-[❌] An upgrade at the Fortress now gives ghasts +1 explosion radius
-    - check how this affects friendly fire and damage
+[❌] - wither death clouds should be an activated ability to spread clouds around for 10s
 
-
+[❌] Web upgrade: Spiders can cast a temporary field of webs onto an area
+    - cannot be used while mounted
+    - placed on cooldown when eject is used to dismount
 
 
 

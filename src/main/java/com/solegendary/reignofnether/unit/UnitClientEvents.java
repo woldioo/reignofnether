@@ -373,7 +373,9 @@ public class UnitClientEvents {
 
     @SubscribeEvent
     public static void onEntityLeaveEvent(EntityLeaveLevelEvent evt) {
-        idleWorkerIds.removeIf(id -> id == evt.getEntity().getId());
+        synchronized (idleWorkerIds) {
+            idleWorkerIds.removeIf(id -> id == evt.getEntity().getId());
+        }
     }
 
     /**

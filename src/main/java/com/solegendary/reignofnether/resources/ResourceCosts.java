@@ -45,8 +45,6 @@ public class ResourceCosts {
     public static ResourceCost DROWNED = ResourceCost.Unit(75,0,0,18,1);
     public static ResourceCost SPIDER = ResourceCost.Unit(90,25,25,25,2);
     public static ResourceCost POISON_SPIDER = ResourceCost.Unit(90,25,25,25,2);
-    public static ResourceCost ENDERMAN = ResourceCost.Unit(100,100,100,30,3);
-    public static ResourceCost WARDEN = ResourceCost.Unit(250,0,125,40,4);
 
     public static ResourceCost ZOMBIE_PIGLIN = ResourceCost.Unit(0,0,0,10,1);
     public static ResourceCost ZOGLIN = ResourceCost.Unit(0,0,0,10,2);
@@ -86,6 +84,7 @@ public class ResourceCosts {
     public static ResourceCost LABORATORY = ResourceCost.Building(0,250,150, 0);
     public static ResourceCost DARK_WATCHTOWER = ResourceCost.Building(0,100,100, 0);
     public static ResourceCost STRONGHOLD = ResourceCost.Building(0,400,300, 0);
+    public static ResourceCost WARDEN = ResourceCost.Unit(250,0,125,40,4);
 
     // Villagers
     public static ResourceCost TOWN_CENTRE = ResourceCost.Building(0,300,150, 10);
@@ -110,8 +109,6 @@ public class ResourceCosts {
     public static ResourceCost FORTRESS = ResourceCost.Building(0, 400, 300, 0);
 
     // ******************* RESEARCH ******************* //
-    public static ResourceCost RESEARCH_VINDICATOR_AXES = ResourceCost.Research(0,200,400, 150);
-    public static ResourceCost RESEARCH_PILLAGER_CROSSBOWS = ResourceCost.Research(0,600,300, 180);
     public static ResourceCost RESEARCH_GOLEM_SMITHING = ResourceCost.Research(0, 150, 150, 60);
     public static ResourceCost RESEARCH_LAB_LIGHTNING_ROD = ResourceCost.Research(0,0,400, 120);
     public static ResourceCost RESEARCH_RESOURCE_CAPACITY = ResourceCost.Research(200,200,0, 90);
@@ -122,7 +119,8 @@ public class ResourceCosts {
     public static ResourceCost RESEARCH_STRAYS = ResourceCost.Research(500,500,0, 200);
     public static ResourceCost RESEARCH_LINGERING_POTIONS = ResourceCost.Research(250,250,250, 140);
     public static ResourceCost RESEARCH_EVOKER_VEXES = ResourceCost.Research(500,0,300, 120);
-    public static ResourceCost RESEARCH_CASTLE_FLAG = ResourceCost.Research(200,0,100, 60);
+    public static ResourceCost RESEARCH_CASTLE_FLAG = ResourceCost.Research(200,150,150, 90);
+    public static ResourceCost RESEARCH_GRAND_LIBRARY = ResourceCost.Research(0,150,350, 120);
     public static ResourceCost RESEARCH_SILVERFISH = ResourceCost.Research(0,300,300, 120);
     public static ResourceCost RESEARCH_SCULK_AMPLIFIERS = ResourceCost.Research(0,200,400, 150);
     public static ResourceCost RESEARCH_RAVAGER_ARTILLERY = ResourceCost.Research(400,0,350, 140);
@@ -136,4 +134,17 @@ public class ResourceCosts {
     public static ResourceCost RESEARCH_CIVILIAN_PORTAL = ResourceCost.Research(0, 75, 0, 20);
     public static ResourceCost RESEARCH_MILITARY_PORTAL = ResourceCost.Research(0, 125, 0, 30);
     public static ResourceCost RESEARCH_TRANSPORT_PORTAL = ResourceCost.Research(0, 175, 0, 40);
+
+    // ******************* ENCHANTMENTS ******************* //
+    public static ResourceCost ENCHANT_ANTI_KNOCKBACK = ResourceCost.Enchantment(0,15, 25);
+    public static ResourceCost ENCHANT_SEEKING = ResourceCost.Enchantment(0,40, 20);
+    public static ResourceCost ENCHANT_SHARPNESS = ResourceCost.Enchantment(0,30, 50);
+    public static ResourceCost ENCHANT_MULTISHOT = ResourceCost.Enchantment(0,80, 40);
+    public static ResourceCost ENCHANT_VIGOR = ResourceCost.Enchantment(0,60, 60);
+
+    // ******************* Unused ******************* //
+
+    public static ResourceCost RESEARCH_VINDICATOR_AXES = ResourceCost.Research(0,200,400, 150);
+    public static ResourceCost RESEARCH_PILLAGER_CROSSBOWS = ResourceCost.Research(0,600,300, 180);
+    public static ResourceCost ENDERMAN = ResourceCost.Unit(100,100,100,30,3);
 }

@@ -28,4 +28,7 @@ public class ResourceCost {
     public static ResourceCost Building(int food, int wood, int ore, int supply) { // buildings
         return new ResourceCost(food, wood, ore, 0, supply);
     }
+    public static ResourceCost Enchantment(int food, int wood, int ore) { // buildings
+        return new ResourceCost(food, wood, ore, 0, 0);
+    }
 }
