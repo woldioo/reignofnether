@@ -9,34 +9,31 @@ import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.units.villagers.PillagerUnit;
-import com.solegendary.reignofnether.unit.units.villagers.VindicatorUnit;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.CrossbowItem;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import java.util.List;
 
-public class EnchantSharpness extends EnchantAbility {
+public class EnchantQuickCharge extends EnchantAbility {
 
-    private static final UnitAction ENCHANT_ACTION = UnitAction.ENCHANT_SHARPNESS;
-    private static final Enchantment actualEnchantment = Enchantments.SHARPNESS;
+    private static final UnitAction ENCHANT_ACTION = UnitAction.ENCHANT_QUICKCHARGE;
+    private static final Enchantment actualEnchantment = Enchantments.QUICK_CHARGE;
 
-    public EnchantSharpness(Library library) {
-        super(ENCHANT_ACTION, library, ResourceCosts.ENCHANT_SHARPNESS);
+    public EnchantQuickCharge(Library library) {
+        super(ENCHANT_ACTION, library, ResourceCosts.ENCHANT_QUICK_CHARGE);
     }
 
     @Override
     public AbilityButton getButton(Keybinding hotkey) {
         return new AbilityButton(
-                "Sharpness Enchantment",
-                new ResourceLocation("minecraft", "textures/item/iron_axe.png"),
+                "Quick Charge Enchantment",
+                new ResourceLocation("minecraft", "textures/item/crossbow_standby.png"),
                 hotkey,
                 () -> CursorClientEvents.getLeftClickAction() == ENCHANT_ACTION || library.autoCastEnchant == this,
                 () -> false,
@@ -50,11 +47,11 @@ public class EnchantSharpness extends EnchantAbility {
                         library.autoCastEnchant = this;
                 },
                 List.of(
-                        FormattedCharSequence.forward("Sharpness Enchantment", Style.EMPTY.withBold(true)),
+                        FormattedCharSequence.forward("Quick Charge Enchantment", Style.EMPTY.withBold(true)),
                         ResourceCosts.getFormattedCost(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Enchant a Vindicator's axe with Sharpness I, ", Style.EMPTY),
-                        FormattedCharSequence.forward("raising its damage by 1.", Style.EMPTY),
+                        FormattedCharSequence.forward("Enchant a Pillager's crossbow with Quick Charge II, ", Style.EMPTY),
+                        FormattedCharSequence.forward("reducing the time it takes to load arrows by 0.5s.", Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
                         FormattedCharSequence.forward("Right click to auto-cast", Style.EMPTY)
                 ),
@@ -64,8 +61,8 @@ public class EnchantSharpness extends EnchantAbility {
 
     @Override
     public boolean isCorrectUnitAndEquipment(LivingEntity entity) {
-        return entity instanceof VindicatorUnit &&
-                entity.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof AxeItem;
+        return entity instanceof PillagerUnit &&
+                entity.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof CrossbowItem;
     }
 
     @Override
@@ -80,6 +77,6 @@ public class EnchantSharpness extends EnchantAbility {
 
     @Override
     protected void doEnchant(LivingEntity entity) {
-        entity.getItemBySlot(EquipmentSlot.MAINHAND).enchant(actualEnchantment, 1);
+        entity.getItemBySlot(EquipmentSlot.MAINHAND).enchant(actualEnchantment, 2);
     }
 }

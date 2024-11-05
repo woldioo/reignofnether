@@ -76,13 +76,15 @@ Quality of Life Features
 Balancing
 ---------
 
-[❌] - wither death clouds should be an activated ability to spread clouds around for 10s
+[❌] Lightning should only charge one creeper at a time
+
+
 
 [❌] Web upgrade: Spiders can cast a temporary field of webs onto an area
     - cannot be used while mounted
     - placed on cooldown when eject is used to dismount
 
-
+[❌] - Upgrade gives stimpacks (-10hp for 10s of double attack speed and speed buff, cant be used while mounted)
 
 
 

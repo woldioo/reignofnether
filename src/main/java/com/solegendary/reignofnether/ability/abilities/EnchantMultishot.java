@@ -30,6 +30,7 @@ import java.util.List;
 public class EnchantMultishot extends EnchantAbility {
 
     private static final UnitAction ENCHANT_ACTION = UnitAction.ENCHANT_MULTISHOT;
+    private static final Enchantment actualEnchantment = Enchantments.MULTISHOT;
 
     public EnchantMultishot(Library library) {
         super(ENCHANT_ACTION, library, ResourceCosts.ENCHANT_MULTISHOT);
@@ -78,11 +79,11 @@ public class EnchantMultishot extends EnchantAbility {
 
     @Override
     protected boolean hasSameEnchant(LivingEntity entity) {
-        return entity.getItemBySlot(EquipmentSlot.MAINHAND).getAllEnchantments().containsKey(Enchantments.MULTISHOT);
+        return entity.getItemBySlot(EquipmentSlot.MAINHAND).getAllEnchantments().containsKey(actualEnchantment);
     }
 
     @Override
     protected void doEnchant(LivingEntity entity) {
-        entity.getItemBySlot(EquipmentSlot.MAINHAND).enchant(Enchantments.MULTISHOT, 1);
+        entity.getItemBySlot(EquipmentSlot.MAINHAND).enchant(actualEnchantment, 1);
     }
 }

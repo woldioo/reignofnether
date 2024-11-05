@@ -129,6 +129,8 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
     final static public int popCost = ResourceCosts.WITHER_SKELETON.population;
     public int maxResources = 100;
 
+    public int deathCloudTicks = 0;
+
     private final List<AbilityButton> abilityButtons = new ArrayList<>();
     private final List<Ability> abilities = new ArrayList<>();
     private final List<ItemStack> items = new ArrayList<>();
@@ -175,6 +177,20 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
         super.tick();
         Unit.tick(this);
         AttackerUnit.tick(this);
+
+        if (!level.isClientSide() && deathCloudTicks > 0 && deathCloudTicks % 10 == 0) {
+            AreaEffectCloud aec = new AreaEffectCloud(level, getX(), getY(), getZ());
+            aec.setOwner(this);
+            aec.setRadius(4.0F);
+            aec.setRadiusOnUse(0);
+            aec.setDurationOnUse(0);
+            aec.setDuration(5 * 20);
+            aec.setRadiusPerTick(-aec.getRadius() / (float)aec.getDuration());
+            aec.addEffect(new MobEffectInstance(MobEffects.WITHER, 5 * 20));
+            level.addFreshEntity(aec);
+        }
+        if (deathCloudTicks > 0)
+            deathCloudTicks -= 1;
     }
 
     public void initialiseGoals() {

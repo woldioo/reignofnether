@@ -27,6 +27,7 @@
         - 8mins - medium
         - 6mins - hard
     - nights last forever until you clear the wave
+    - add button to look for few remaining units (similar to idle villagers button)
 
     WAVE DESIGN
     - Each night is either piglin, illager or monster
@@ -56,17 +57,16 @@
     - Diamond axes and Multishot blacksmith upgrades have been removed
     - Libraries can now be upgraded to Grand Libraries for more options
     - Basic libraries have:
-        - Anti-Knockback for Vindicators
-        - Piercing for Pillagers
+        - Sharpness for Vindicators (+1 dmg)
+        - Quick Charge for Pillagers
     - Grand libraries have:
-        - Sharpness for Vindicators
+        - Maiming for Vindicators (slow applied on hit)
         - Multishot for Pillagers
-        - Vigor for Evokers and Witches (-25% cooldown times)
+        - Vigor for Evokers (-25% cooldown times)
     - You can have only one enchantment at a time, and can be overridden, but no refunds are given
-    - Enchantment buttons can be right-clicked to auto enchant any nearby units (be careful, it'll spend all your resources!)
+    - Enchantments can be right-clicked to auto cast (be careful, it'll spend all your resources!)
 
-    [🟡] Library keeps having falling logs in it
-    [🟡] Grand Library isn't saved or loaded properly
+    [🟡] Show enchantment name next to portrait
 
 Bugfixes
 --------
@@ -81,8 +81,6 @@ Quality of Life Features
 [🟡] Greatly improved performance for all monster units
 [🟡] Improved performance for fog of war
 
-[❌] Players on the same vanilla team see each other as blue on the minimap and are not aggressive to each other
-
 [❌] Casters should use abilities one by one
     - just swap out hudselectedentity for the the next one that has the same ability off cd if it exists
     - set flag (default true) for whether an ability will cast one by one or not
@@ -94,26 +92,31 @@ Quality of Life Features
 Balancing
 ---------
 
+EVERYONE
 [🟡] Worker Carry Bags now makes workers return resources when holding above 100 total
-[🟡] Zombie villagers are now slowed under sunlight like creepers and spiders
-
-[❌] Lightning should only charge one creeper at a time
-
 [✔] Default max population is now 150
+
+MONSTERS
+[🟡] Zombie villagers are now slowed under sunlight like creepers and spiders
 [✔] Drowned turn illagers into Drowned now instead of regular zombies
 [✔] Zombie Piglins +10 hp, +1dmg and Zoglins +15hp, +1dmg
+[🟡] Spiders now have an upgrade to unlock a Web Spin ability which creates temporary cobwebs on the field
+
+VILLAGERS
 [✔] Vindicator +1dmg, +30food, +5s, +1 pop
 [✔] Pillager +5hp, +25food, +5wood, +5s, +1 pop
 [✔] Witch upgrade -50 all resources, -10s
 [✔] Castle Officer's Quarters +150 wood, +50 ore, +30s
+
+PIGLINS
 [✔] Brute -5 food
 [✔] Brute Shield protects against ranged by 75% up from 67%
+[✔] Headhunter -10 wood
 [✔] Hoglin -0.05as
-[✔] Blaze firewall upgrade +100 ore, +10s, -4 range
-[✔] Headhunter -10wood
-[❌] - Upgrade gives stimpacks (-10hp for 10s of double attack speed and speed buff, cant be used while mounted)
-Wither skeletons
-
+[✔] Blaze firewall upgrade +100 ore, -5 range, +5s cd
+[✔] Blaze damage +1
+Wither Skeletons:
+[🟡] - Wither death clouds reworked to instead give an active ability that generates wither clouds around the skeleton
 [🟡] - Any melee units attacking a wither skeleton get withered for half the duration that a direct attack does
 [✔] - +15hp, +2dmg, +50ore, +5s, +1pop
 [🟡] Piglins are immune to magma by default, fire resistance upgrade now gives total fire block and fire tick immunity

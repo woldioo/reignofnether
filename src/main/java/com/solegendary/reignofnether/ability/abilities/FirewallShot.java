@@ -27,8 +27,8 @@ import java.util.List;
 
 public class FirewallShot extends Ability {
 
-    public static final int CD_MAX_SECONDS = 15;
-    public static final int RANGE = 16;
+    public static final int CD_MAX_SECONDS = 20;
+    public static final int RANGE = 15;
 
     private final BlazeUnit blazeUnit;
 

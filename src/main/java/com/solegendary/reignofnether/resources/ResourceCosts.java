@@ -127,7 +127,7 @@ public class ResourceCosts {
     public static ResourceCost RESEARCH_BRUTE_SHIELDS = ResourceCost.Research(0,300,300, 150);
     public static ResourceCost RESEARCH_HOGLIN_CAVALRY = ResourceCost.Research(300,250,0, 100);
     public static ResourceCost RESEARCH_HEAVY_TRIDENTS = ResourceCost.Research(0, 250, 250, 140);
-    public static ResourceCost RESEARCH_BLAZE_FIRE_WALL = ResourceCost.Research(400, 0, 300, 160);
+    public static ResourceCost RESEARCH_BLAZE_FIRE_WALL = ResourceCost.Research(400, 0, 300, 150);
     public static ResourceCost RESEARCH_FIRE_RESISTANCE = ResourceCost.Research(0, 200, 200, 100);
     public static ResourceCost RESEARCH_WITHER_CLOUDS = ResourceCost.Research(250, 0, 350, 150);
     public static ResourceCost RESEARCH_ADVANCED_PORTALS = ResourceCost.Research(0, 300, 300, 150);
@@ -136,9 +136,9 @@ public class ResourceCosts {
     public static ResourceCost RESEARCH_TRANSPORT_PORTAL = ResourceCost.Research(0, 175, 0, 40);
 
     // ******************* ENCHANTMENTS ******************* //
-    public static ResourceCost ENCHANT_ANTI_KNOCKBACK = ResourceCost.Enchantment(0,15, 25);
-    public static ResourceCost ENCHANT_SEEKING = ResourceCost.Enchantment(0,40, 20);
-    public static ResourceCost ENCHANT_SHARPNESS = ResourceCost.Enchantment(0,30, 50);
+    public static ResourceCost ENCHANT_SHARPNESS = ResourceCost.Enchantment(0,25, 40);
+    public static ResourceCost ENCHANT_QUICK_CHARGE = ResourceCost.Enchantment(0,50, 25);
+    public static ResourceCost ENCHANT_MAIMING = ResourceCost.Enchantment(0,40, 60);
     public static ResourceCost ENCHANT_MULTISHOT = ResourceCost.Enchantment(0,80, 40);
     public static ResourceCost ENCHANT_VIGOR = ResourceCost.Enchantment(0,60, 60);
 

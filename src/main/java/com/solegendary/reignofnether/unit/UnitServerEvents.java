@@ -299,21 +299,6 @@ public class UnitServerEvents {
             creeperUnit.explodeCreeper();
 
         if (evt.getEntity().getLastHurtByMob() instanceof Unit unit &&
-            (evt.getEntity().getLastHurtByMob() instanceof WitherSkeletonUnit || evt.getSource().getMsgId().equals("wither")) &&
-            ResearchServerEvents.playerHasResearch(unit.getOwnerName(), ResearchWitherClouds.itemName)) {
-
-            AreaEffectCloud aec = new AreaEffectCloud(evt.getEntity().level, evt.getEntity().getX(), evt.getEntity().getY(), evt.getEntity().getZ());
-            aec.setOwner(evt.getEntity());
-            aec.setRadius(4.0F);
-            aec.setRadiusOnUse(0);
-            aec.setDurationOnUse(0);
-            aec.setDuration(10 * 20);
-            aec.setRadiusPerTick(-aec.getRadius() / (float)aec.getDuration());
-            aec.addEffect(new MobEffectInstance(MobEffects.WITHER, 10 * 20));
-            evt.getEntity().level.addFreshEntity(aec);
-        }
-
-        if (evt.getEntity().getLastHurtByMob() instanceof Unit unit &&
             (evt.getEntity().getLastHurtByMob() instanceof DrownedUnit)) {
 
             EntityType<? extends Unit> entityType = null;

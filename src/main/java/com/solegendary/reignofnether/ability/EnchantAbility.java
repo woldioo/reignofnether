@@ -17,7 +17,7 @@ import net.minecraft.world.phys.Vec3;
 public abstract class EnchantAbility extends Ability {
 
     public static final int CD_MAX = 1;
-    public static final int RANGE = 10;
+    public static final int RANGE = 12;
     public final Library library;
     public final ResourceCost cost;
 
@@ -62,6 +62,12 @@ public abstract class EnchantAbility extends Ability {
 
     protected void doEnchant(LivingEntity entity) { }
 
+    private void playSound(Level level, LivingEntity te) {
+        level.playLocalSound(te.getX(), te.getY(), te.getZ(),
+                SoundEvents.ENCHANTMENT_TABLE_USE, te.getSoundSource(), 1.0F + te.getRandom().nextFloat(),
+                te.getRandom().nextFloat() * 0.7F + 0.3F, false);
+    }
+
     @Override
     public void use(Level level, Building buildingUsing, LivingEntity te) {
 
@@ -76,9 +82,7 @@ public abstract class EnchantAbility extends Ability {
             doEnchant(te);
             ResourcesServerEvents.addSubtractResources(new Resources(library.ownerName, -cost.food, -cost.wood, -cost.ore));
             setToMaxCooldown();
-            level.playLocalSound(te.getX(), te.getY(), te.getZ(),
-                    SoundEvents.ENCHANTMENT_TABLE_USE, te.getSoundSource(), 1.0F + te.getRandom().nextFloat(),
-                    te.getRandom().nextFloat() * 0.7F + 0.3F, false);
+            playSound(level, te);
 
         } else if (level.isClientSide()) {
             if (!(te instanceof Unit unit &&
@@ -94,6 +98,7 @@ public abstract class EnchantAbility extends Ability {
                 HudClientEvents.showTemporaryMessage("Can't afford this enchantment");
             } else {
                 setToMaxCooldown();
+                playSound(level, te);
             }
         }
     }

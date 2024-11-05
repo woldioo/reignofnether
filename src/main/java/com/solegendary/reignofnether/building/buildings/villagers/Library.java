@@ -3,9 +3,7 @@ package com.solegendary.reignofnether.building.buildings.villagers;
 import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.ability.Ability;
 import com.solegendary.reignofnether.ability.EnchantAbility;
-import com.solegendary.reignofnether.ability.abilities.CallLightning;
-import com.solegendary.reignofnether.ability.abilities.EnchantMultishot;
-import com.solegendary.reignofnether.ability.abilities.EnchantSharpness;
+import com.solegendary.reignofnether.ability.abilities.*;
 import com.solegendary.reignofnether.building.BuildingBlock;
 import com.solegendary.reignofnether.building.BuildingBlockData;
 import com.solegendary.reignofnether.building.BuildingClientEvents;
@@ -20,14 +18,12 @@ import com.solegendary.reignofnether.research.researchItems.ResearchLingeringPot
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.tutorial.TutorialClientEvents;
-import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.util.Faction;
 import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -68,17 +64,18 @@ public class Library extends ProductionBuilding {
 
         this.explodeChance = 0.2f;
 
-        Ability enchantMultishot = new EnchantMultishot(this);
-        this.abilities.add(enchantMultishot);
         Ability enchantSharpness = new EnchantSharpness(this);
         this.abilities.add(enchantSharpness);
+        Ability enchantQuickCharge = new EnchantQuickCharge(this);
+        this.abilities.add(enchantQuickCharge);
+        Ability enchantMaiming = new EnchantMaiming(this);
+        this.abilities.add(enchantMaiming);
+        Ability enchantMultishot = new EnchantMultishot(this);
+        this.abilities.add(enchantMultishot);
 
         if (level.isClientSide()) {
-            this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyQ));
-            this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyW));
-            this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyE));
-            this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyR));
-            this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyT));
+            this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyQ));
+            this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyW));
             this.productionButtons = Arrays.asList(
                     ResearchLingeringPotions.getStartButton(this, Keybindings.keyU),
                     ResearchEvokerVexes.getStartButton(this, Keybindings.keyI),
@@ -91,11 +88,11 @@ public class Library extends ProductionBuilding {
     public void tick(Level tickLevel) {
         super.tick(tickLevel);
 
-        if (!tickLevel.isClientSide() && tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 15 == 0 &&
+        if (tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 15 == 0 &&
             isBuilt && autoCastEnchant != null && autoCastEnchant.isOffCooldown()) {
 
             List<Mob> mobs = MiscUtil.getEntitiesWithinRange(new Vector3d(this.centrePos.getX(), this.centrePos.getY(), this.centrePos.getZ()),
-                autoCastEnchant.range, Mob.class, tickLevel)
+                autoCastEnchant.range - 1, Mob.class, tickLevel)
                     .stream().filter(e -> (autoCastEnchant.isCorrectUnitAndEquipment(e) &&
                     autoCastEnchant.canAfford(this) &&
                     !autoCastEnchant.hasAnyEnchant(e)))
