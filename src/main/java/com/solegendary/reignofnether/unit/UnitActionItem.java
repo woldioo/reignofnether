@@ -79,6 +79,8 @@ public class UnitActionItem {
     // can be done server or clientside - but only serverside will have an effect on the world
     // clientside actions are purely for tracking data
     public void action(Level level) {
+        Ability usedAbility = null;
+
         // filter out unowned units and non-unit entities
         ArrayList<Unit> actionableUnits = new ArrayList<>();
         for (int id : unitIds) {
@@ -87,6 +89,7 @@ public class UnitActionItem {
                 actionableUnits.add(unit);
         }
 
+        actionableUnitsLoop:
         for (Unit unit : actionableUnits) {
 
             // have to do this before resetBehaviours so we can assign the correct resourceName first
@@ -263,15 +266,26 @@ public class UnitActionItem {
                 default -> {
                     for (Ability ability : unit.getAbilities()) {
                         if (ability.action == action && (ability.isOffCooldown() || ability.canBypassCooldown())) {
-                            if (ability.canTargetEntities && this.unitId > 0)
+                            if (ability.canTargetEntities && this.unitId > 0) {
                                 ability.use(level, unit, (LivingEntity) level.getEntity(unitId));
-                            else
+                                usedAbility = ability;
+                                if (ability.oneClickOneUse)
+                                    break actionableUnitsLoop;
+                            }
+                            else {
                                 ability.use(level, unit, preselectedBlockPos);
+                                usedAbility = ability;
+                                if (ability.oneClickOneUse)
+                                    break actionableUnitsLoop;
+                            }
                         }
                     }
                 }
             }
         }
+        if (level.isClientSide() && usedAbility != null && usedAbility.oneClickOneUse)
+            HudClientEvents.setLowestCdHudEntity();
+
         if (this.selectedBuildingPos.equals(new BlockPos(0, 0, 0)))
             return;
 
@@ -280,10 +294,12 @@ public class UnitActionItem {
         if (actionableBuilding != null) {
             for (Ability ability : actionableBuilding.getAbilities()) {
                 if (ability.action == action && (ability.isOffCooldown() || ability.canBypassCooldown())) {
-                    if (ability.canTargetEntities && this.unitId > 0)
+                    if (ability.canTargetEntities && this.unitId > 0) {
                         ability.use(level, actionableBuilding, (LivingEntity) level.getEntity(unitId));
-                    else
+                    }
+                    else {
                         ability.use(level, actionableBuilding, preselectedBlockPos);
+                    }
                 }
             }
         }

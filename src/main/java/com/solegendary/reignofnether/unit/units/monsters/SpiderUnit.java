@@ -2,6 +2,7 @@ package com.solegendary.reignofnether.unit.units.monsters;
 
 import com.solegendary.reignofnether.ability.Ability;
 import com.solegendary.reignofnether.ability.abilities.Eject;
+import com.solegendary.reignofnether.ability.abilities.SpinWebs;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.resources.ResourceCosts;
@@ -146,8 +147,12 @@ public class SpiderUnit extends Spider implements Unit, AttackerUnit, Convertabl
 
         Eject ab1 = new Eject(this);
         this.abilities.add(ab1);
-        if (level.isClientSide())
-            this.abilityButtons.add(ab1.getButton(Keybindings.keyQ));
+        SpinWebs ab2 = new SpinWebs(this);
+        this.abilities.add(ab2);
+        if (level.isClientSide()) {
+            this.abilityButtons.add(ab1.getButton(Keybindings.keyT));
+            this.abilityButtons.add(ab2.getButton(Keybindings.keyQ));
+        }
     }
 
     @Override
@@ -179,7 +184,11 @@ public class SpiderUnit extends Spider implements Unit, AttackerUnit, Convertabl
 
             // apply slowness level 2 during daytime for a short time repeatedly
             if (tickCount % 4 == 0 && !this.level.isClientSide() && this.level.isDay() && !NightUtils.isInRangeOfNightSource(this.getEyePosition(), false))
-                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 1));
+                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 1));
+
+            for (Ability ability : abilities)
+                if (ability instanceof SpinWebs spinWebs)
+                    spinWebs.tick(level);
         }
     }
 

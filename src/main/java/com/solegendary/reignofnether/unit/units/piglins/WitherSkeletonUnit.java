@@ -1,7 +1,10 @@
 package com.solegendary.reignofnether.unit.units.piglins;
 
 import com.solegendary.reignofnether.ability.Ability;
+import com.solegendary.reignofnether.ability.abilities.SpinWebs;
+import com.solegendary.reignofnether.ability.abilities.WitherCloud;
 import com.solegendary.reignofnether.hud.AbilityButton;
+import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.goals.*;
@@ -137,6 +140,12 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
 
     public WitherSkeletonUnit(EntityType<? extends WitherSkeleton> entityType, Level level) {
         super(entityType, level);
+
+        WitherCloud ab1 = new WitherCloud(this);
+        this.abilities.add(ab1);
+        if (level.isClientSide()) {
+            this.abilityButtons.add(ab1.getButton(Keybindings.keyQ));
+        }
     }
 
     @Override
@@ -184,9 +193,9 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
             aec.setRadius(4.0F);
             aec.setRadiusOnUse(0);
             aec.setDurationOnUse(0);
-            aec.setDuration(5 * 20);
+            aec.setDuration(20); // cloud duration
             aec.setRadiusPerTick(-aec.getRadius() / (float)aec.getDuration());
-            aec.addEffect(new MobEffectInstance(MobEffects.WITHER, 5 * 20));
+            aec.addEffect(new MobEffectInstance(MobEffects.WITHER, 20));
             level.addFreshEntity(aec);
         }
         if (deathCloudTicks > 0)
@@ -232,6 +241,7 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
     }
 
     public static final int WITHER_SECONDS = 7;
+    public static final int WITHER_SECONDS_ON_HIT = 3;
 
     @Override
     public boolean doHurtTarget(@NotNull Entity pEntity) {

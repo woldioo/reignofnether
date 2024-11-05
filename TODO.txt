@@ -77,13 +77,13 @@ Bugfixes
 [❌] Fix chunk forcing issue with workers
 
 Quality of Life Features
-------------------------]
-[🟡] Greatly improved performance for all monster units
+------------------------
+[🟡] Greatly improved performance for all monster units and buildings
 [🟡] Improved performance for fog of war
+[🟡] Can no longer use F12 can in adventure mode
 
-[❌] Casters should use abilities one by one
-    - just swap out hudselectedentity for the the next one that has the same ability off cd if it exists
-    - set flag (default true) for whether an ability will cast one by one or not
+[🟡] Most units now use abilities one by one and will cycle through available casters of the same type when used
+    - when selecting groups of units, focus will be prioritised on the unit with abilities off cooldown
 
 [🟡] Sculk Catalyst sacrifice can no longer be used if the unit is standing on an unspreadable block
 [🟡] You can now move the camera by holding middle mouse click and its sensitivity has been raised
@@ -110,13 +110,14 @@ VILLAGERS
 
 PIGLINS
 [✔] Brute -5 food
-[✔] Brute Shield protects against ranged by 75% up from 67%
+[✔] Brute Shields protect against ranged by 75% up from 67%
 [✔] Headhunter -10 wood
+[✔] Heavy tridents -20s
 [✔] Hoglin -0.05as
 [✔] Blaze firewall upgrade +100 ore, -5 range, +5s cd
-[✔] Blaze damage +1
+[✔] Blaze +1dmg, +0.1as
 Wither Skeletons:
-[🟡] - Wither death clouds reworked to instead give an active ability that generates wither clouds around the skeleton
-[🟡] - Any melee units attacking a wither skeleton get withered for half the duration that a direct attack does
+[🟡] - Wither death clouds reworked to instead give an active ability that generates wither clouds around them
+    - While active, any units that hit the skeleton in melee get withered for 4 total damage over a few seconds
 [✔] - +15hp, +2dmg, +50ore, +5s, +1pop
 [🟡] Piglins are immune to magma by default, fire resistance upgrade now gives total fire block and fire tick immunity

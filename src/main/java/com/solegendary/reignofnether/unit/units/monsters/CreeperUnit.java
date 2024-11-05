@@ -176,7 +176,7 @@ public class CreeperUnit extends Creeper implements Unit, AttackerUnit {
 
         // apply slowness level 2 during daytime for a short time repeatedly
         if (tickCount % 4 == 0 && !this.level.isClientSide() && this.level.isDay() && !NightUtils.isInRangeOfNightSource(this.getEyePosition(), false))
-            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2, 1));
+            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, 1));
     }
 
     @Override

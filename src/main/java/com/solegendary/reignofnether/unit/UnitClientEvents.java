@@ -464,6 +464,7 @@ public class UnitClientEvents {
                     for (LivingEntity entity : nearbyEntities)
                         if (getPlayerToEntityRelationship(entity) == Relationship.OWNED)
                             addSelectedUnit(entity);
+                    HudClientEvents.setLowestCdHudEntity();
                 }
             }
             // move on left click
