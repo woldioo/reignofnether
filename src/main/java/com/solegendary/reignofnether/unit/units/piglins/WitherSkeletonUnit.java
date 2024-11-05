@@ -187,15 +187,15 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
         Unit.tick(this);
         AttackerUnit.tick(this);
 
-        if (!level.isClientSide() && deathCloudTicks > 0 && deathCloudTicks % 10 == 0) {
+        if (!level.isClientSide() && deathCloudTicks > 0 && deathCloudTicks % 20 == 0) {
             AreaEffectCloud aec = new AreaEffectCloud(level, getX(), getY(), getZ());
             aec.setOwner(this);
             aec.setRadius(4.0F);
             aec.setRadiusOnUse(0);
             aec.setDurationOnUse(0);
-            aec.setDuration(20); // cloud duration
+            aec.setDuration(2 * 20); // cloud duration
             aec.setRadiusPerTick(-aec.getRadius() / (float)aec.getDuration());
-            aec.addEffect(new MobEffectInstance(MobEffects.WITHER, 20));
+            aec.addEffect(new MobEffectInstance(MobEffects.WITHER, 2 * 20));
             level.addFreshEntity(aec);
         }
         if (deathCloudTicks > 0)

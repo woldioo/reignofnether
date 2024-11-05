@@ -131,8 +131,8 @@ public abstract class AbstractMeleeAttackUnitGoal extends Goal {
             this.ticksUntilNextAttack = this.adjustedTickDelay(attackInterval);
             this.mob.swing(InteractionHand.MAIN_HAND);
             this.mob.doHurtTarget(target);
-            if (target instanceof WitherSkeletonUnit witherSkeletonUnit && witherSkeletonUnit.deathCloudTicks > 0)
-                this.mob.addEffect(new MobEffectInstance(MobEffects.WITHER, (WitherSkeletonUnit.WITHER_SECONDS_ON_HIT * 20), 1));
+            //if (target instanceof WitherSkeletonUnit witherSkeletonUnit && witherSkeletonUnit.deathCloudTicks > 0)
+            //    this.mob.addEffect(new MobEffectInstance(MobEffects.WITHER, (WitherSkeletonUnit.WITHER_SECONDS_ON_HIT * 20), 1));
         }
     }
 

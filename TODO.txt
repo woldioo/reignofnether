@@ -101,6 +101,7 @@ MONSTERS
 [✔] Drowned turn illagers into Drowned now instead of regular zombies
 [✔] Zombie Piglins +10 hp, +1dmg and Zoglins +15hp, +1dmg
 [🟡] Spiders now have an upgrade to unlock a Web Spin ability which creates temporary cobwebs on the field
+[✔] Creepers are no longer automatically set off by explosions, including from other creepers
 
 VILLAGERS
 [✔] Vindicator +1dmg, +30food, +5s, +1 pop
@@ -118,6 +119,5 @@ PIGLINS
 [✔] Blaze +1dmg, +0.1as
 Wither Skeletons:
 [🟡] - Wither death clouds reworked to instead give an active ability that generates wither clouds around them
-    - While active, any units that hit the skeleton in melee get withered for 4 total damage over a few seconds
 [✔] - +15hp, +2dmg, +50ore, +5s, +1pop
 [🟡] Piglins are immune to magma by default, fire resistance upgrade now gives total fire block and fire tick immunity

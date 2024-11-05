@@ -587,12 +587,14 @@ public class UnitServerEvents {
     }
 
     // make creepers explode from other explosions, like TNT
+    /*
     @SubscribeEvent
     public static void onExplosion(ExplosionEvent.Detonate evt) {
         for (Entity entity : evt.getAffectedEntities())
             if (entity instanceof CreeperUnit cUnit)
                 UnitActionClientboundPacket.reflectUnitAction(cUnit.getOwnerName(), UnitAction.EXPLODE, new int[]{cUnit.getId()});
     }
+     */
 
     public static void debug1() { }
 

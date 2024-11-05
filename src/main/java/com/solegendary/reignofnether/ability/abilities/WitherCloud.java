@@ -23,7 +23,7 @@ import java.util.List;
 public class WitherCloud extends Ability {
 
     private static final int CD_MAX_SECONDS = 45;
-    private static final int DURATION_SECONDS = 10;
+    private static final int DURATION_SECONDS = 8;
 
     private final WitherSkeletonUnit witherSkeletonUnit;
 
@@ -55,8 +55,7 @@ public class WitherCloud extends Ability {
                         FormattedCharSequence.forward("\uE004  " + CD_MAX_SECONDS + "s", MyRenderer.iconStyle),
                         FormattedCharSequence.forward("", Style.EMPTY),
                         FormattedCharSequence.forward("Causes the Wither Skeleton to release a cloud", Style.EMPTY),
-                        FormattedCharSequence.forward("of deadly wither around it for the next " + DURATION_SECONDS + " seconds.", Style.EMPTY),
-                        FormattedCharSequence.forward("While active, any melee attackers become withered.", Style.EMPTY)
+                        FormattedCharSequence.forward("of deadly wither around it for the next " + DURATION_SECONDS + " seconds.", Style.EMPTY)
                 ),
                 this
         );
