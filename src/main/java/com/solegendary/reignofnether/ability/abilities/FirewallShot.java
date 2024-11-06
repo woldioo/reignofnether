@@ -27,8 +27,8 @@ import java.util.List;
 
 public class FirewallShot extends Ability {
 
-    public static final int CD_MAX_SECONDS = 15;
-    public static final int RANGE = 20;
+    public static final int CD_MAX_SECONDS = 20;
+    public static final int RANGE = 15;
 
     private final BlazeUnit blazeUnit;
 
@@ -38,6 +38,7 @@ public class FirewallShot extends Ability {
                 CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND,
                 RANGE,
                 0,
+                true,
                 true
         );
         this.blazeUnit = blazeUnit;

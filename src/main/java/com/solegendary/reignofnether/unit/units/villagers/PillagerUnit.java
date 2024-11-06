@@ -137,7 +137,7 @@ public class PillagerUnit extends Pillager implements Unit, AttackerUnit, Ranged
 
     final static public float attackDamage = 7.0f;
     final static public float attacksPerSecond = 0.8f; // excludes crossbow charge time
-    final static public float maxHealth = 40.0f;
+    final static public float maxHealth = 45.0f;
     final static public float armorValue = 0.0f;
     final static public float movementSpeed = 0.25f;
     final static public float attackRange = 16.0F; // only used by ranged units or melee building attackers
@@ -232,8 +232,8 @@ public class PillagerUnit extends Pillager implements Unit, AttackerUnit, Ranged
     @Override
     public void setupEquipmentAndUpgradesServer() {
         ItemStack cbowStack = new ItemStack(Items.CROSSBOW);
-        if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchPillagerCrossbows.itemName))
-            cbowStack.enchant(Enchantments.MULTISHOT, 1);
+        //if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchPillagerCrossbows.itemName))
+        //    cbowStack.enchant(Enchantments.MULTISHOT, 1);
         this.setItemSlot(EquipmentSlot.MAINHAND, cbowStack);
     }
 

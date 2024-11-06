@@ -34,6 +34,7 @@ public class CastSummonVexes extends Ability {
             CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND,
             0,
             0,
+            true,
             true
         );
         this.evokerUnit = evokerUnit;
@@ -62,6 +63,22 @@ public class CastSummonVexes extends Ability {
             ),
             this
         );
+    }
+
+    @Override
+    public void setCooldown(int cooldown) {
+        if (evokerUnit.hasVigorEnchant())
+            cooldown *= EnchantVigor.cooldownMultiplier;
+        super.setCooldown(cooldown);
+    }
+
+
+    @Override
+    public void setToMaxCooldown() {
+        if (evokerUnit.hasVigorEnchant())
+            setCooldown((int) (cooldownMax * EnchantVigor.cooldownMultiplier));
+        else
+            setCooldown(cooldownMax);
     }
 
     @Override

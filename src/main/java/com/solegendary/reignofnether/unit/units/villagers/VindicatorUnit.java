@@ -1,5 +1,6 @@
 package com.solegendary.reignofnether.unit.units.villagers;
 
+import com.solegendary.reignofnether.ability.abilities.EnchantMaiming;
 import com.solegendary.reignofnether.ability.abilities.PromoteIllager;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.research.ResearchClient;
@@ -17,6 +18,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -116,7 +120,7 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
 
     // endregion
 
-    final static public float attackDamage = 5.0f;
+    final static public float attackDamage = 6.0f;
     final static public float attacksPerSecond = 0.5f;
     final static public float maxHealth = 60.0f;
     final static public float armorValue = 0.0f;
@@ -211,8 +215,8 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
     public void setupEquipmentAndUpgradesClient() {
         // weapon is purely visual, damage is based solely on entity attribute ATTACK_DAMAGE
         Item axe = Items.IRON_AXE;
-        if (ResearchClient.hasResearch(ResearchVindicatorAxes.itemName))
-            axe = Items.DIAMOND_AXE;
+        //if (ResearchClient.hasResearch(ResearchVindicatorAxes.itemName))
+        //    axe = Items.DIAMOND_AXE;
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(axe));
     }
 
@@ -221,14 +225,27 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
         // weapon is purely visual, damage is based solely on entity attribute ATTACK_DAMAGE
         Item axe = Items.IRON_AXE;
         int damageMod = 0;
-        if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchVindicatorAxes.itemName)) {
-            axe = Items.DIAMOND_AXE;
-            damageMod = 2;
-        }
+        //if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchVindicatorAxes.itemName)) {
+        //    axe = Items.DIAMOND_AXE;
+        //    damageMod = 2;
+        //}
         ItemStack axeStack = new ItemStack(axe);
         AttributeModifier mod = new AttributeModifier(UUID.randomUUID().toString(), damageMod, AttributeModifier.Operation.ADDITION);
         axeStack.addAttributeModifier(Attributes.ATTACK_DAMAGE, mod, EquipmentSlot.MAINHAND);
 
         this.setItemSlot(EquipmentSlot.MAINHAND, axeStack);
+    }
+
+    public boolean hasMaimingEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        return itemStack.getAllEnchantments().containsKey(EnchantMaiming.actualEnchantment);
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity pEntity) {
+        boolean hurt = super.doHurtTarget(pEntity);
+        if (hurt && hasMaimingEnchant() && pEntity instanceof LivingEntity le)
+            le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1));
+        return hurt;
     }
 }

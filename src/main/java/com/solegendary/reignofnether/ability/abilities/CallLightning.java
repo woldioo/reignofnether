@@ -35,7 +35,8 @@ public class CallLightning extends Ability {
             CD_MAX,
             RANGE,
             0,
-            false
+            false,
+            true
         );
         this.lab = lab;
     }

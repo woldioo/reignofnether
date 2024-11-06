@@ -32,7 +32,8 @@ public class Roar extends Ability {
             CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND,
             0,
             0,
-            false
+            false,
+            true
         );
         this.ravagerUnit = ravagerUnit;
     }

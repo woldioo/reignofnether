@@ -1,7 +1,10 @@
 package com.solegendary.reignofnether.unit.units.piglins;
 
 import com.solegendary.reignofnether.ability.Ability;
+import com.solegendary.reignofnether.ability.abilities.SpinWebs;
+import com.solegendary.reignofnether.ability.abilities.WitherCloud;
 import com.solegendary.reignofnether.hud.AbilityButton;
+import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.goals.*;
@@ -116,18 +119,20 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
 
     // endregion
 
-    final static public float attackDamage = 6.0f;
+    final static public float attackDamage = 8.0f;
     final static public float attacksPerSecond = 0.4f;
     final static public float attackRange = 2; // only used by ranged units or melee building attackers
     final static public float aggroRange = 10;
     final static public boolean willRetaliate = true; // will attack when hurt by an enemy
     final static public boolean aggressiveWhenIdle = true;
 
-    final static public float maxHealth = 75.0f;
+    final static public float maxHealth = 90.0f;
     final static public float armorValue = 0.0f;
     final static public float movementSpeed = 0.28f;
     final static public int popCost = ResourceCosts.WITHER_SKELETON.population;
     public int maxResources = 100;
+
+    public int deathCloudTicks = 0;
 
     private final List<AbilityButton> abilityButtons = new ArrayList<>();
     private final List<Ability> abilities = new ArrayList<>();
@@ -135,6 +140,12 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
 
     public WitherSkeletonUnit(EntityType<? extends WitherSkeleton> entityType, Level level) {
         super(entityType, level);
+
+        WitherCloud ab1 = new WitherCloud(this);
+        this.abilities.add(ab1);
+        if (level.isClientSide()) {
+            this.abilityButtons.add(ab1.getButton(Keybindings.keyQ));
+        }
     }
 
     @Override
@@ -175,6 +186,20 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
         super.tick();
         Unit.tick(this);
         AttackerUnit.tick(this);
+
+        if (!level.isClientSide() && deathCloudTicks > 0 && deathCloudTicks % 20 == 0) {
+            AreaEffectCloud aec = new AreaEffectCloud(level, getX(), getY(), getZ());
+            aec.setOwner(this);
+            aec.setRadius(4.0F);
+            aec.setRadiusOnUse(0);
+            aec.setDurationOnUse(0);
+            aec.setDuration(2 * 20); // cloud duration
+            aec.setRadiusPerTick(-aec.getRadius() / (float)aec.getDuration());
+            aec.addEffect(new MobEffectInstance(MobEffects.WITHER, 2 * 20));
+            level.addFreshEntity(aec);
+        }
+        if (deathCloudTicks > 0)
+            deathCloudTicks -= 1;
     }
 
     public void initialiseGoals() {
@@ -215,7 +240,8 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
         this.setItemSlot(EquipmentSlot.MAINHAND, swordStack);
     }
 
-    private static final int WITHER_SECONDS = 7;
+    public static final int WITHER_SECONDS = 7;
+    public static final int WITHER_SECONDS_ON_HIT = 3;
 
     @Override
     public boolean doHurtTarget(@NotNull Entity pEntity) {

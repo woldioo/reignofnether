@@ -58,8 +58,8 @@ public class ResearchWitherClouds extends ProductionItem {
                         ResourceCosts.getFormattedCost(cost),
                         ResourceCosts.getFormattedTime(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Enemies killed by wither skeletons leave", Style.EMPTY),
-                        FormattedCharSequence.forward("behind a deadly cloud of wither on death.", Style.EMPTY)
+                        FormattedCharSequence.forward("Unlocks the ability for Wither Skeletons to produce ", Style.EMPTY),
+                        FormattedCharSequence.forward("clouds of wither around them for a few seconds.", Style.EMPTY)
                 )
         );
     }

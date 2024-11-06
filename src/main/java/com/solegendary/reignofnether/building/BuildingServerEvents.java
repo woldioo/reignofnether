@@ -7,6 +7,7 @@ import com.solegendary.reignofnether.building.buildings.piglins.Portal;
 import com.solegendary.reignofnether.building.buildings.shared.AbstractBridge;
 import com.solegendary.reignofnether.building.buildings.villagers.Castle;
 import com.solegendary.reignofnether.building.buildings.villagers.IronGolemBuilding;
+import com.solegendary.reignofnether.building.buildings.villagers.Library;
 import com.solegendary.reignofnether.fogofwar.FrozenChunkClientboundPacket;
 import com.solegendary.reignofnether.nether.NetherBlocks;
 import com.solegendary.reignofnether.player.PlayerServerEvents;
@@ -135,6 +136,8 @@ public class BuildingServerEvents {
                             lab.changeStructure(Laboratory.upgradedStructureName);
                         else if (building instanceof Portal portal)
                             portal.changeStructure(b.portalType);
+                        else if (building instanceof Library library)
+                            library.changeStructure(Library.upgradedStructureName);
                     }
                     // setNetherZone can only be run once - this supercedes where it normally happens in tick() -> onBuilt()
                     if (building instanceof NetherConvertingBuilding ncb)

@@ -39,6 +39,7 @@ public class Sacrifice extends Ability {
                 CD_MAX,
                 RANGE,
                 0,
+                true,
                 true
         );
     }
@@ -72,7 +73,8 @@ public class Sacrifice extends Ability {
             targetEntity instanceof Unit unit &&
             unit.getOwnerName().equals(buildingUsing.ownerName) &&
             !level.getBlockState(targetEntity.getOnPos()).isAir() &&
-            !BuildingUtils.isWithinRangeOfMaxedCatalyst(targetEntity)) {
+            !BuildingUtils.isWithinRangeOfMaxedCatalyst(targetEntity) &&
+            !BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), targetEntity.getOnPos().above())) {
 
             if (targetEntity.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) < RANGE * RANGE) {
                 targetEntity.kill();
@@ -87,6 +89,8 @@ public class Sacrifice extends Ability {
                 HudClientEvents.showTemporaryMessage("Can't sacrifice units in the air");
             } else if (BuildingUtils.isWithinRangeOfMaxedCatalyst(targetEntity)) {
                 HudClientEvents.showTemporaryMessage("Already at max sculk spread");
+            } else if (BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), targetEntity.getOnPos().above())) {
+                HudClientEvents.showTemporaryMessage("Unit is not on a spreadable block");
             }
         }
     }

@@ -39,6 +39,7 @@ public class SonicBoom extends Ability {
                 CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND,
                 WardenUnit.SONIC_BOOM_RANGE,
                 0,
+                true,
                 true
         );
         this.wardenUnit = wardenUnit;

@@ -1,6 +1,8 @@
 package com.solegendary.reignofnether.hud;
 
+import com.mojang.datafixers.util.Pair;
 import com.solegendary.reignofnether.ReignOfNether;
+import com.solegendary.reignofnether.ability.Ability;
 import com.solegendary.reignofnether.attackwarnings.AttackWarningClientEvents;
 import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.guiscreen.TopdownGui;
@@ -86,6 +88,34 @@ public class HudClientEvents {
 
     private static final ArrayList<RectZone> hudZones = new ArrayList<>();
 
+    // sets the
+    public static void setLowestCdHudEntity() {
+        if (UnitClientEvents.getSelectedUnits().isEmpty() || hudSelectedEntity == null)
+            return;
+
+        List<Pair<LivingEntity, Integer>> pairs = UnitClientEvents.getSelectedUnits().stream().map(
+                        (le) -> {
+                            int totalCd = 0;
+                            if (le instanceof Unit unit)
+                                for (Ability ability : unit.getAbilities())
+                                    totalCd += ability.getCooldown();
+                            return new Pair<>(le, totalCd);
+                        }
+                ).filter(p -> {
+                    String str1 = getSimpleEntityName(p.getFirst());
+                    String str2 = getSimpleEntityName(hudSelectedEntity);
+                    return str1.equals(str2);
+                })
+                .sorted(Comparator.comparing(Pair::getSecond))
+                .toList();
+
+        if (!pairs.isEmpty())
+            setHudSelectedEntity(pairs.get(0).getFirst());
+    }
+
+    public static void setHudSelectedEntity(LivingEntity entity) {
+        hudSelectedEntity = entity;
+    }
 
     // eg. entity.reignofnether.zombie_unit -> zombie
     public static String getSimpleEntityName(Entity entity) {
@@ -483,7 +513,7 @@ public class HudClientEvents {
                                 UnitClientEvents.clearSelectedUnits();
                                 UnitClientEvents.addSelectedUnit(unit);
                             } else { // click to select this unit type as a group
-                                hudSelectedEntity = unit;
+                                HudClientEvents.setHudSelectedEntity(unit);
                             }
                         },
                         null,
@@ -605,7 +635,7 @@ public class HudClientEvents {
             // includes worker building buttons
             if (TutorialClientEvents.isAtOrPastStage(TutorialStage.BUILD_INTRO)) {
                 for (LivingEntity livingEntity : selUnits) {
-                    if (getSimpleEntityName(livingEntity).equals(getSimpleEntityName(hudSelectedEntity))) {
+                    if (livingEntity == hudSelectedEntity) {
                         List<AbilityButton> abilityButtons = ((Unit) livingEntity).getAbilityButtons();
 
                         int shownAbilities = abilityButtons.stream().filter(b -> !b.isHidden.get()).toList().size();
@@ -1013,9 +1043,9 @@ public class HudClientEvents {
         units.sort(Comparator.comparing(HudClientEvents::getSimpleEntityName));
 
         if (units.size() <= 0)
-            hudSelectedEntity = null;
+            HudClientEvents.setHudSelectedEntity(null);
         else if (hudSelectedEntity == null || units.size() == 1 || !units.contains(hudSelectedEntity))
-            hudSelectedEntity = units.get(0);
+            HudClientEvents.setHudSelectedEntity(units.get(0));
 
         if (hudSelectedEntity == null) {
             portraitRendererUnit.model = null;
@@ -1094,14 +1124,16 @@ public class HudClientEvents {
                 for (LivingEntity entity : entities) {
                     String currentEntityName = HudClientEvents.getSimpleEntityName(entity);
                     if (lastEntityName.equals(hudSelectedEntityName) && !currentEntityName.equals(lastEntityName)) {
-                        hudSelectedEntity = entity;
+                        HudClientEvents.setHudSelectedEntity(entity);
                         cycled = true;
                         break;
                     }
                     lastEntityName = currentEntityName;
                 }
                 if (!cycled) {
-                    hudSelectedEntity = entities.get(0);
+                    HudClientEvents.setHudSelectedEntity(entities.get(0));
+                } else {
+                    HudClientEvents.setLowestCdHudEntity();
                 }
             }
         }

@@ -5,8 +5,10 @@ import com.solegendary.reignofnether.building.buildings.shared.AbstractBridge;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.nether.NetherBlocks;
+import com.solegendary.reignofnether.research.ResearchClient;
 import com.solegendary.reignofnether.research.ResearchServerEvents;
 import com.solegendary.reignofnether.research.researchItems.ResearchFireResistance;
+import com.solegendary.reignofnether.research.researchItems.ResearchResourceCapacity;
 import com.solegendary.reignofnether.resources.*;
 import com.solegendary.reignofnether.time.NightUtils;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
@@ -192,12 +194,21 @@ public interface Unit {
             le.kill();
     }
 
+    private static int getThresholdResources(Unit unit) {
+        boolean hasCarryBags;
+        if (((LivingEntity) unit).getLevel().isClientSide())
+            hasCarryBags = ResearchClient.hasResearch(ResearchResourceCapacity.itemName);
+        else
+            hasCarryBags = ResearchServerEvents.playerHasResearch(unit.getOwnerName(), ResearchResourceCapacity.itemName);
+        return hasCarryBags ? 100 : 50;
+    }
+
     public static boolean atMaxResources(Unit unit) {
         return Resources.getTotalResourcesFromItems(unit.getItems()).getTotalValue() >= unit.getMaxResources();
     }
 
     public static boolean atThresholdResources(Unit unit) {
-        return Resources.getTotalResourcesFromItems(unit.getItems()).getTotalValue() >= 50;
+        return Resources.getTotalResourcesFromItems(unit.getItems()).getTotalValue() >= getThresholdResources(unit);
     }
 
     public default boolean hasLivingTarget() {

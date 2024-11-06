@@ -3,6 +3,7 @@ package com.solegendary.reignofnether.hud.buttons;
 import com.solegendary.reignofnether.ReignOfNether;
 import com.solegendary.reignofnether.building.BuildingServerboundPacket;
 import com.solegendary.reignofnether.hud.Button;
+import com.solegendary.reignofnether.hud.HudClientEvents;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.keybinds.Keybindings;
 import com.solegendary.reignofnether.orthoview.OrthoviewClientEvents;
@@ -125,6 +126,7 @@ public class HelperButtons {
                 UnitClientEvents.clearSelectedUnits();
                 for (LivingEntity militaryUnit : militaryUnits)
                     UnitClientEvents.addSelectedUnit(militaryUnit);
+                HudClientEvents.setLowestCdHudEntity();
             },
             null,
             List.of(FormattedCharSequence.forward("Select all military units", Style.EMPTY))

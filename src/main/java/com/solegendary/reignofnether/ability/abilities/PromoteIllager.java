@@ -53,6 +53,7 @@ public class PromoteIllager extends Ability {
             CD_MAX,
             RANGE,
             0,
+            true,
             true
         );
         this.building = building;

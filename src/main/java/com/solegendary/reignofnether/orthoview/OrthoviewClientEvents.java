@@ -288,9 +288,10 @@ public class OrthoviewClientEvents {
             if (evt.getKey() == Keybindings.getFnum(12).key &&
                 !OrthoviewClientEvents.isCameraLocked() &&
                 MC.gameMode != null) {
-                if (MC.gameMode.getPlayerMode() == GameType.SURVIVAL && MC.player != null) {
+                if ((MC.gameMode.getPlayerMode() == GameType.ADVENTURE ||
+                    MC.gameMode.getPlayerMode() == GameType.SURVIVAL) && MC.player != null) {
                     MC.player.sendSystemMessage(Component.literal(""));
-                    MC.player.sendSystemMessage(Component.literal("Cannot switch to RTS mode while in survival mode."));
+                    MC.player.sendSystemMessage(Component.literal("You must be in creative or spectator for RTS mode"));
                     MC.player.sendSystemMessage(Component.literal(""));
                 }
                 else
@@ -461,11 +462,12 @@ public class OrthoviewClientEvents {
         if (!enabled || isCameraLocked())
             return;
 
-        if (evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_1 && Keybindings.altMod.isDown()) {
+        if ((evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_1 && Keybindings.altMod.isDown()) ||
+            evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_3) {
             cameraMovingByMouse = true;
 
-            float moveX = (float) evt.getDragX() * 0.15f * (zoom/ZOOM_MAX); //* winWidth/1920;
-            float moveZ = (float) evt.getDragY() * 0.15f * (zoom/ZOOM_MAX); //* winHeight/1080;
+            float moveX = (float) evt.getDragX() * 0.20f * (zoom/ZOOM_MAX); //* winWidth/1920;
+            float moveZ = (float) evt.getDragY() * 0.20f * (zoom/ZOOM_MAX); //* winHeight/1080;
             panCam(moveX, 0, moveZ);
         }
         else if (evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_2 && Keybindings.altMod.isDown()) {
