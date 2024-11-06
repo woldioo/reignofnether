@@ -269,14 +269,15 @@ public class PillagerUnit extends Pillager implements Unit, AttackerUnit, Ranged
 
     @Override
     public void shootCrossbowProjectile(LivingEntity pUser, LivingEntity pTarget, Projectile pProjectile, float pProjectileAngle, float pVelocity) {
-        if (pTarget == null)
-            return;
-
-        /* // bit of a hacky fix to attack buildings since this function is called from CrossbowItem
-        if (pTarget == null && this.getAttackBuildingGoal() instanceof RangedAttackBuildingGoal<?> rabg) {
-            shootCrossbowProjectileAtBuilding(pUser, rabg, pProjectile, pProjectileAngle, pVelocity);
-            return;
-        } */
+        // bit of a hacky fix to attack buildings since this function is called from CrossbowItem
+        try {
+            if (pTarget == null && this.getAttackBuildingGoal() instanceof RangedAttackBuildingGoal<?> rabg) {
+                shootCrossbowProjectileAtBuilding(pUser, rabg, pProjectile, pProjectileAngle, pVelocity);
+                return;
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Caught NullPointerException in shootCrossbowProjectile: " + e);
+        }
 
         double d0 = pTarget.getX() - pUser.getX();
         double d1 = pTarget.getZ() - pUser.getZ();
