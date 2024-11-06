@@ -8,6 +8,8 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import com.solegendary.reignofnether.ability.abilities.EnchantMaiming;
+import com.solegendary.reignofnether.ability.abilities.EnchantVigor;
 import com.solegendary.reignofnether.building.GarrisonableBuilding;
 import com.solegendary.reignofnether.healthbars.HealthBarClientEvents;
 import com.solegendary.reignofnether.resources.Resources;
@@ -18,6 +20,9 @@ import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.interfaces.WorkerUnit;
 import com.solegendary.reignofnether.unit.units.monsters.CreeperUnit;
 import com.solegendary.reignofnether.unit.units.piglins.BruteUnit;
+import com.solegendary.reignofnether.unit.units.villagers.EvokerUnit;
+import com.solegendary.reignofnether.unit.units.villagers.PillagerUnit;
+import com.solegendary.reignofnether.unit.units.villagers.VindicatorUnit;
 import com.solegendary.reignofnether.util.MyMath;
 import com.solegendary.reignofnether.util.MyRenderer;
 import net.minecraft.ReportedException;
@@ -39,6 +44,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.text.DecimalFormat;
@@ -159,19 +166,23 @@ public class PortraitRendererUnit<T extends LivingEntity, M extends EntityModel<
 
         drawEntityOnScreen(poseStack, entity, drawX, drawY, sizeFinal);
 
-        if (itemStack.getItem() instanceof BannerItem) {
-            entity.setItemSlot(EquipmentSlot.HEAD, itemStack);
-            name += " Captain";
-        }
-        if (entity.getPassengers().size() == 1) {
-            String pName = getSimpleEntityName(entity.getPassengers().get(0)).replace("_"," ");
-            String nameCap = pName.substring(0, 1).toUpperCase() + pName.substring(1);
-            name += " & " + nameCap;
-        }
         name = WordUtils.capitalize(name);
+
+        if (entity instanceof VindicatorUnit pUnit && pUnit.getEnchant() == Enchantments.SHARPNESS)
+            name += " (S)";
+        if (entity instanceof VindicatorUnit pUnit && pUnit.getEnchant() == EnchantMaiming.actualEnchantment)
+            name += " (M)";
+        if (entity instanceof PillagerUnit pUnit && pUnit.getEnchant() == Enchantments.QUICK_CHARGE)
+            name += " (QC)";
+        if (entity instanceof PillagerUnit pUnit && pUnit.getEnchant() == Enchantments.MULTISHOT)
+            name += " (MS)";
+        if (entity instanceof EvokerUnit pUnit && pUnit.getEnchant() == EnchantVigor.actualEnchantment)
+            name += " (V)";
 
         if (rs != Relationship.OWNED && entity instanceof Unit unit && unit.getOwnerName().length() > 0)
             name += " (" + unit.getOwnerName() + ")";
+
+
 
         // draw name (unless a player, since their nametag will be rendered anyway)
         if (!(entity instanceof Player)) {

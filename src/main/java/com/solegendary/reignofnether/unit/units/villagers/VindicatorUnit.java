@@ -34,11 +34,14 @@ import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
@@ -213,6 +216,9 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
 
     @Override
     public void setupEquipmentAndUpgradesClient() {
+        if (hasAnyEnchant())
+            return;
+
         // weapon is purely visual, damage is based solely on entity attribute ATTACK_DAMAGE
         Item axe = Items.IRON_AXE;
         //if (ResearchClient.hasResearch(ResearchVindicatorAxes.itemName))
@@ -222,6 +228,9 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
 
     @Override
     public void setupEquipmentAndUpgradesServer() {
+        if (hasAnyEnchant())
+            return;
+
         // weapon is purely visual, damage is based solely on entity attribute ATTACK_DAMAGE
         Item axe = Items.IRON_AXE;
         int damageMod = 0;
@@ -236,16 +245,27 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
         this.setItemSlot(EquipmentSlot.MAINHAND, axeStack);
     }
 
+    public boolean hasAnyEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        return !itemStack.getAllEnchantments().isEmpty();
+    }
+
     public boolean hasMaimingEnchant() {
         ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
         return itemStack.getAllEnchantments().containsKey(EnchantMaiming.actualEnchantment);
+    }
+
+    public Enchantment getEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        Optional<Enchantment> enchant = itemStack.getAllEnchantments().keySet().stream().findFirst();
+        return enchant.orElse(null);
     }
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
         boolean hurt = super.doHurtTarget(pEntity);
         if (hurt && hasMaimingEnchant() && pEntity instanceof LivingEntity le)
-            le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1));
+            le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
         return hurt;
     }
 }

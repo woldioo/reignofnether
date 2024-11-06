@@ -1,5 +1,5 @@
 
-1.19.2-1.0.6a
+1.19.2-1.0.7
 -------------
 
 - Done and tested
@@ -53,74 +53,80 @@
 
 
 
-[🟡] Vindicator and Pillager upgrades are now enchantments paid for per-unit from the library
+🎉 Features 🎉
+- Vindicator and Pillager upgrades are now enchantments paid for per-unit from the library
     - Diamond axes and Multishot blacksmith upgrades have been removed
-    - Libraries can now be upgraded to Grand Libraries for more options
+    - Libraries can now be upgraded to Grand Libraries (150 wood, 350 ore) for more enchantment options
     - Basic libraries have:
-        - Sharpness for Vindicators (+1 dmg)
-        - Quick Charge for Pillagers
+        - (25 wood, 40 ore) Sharpness for Vindicators (+1 dmg)
+        - (30 wood, 15 ore) Quick Charge for Pillagers
     - Grand libraries have:
-        - Maiming for Vindicators (slow applied on hit)
-        - Multishot for Pillagers
-        - Vigor for Evokers (-25% cooldown times)
+        - (40 wood, 60 ore) Maiming for Vindicators (slow applied on hit)
+        - (80 wood, 40 ore) Multishot for Pillagers
+        - (60 wood, 60 ore) Vigor for Evokers (-25% cooldown times)
     - You can have only one enchantment at a time, and can be overridden, but no refunds are given
     - Enchantments can be right-clicked to auto cast (be careful, it'll spend all your resources!)
 
-    [🟡] Show enchantment name next to portrait
+- Spiders now have an upgrade to unlock a Web Spin ability which creates temporary cobwebs on the field
+    - Researched at the Lab (300 wood, 300 ore)
+	- Cooldown: 30s, Range: 8, Duration: 5s
+    - Cannot be used while mounted or recently dismounted
+
+🛠️ Bugfixes 🛠️
+--------------
+- Improved pathfinding for melee units chasing enemies
+- Ravager Artilleries no longer shoot themselves when targeting a building
+- If you somehow got into F12 in survival or adventure mode, you are automatically taken out of it
+- Fences, stairs, walls and other similar blocks won't cause buildings to be unbuildable if placed against other blocks
+
+⚙ Quality of Life Features ⚙
+------------------------------
+- Mounted units now have special names and are grouped separately from non-mounted units when selected
+- Improved performance for all monster units
+- Can no longer use F12 cam in adventure mode
+- Most units now use abilities one by one and will cycle through available casters of the same type when used
+    - when selecting groups of units, focus will be prioritised on the unit with abilities off cooldown
+- Sculk Catalyst Sacrifice can no longer be used if the unit is standing on top of the catalyst or its stairs
+- You can now move the camera by holding middle mouse click and its sensitivity has been raised
+- Added more title screen splash lines
+
+⚖ Balancing ⚖
+---------------
+- Worker Carry Bags now makes workers return resources when holding above 100 total
+- Default max population is now 150
+
+Monsters
+- Zombie Villagers are now slowed under sunlight like creepers and spiders
+- Drowned turn illagers into drowned instead of regular zombies
+- Zombie Piglins +5 hp and Zoglins +15hp
+- Creepers are no longer automatically set off by explosions, including from other creepers
+
+Villagers
+- Vindicator +1dmg, +30food, +5s, +1 pop
+- Pillager +5hp, +25food, +5wood, +5s, +1 pop
+- Witch upgrade -50 all resources, -10s
+- Castle Officer's Quarters +150 wood, +50 ore, +30s
+- Villagers can no longer build Golems if your blacksmith is destroyed
+
+Piglins
+- Brute -5 food
+- Brute Shields protect against ranged by 75% up from 67%
+- Headhunter -10 wood
+- Headhunter Heavy Tridents upgrade -20s
+- Hoglin -0.05as
+- Blaze +1dmg, +0.1as
+- Blaze Firewall upgrade +100 ore, -5 range, +5s cd
+- Wither Skeletons  +15hp, +1dmg, +50ore, +5s, +1pop
+- Wither death clouds reworked to instead give an active ability that generates wither clouds around them
+- Piglins are immune to magma by default, fire resistance upgrade now gives total fire block and fire tick immunity
 
 Bugfixes
 --------
-[❌] Melee units take a while to attack while chasing moving enemies
-[❌] Ravager artilleries shoot themselves when targeting a building
-[🟡] (In Colin's PR) Tab causes crash somehow?
-[🟡] (In Colin's PR) Fix chunk forcing issue with workers
+[❌] (In Colin's PR) Tab causes crash somehow?
+[❌] (In Colin's PR) Fix chunk forcing issue with workers
 [❌] Central portals sometimes do not ignite (and this somehow makes grunts spawn underground)
-[❌] If you somehow got into F12 in survival or adventure mode, you should be taken back out of it
-[❌] Fences, stairs, walls and other similar blocks that care about adjacent blocks won't cause buildings to be unbuildable
-[❌] Enchantments aren't saved on server reload (because of setupEquipment runs, just don't run it if theyre holding enchanted items)
+[❌] Spider webs stay forever if the spider dies
 
 Quality of Life Features
 ------------------------
-[🟡] Greatly improved performance for all monster units and buildings
-[🟡] Improved performance for fog of war
-[🟡] Can no longer use F12 can in adventure mode
-
-[🟡] Most units now use abilities one by one and will cycle through available casters of the same type when used
-    - when selecting groups of units, focus will be prioritised on the unit with abilities off cooldown
-
-[🟡] Sculk Catalyst sacrifice can no longer be used if the unit is standing on an unspreadable block
-[🟡] You can now move the camera by holding middle mouse click and its sensitivity has been raised
-[🟡] Added more title screen splash lines
-
-Balancing
----------
-
-EVERYONE
-[🟡] Worker Carry Bags now makes workers return resources when holding above 100 total
-[✔] Default max population is now 150
-
-MONSTERS
-[🟡] Zombie villagers are now slowed under sunlight like creepers and spiders
-[✔] Drowned turn illagers into Drowned now instead of regular zombies
-[✔] Zombie Piglins +10 hp, +1dmg and Zoglins +15hp, +1dmg
-[🟡] Spiders now have an upgrade to unlock a Web Spin ability which creates temporary cobwebs on the field
-[✔] Creepers are no longer automatically set off by explosions, including from other creepers
-
-VILLAGERS
-[✔] Vindicator +1dmg, +30food, +5s, +1 pop
-[✔] Pillager +5hp, +25food, +5wood, +5s, +1 pop
-[✔] Witch upgrade -50 all resources, -10s
-[✔] Castle Officer's Quarters +150 wood, +50 ore, +30s
-
-PIGLINS
-[✔] Brute -5 food
-[✔] Brute Shields protect against ranged by 75% up from 67%
-[✔] Headhunter -10 wood
-[✔] Heavy tridents -20s
-[✔] Hoglin -0.05as
-[✔] Blaze firewall upgrade +100 ore, -5 range, +5s cd
-[✔] Blaze +1dmg, +0.1as
-Wither Skeletons:
-[🟡] - Wither death clouds reworked to instead give an active ability that generates wither clouds around them
-[✔] - +15hp, +2dmg, +50ore, +5s, +1pop
-[🟡] Piglins are immune to magma by default, fire resistance upgrade now gives total fire block and fire tick immunity
+[❌] (In Colin's PR) Improved performance for fog of war

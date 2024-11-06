@@ -1,9 +1,7 @@
 package com.solegendary.reignofnether.building.buildings.villagers;
 
-import com.solegendary.reignofnether.building.Building;
-import com.solegendary.reignofnether.building.BuildingBlock;
-import com.solegendary.reignofnether.building.BuildingBlockData;
-import com.solegendary.reignofnether.building.BuildingClientEvents;
+import com.solegendary.reignofnether.building.*;
+import com.solegendary.reignofnether.building.buildings.piglins.FlameSanctuary;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.registrars.EntityRegistrar;
@@ -84,8 +82,9 @@ public class IronGolemBuilding extends Building {
             hotkey,
             () -> BuildingClientEvents.getBuildingToPlace() == IronGolemBuilding.class,
             TutorialClientEvents::isEnabled,
-            () -> ResearchClient.hasResearch(ResearchGolemSmithing.itemName) ||
-                    ResearchClient.hasCheat("modifythephasevariance"),
+            () -> BuildingClientEvents.hasFinishedBuilding(Blacksmith.buildingName) &&
+                  (ResearchClient.hasResearch(ResearchGolemSmithing.itemName) ||
+                    ResearchClient.hasCheat("modifythephasevariance")),
             () -> BuildingClientEvents.setBuildingToPlace(IronGolemBuilding.class),
             null,
             List.of(
@@ -95,7 +94,7 @@ public class IronGolemBuilding extends Building {
                 FormattedCharSequence.forward("", Style.EMPTY),
                 FormattedCharSequence.forward("An Iron Golem that can be built in the field.", Style.EMPTY),
                 FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward("Requires research at a Blacksmith", Style.EMPTY)
+                FormattedCharSequence.forward("Requires research and an active Blacksmith", Style.EMPTY)
             ),
             null
         );

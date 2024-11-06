@@ -117,7 +117,7 @@ public class ZoglinUnit extends Zoglin implements Unit, AttackerUnit {
 
     // endregion
 
-    final static public float attackDamage = 6.0f;
+    final static public float attackDamage = 5.0f;
     final static public float attacksPerSecond = 0.4f;
     final static public float attackRange = 2; // only used by ranged units or melee building attackers
     final static public float aggroRange = 10;

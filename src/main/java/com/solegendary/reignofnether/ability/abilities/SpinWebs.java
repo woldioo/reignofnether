@@ -91,7 +91,7 @@ public class SpinWebs extends Ability {
     @Override
     public void use(Level level, Unit unitUsing, BlockPos targetBp) {
 
-        if (!level.isClientSide()) {
+        if (!level.isClientSide() && !((LivingEntity) unitUsing).isVehicle()) {
             BlockPos limitedBp = MyMath.getXZRangeLimitedBlockPos(((LivingEntity) unitUsing).getOnPos(), targetBp, range);
 
             BlockPos originBp = MiscUtil.getHighestNonAirBlock(level, limitedBp, true);
@@ -108,10 +108,11 @@ public class SpinWebs extends Ability {
                 if (((LivingEntity) unitUsing).distanceToSqr(Vec3.atCenterOf(bp)) < (RANGE * 2) * (RANGE * 2))
                     webs.add(new WebBlock(bp.above().above()));
             }
-
         } else if (level.isClientSide()) {
-            if (((LivingEntity) unitUsing).isVehicle())
+            if (((LivingEntity) unitUsing).isVehicle()) {
                 HudClientEvents.showTemporaryMessage("Cannot use while mounted.");
+                return;
+            }
         }
         this.setToMaxCooldown();
     }

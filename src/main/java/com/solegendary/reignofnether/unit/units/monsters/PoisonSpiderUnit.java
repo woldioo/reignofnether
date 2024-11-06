@@ -141,8 +141,8 @@ public class PoisonSpiderUnit extends CaveSpider implements Unit, AttackerUnit {
         SpinWebs ab2 = new SpinWebs(this);
         this.abilities.add(ab2);
         if (level.isClientSide()) {
-            this.abilityButtons.add(ab1.getButton(Keybindings.keyT));
             this.abilityButtons.add(ab2.getButton(Keybindings.keyQ));
+            this.abilityButtons.add(ab1.getButton(Keybindings.keyW));
         }
     }
 

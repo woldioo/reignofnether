@@ -59,7 +59,9 @@ public class ResearchSpiderWebs extends ProductionItem {
                         ResourceCosts.getFormattedTime(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
                         FormattedCharSequence.forward("Unlocks the ability for spiders to cast ", Style.EMPTY),
-                        FormattedCharSequence.forward("webs onto the field to trap enemies.", Style.EMPTY)
+                        FormattedCharSequence.forward("webs onto the field to trap enemies.", Style.EMPTY),
+                        FormattedCharSequence.forward("", Style.EMPTY),
+                        FormattedCharSequence.forward("Cannot be used by mounted spiders.", Style.EMPTY)
                 )
         );
     }

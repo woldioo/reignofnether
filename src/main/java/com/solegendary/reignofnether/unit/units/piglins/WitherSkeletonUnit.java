@@ -119,7 +119,7 @@ public class WitherSkeletonUnit extends WitherSkeleton implements Unit, Attacker
 
     // endregion
 
-    final static public float attackDamage = 8.0f;
+    final static public float attackDamage = 7.0f;
     final static public float attacksPerSecond = 0.4f;
     final static public float attackRange = 2; // only used by ranged units or melee building attackers
     final static public float aggroRange = 10;

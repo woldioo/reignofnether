@@ -1,7 +1,9 @@
 package com.solegendary.reignofnether.unit.goals;
 
+import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.units.piglins.WitherSkeletonUnit;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -12,7 +14,9 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
 
+import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.List;
 
 // based on MeleeAttackGoal
 public abstract class AbstractMeleeAttackUnitGoal extends Goal {
@@ -23,6 +27,7 @@ public abstract class AbstractMeleeAttackUnitGoal extends Goal {
     private double pathedTargetY;
     private double pathedTargetZ;
     private int ticksUntilNextPathRecalculation;
+    private final int tickPathRecalcMax = 5;
     private int ticksUntilNextAttack;
     private final int attackInterval;
     private long lastCanUseCheck;
@@ -85,7 +90,6 @@ public abstract class AbstractMeleeAttackUnitGoal extends Goal {
         if (!((Unit) this.mob).getHoldPosition())
             this.mob.getNavigation().moveTo(this.path,  Unit.getSpeedModifier((Unit) this.mob));
         this.mob.setAggressive(true);
-        this.ticksUntilNextPathRecalculation = 0;
     }
 
     public void stop() {
@@ -93,7 +97,6 @@ public abstract class AbstractMeleeAttackUnitGoal extends Goal {
         if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
             this.mob.setTarget(null);
         }
-
         this.mob.setAggressive(false);
         this.mob.getNavigation().stop();
     }
@@ -103,25 +106,20 @@ public abstract class AbstractMeleeAttackUnitGoal extends Goal {
     }
 
     public void tick() {
-        LivingEntity livingentity = this.mob.getTarget();
-        if (livingentity != null) {
-            this.mob.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
-            double d0 = this.mob.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
+        LivingEntity target = this.mob.getTarget();
+        if (target != null) {
+            this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            double d0 = this.mob.distanceToSqr(target.getX(), target.getY(), target.getZ());
             if (!((Unit) this.mob).getHoldPosition()) {
-                if ((this.followingTargetEvenIfNotSeen || this.mob.getSensing().hasLineOfSight(livingentity)) &&
-                        this.ticksUntilNextPathRecalculation <= 0 &&
-                        (this.pathedTargetX == 0.0D &&
-                            this.pathedTargetY == 0.0D &&
-                            this.pathedTargetZ == 0.0D ||
-                            livingentity.distanceToSqr(this.pathedTargetX, this.pathedTargetY, this.pathedTargetZ) >= 1.0D ||
-                            this.mob.getRandom().nextFloat() < 0.05F))
-                {
-                    this.pathedTargetX = livingentity.getX();
-                    this.pathedTargetY = livingentity.getY();
-                    this.pathedTargetZ = livingentity.getZ();
+                if (ticksUntilNextPathRecalculation <= 0) {
+                    Path path = mob.getNavigation().createPath(target.getX(), target.getY(), target.getZ(), 0);
+                    this.mob.getNavigation().moveTo(path, Unit.getSpeedModifier((Unit) this.mob));
+                    ticksUntilNextPathRecalculation = tickPathRecalcMax;
+                } else {
+                    ticksUntilNextPathRecalculation -= 1;
                 }
             }
-            this.checkAndPerformAttack(livingentity, d0);
+            this.checkAndPerformAttack(target, d0);
         }
     }
 

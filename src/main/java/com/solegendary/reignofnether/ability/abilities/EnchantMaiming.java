@@ -15,9 +15,12 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class EnchantMaiming extends EnchantAbility {
@@ -53,6 +56,7 @@ public class EnchantMaiming extends EnchantAbility {
                         FormattedCharSequence.forward("Enchant a Vindicator's axe with maiming, ", Style.EMPTY),
                         FormattedCharSequence.forward("causing targets to be slowed on hit.", Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
+                        FormattedCharSequence.forward("Removes all other enchantments.", Style.EMPTY),
                         FormattedCharSequence.forward("Right click to auto-cast", Style.EMPTY)
                 ),
                 this
@@ -77,6 +81,8 @@ public class EnchantMaiming extends EnchantAbility {
 
     @Override
     protected void doEnchant(LivingEntity entity) {
-        entity.getItemBySlot(EquipmentSlot.MAINHAND).enchant(actualEnchantment, 1);
+        ItemStack item = entity.getItemBySlot(EquipmentSlot.MAINHAND);
+        EnchantmentHelper.setEnchantments(new HashMap<>(), item);
+        item.enchant(actualEnchantment, 1);
     }
 }
