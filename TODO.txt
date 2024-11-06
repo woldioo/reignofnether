@@ -55,7 +55,7 @@
 
 [🟡] Vindicator and Pillager upgrades are now enchantments paid for per-unit from the library
     - Diamond axes and Multishot blacksmith upgrades have been removed
-    - Libraries can now be upgraded to Grand Libraries for more options
+    - Libraries can now be upgraded to Grand Libraries for more enchantment options
     - Basic libraries have:
         - Sharpness for Vindicators (+1 dmg)
         - Quick Charge for Pillagers
@@ -66,26 +66,23 @@
     - You can have only one enchantment at a time, and can be overridden, but no refunds are given
     - Enchantments can be right-clicked to auto cast (be careful, it'll spend all your resources!)
 
-    [🟡] Show enchantment name next to portrait
-
 Bugfixes
 --------
-[❌] Melee units take a while to attack while chasing moving enemies
-[❌] Ravager artilleries shoot themselves when targeting a building
-[🟡] (In Colin's PR) Tab causes crash somehow?
-[🟡] (In Colin's PR) Fix chunk forcing issue with workers
-
+[🟡] Improved pathfinding for melee units chasing enemies
+[🟡] Ravager Artilleries no longer shoot themselves when targeting a building
 [🟡] If you somehow got into F12 in survival or adventure mode, you are automatically taken out of it
-[🟡] Fences, stairs, walls and other similar blocks won't cause buildings to be unbuildable
-[🟡] Enchantments aren't saved on server reload (because of setupEquipment runs, just don't run it if theyre holding enchanted items)
+[🟡] Fences, stairs, walls and other similar blocks won't cause buildings to be unbuildable if placed against other blocks
+
+[❌] (In Colin's PR) Tab causes crash somehow?
+[❌] (In Colin's PR) Fix chunk forcing issue with workers
 [❌] Central portals sometimes do not ignite (and this somehow makes grunts spawn underground)
 
 Quality of Life Features
 ------------------------
 [🟡] Mounted units now have special names and are grouped separately from non-mounted units when selected
 
-[🟡] Greatly improved performance for all monster units and buildings
-[🟡] Improved performance for fog of war
+[🟡] Greatly improved performance for all monster units
+[❌] (In Colin's PR) Improved performance for fog of war
 [🟡] Can no longer use F12 can in adventure mode
 
 [🟡] Most units now use abilities one by one and will cycle through available casters of the same type when used
@@ -103,8 +100,8 @@ EVERYONE
 [✔] Default max population is now 150
 
 MONSTERS
-[🟡] Zombie villagers are now slowed under sunlight like creepers and spiders
-[✔] Drowned turn illagers into Drowned now instead of regular zombies
+[🟡] Zombie Villagers are now slowed under sunlight like creepers and spiders
+[✔] Drowned turn illagers into drowned instead of regular zombies
 [✔] Zombie Piglins +5 hp and Zoglins +15hp
 [🟡] Spiders now have an upgrade to unlock a Web Spin ability which creates temporary cobwebs on the field
     - cannot be used while mounted
@@ -120,11 +117,10 @@ PIGLINS
 [✔] Brute -5 food
 [✔] Brute Shields protect against ranged by 75% up from 67%
 [✔] Headhunter -10 wood
-[✔] Heavy tridents -20s
+[✔] Headhunter Heavy Tridents upgrade -20s
 [✔] Hoglin -0.05as
-[✔] Blaze firewall upgrade +100 ore, -5 range, +5s cd
 [✔] Blaze +1dmg, +0.1as
-Wither Skeletons:
-[🟡] - Wither death clouds reworked to instead give an active ability that generates wither clouds around them
-[✔] - +15hp, +2dmg, +50ore, +5s, +1pop
+[✔] Blaze Firewall upgrade +100 ore, -5 range, +5s cd
+[✔] Wither Skeletons  +15hp, +1dmg, +50ore, +5s, +1pop
+[🟡] Wither death clouds reworked to instead give an active ability that generates wither clouds around them
 [🟡] Piglins are immune to magma by default, fire resistance upgrade now gives total fire block and fire tick immunity

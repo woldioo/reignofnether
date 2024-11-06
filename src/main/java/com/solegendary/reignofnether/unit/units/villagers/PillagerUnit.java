@@ -276,8 +276,10 @@ public class PillagerUnit extends Pillager implements Unit, AttackerUnit, Ranged
                 return;
             }
         } catch (NullPointerException e) {
-            System.out.println("Caught NullPointerException in shootCrossbowProjectile: " + e);
+            System.out.println("Caught NullPointerException in shootCrossbowProjectile: " + e.getMessage());
         }
+        if (pTarget == null)
+            return;
 
         double d0 = pTarget.getX() - pUser.getX();
         double d1 = pTarget.getZ() - pUser.getZ();
