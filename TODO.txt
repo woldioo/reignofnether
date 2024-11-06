@@ -72,9 +72,11 @@ Bugfixes
 --------
 [❌] Melee units take a while to attack while chasing moving enemies
 [❌] Ravager artilleries shoot themselves when targeting a building
-[❌] Ghasts can no longer attack other friendly ghasts to avoid an exploit where they get pushed out of range
-[❌] Tab causes crash somehow?
-[❌] Fix chunk forcing issue with workers
+[🟡] (In Colin's PR) Tab causes crash somehow?
+[🟡] (In Colin's PR) Fix chunk forcing issue with workers
+[❌] Central portals sometimes do not ignite (and this somehow makes grunts spawn underground)
+[❌] If you somehow got into F12 in survival or adventure mode, you should be taken back out of it
+[❌] Fences, stairs, walls and other similar blocks that care about adjacent blocks won't cause buildings to be unbuildable
 
 Quality of Life Features
 ------------------------
