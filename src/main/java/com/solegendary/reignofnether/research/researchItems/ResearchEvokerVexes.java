@@ -58,9 +58,7 @@ public class ResearchEvokerVexes extends ProductionItem {
                 ResourceCosts.getFormattedCost(cost),
                 ResourceCosts.getFormattedTime(cost),
                 FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward("Unlocks the ability for evokers to summon vexes.", Style.EMPTY),
-                FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward("Requires evokers to have been unlocked.", Style.EMPTY)
+                FormattedCharSequence.forward("Unlocks the ability for evokers to summon vexes.", Style.EMPTY)
             )
         );
     }

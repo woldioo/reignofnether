@@ -52,7 +52,6 @@
     - Players are forced to expand further to keep getting resources, but always have to protect their capitol
 
 
-
 [🟡] Vindicator and Pillager upgrades are now enchantments paid for per-unit from the library
     - Diamond axes and Multishot blacksmith upgrades have been removed
     - Libraries can now be upgraded to Grand Libraries for more enchantment options
@@ -76,19 +75,18 @@ Bugfixes
 [❌] (In Colin's PR) Tab causes crash somehow?
 [❌] (In Colin's PR) Fix chunk forcing issue with workers
 [❌] Central portals sometimes do not ignite (and this somehow makes grunts spawn underground)
+[❌] Spider webs stay forever if the spider dies
 
 Quality of Life Features
 ------------------------
 [🟡] Mounted units now have special names and are grouped separately from non-mounted units when selected
 
-[🟡] Greatly improved performance for all monster units
+[🟡] Improved performance for all monster units
 [❌] (In Colin's PR) Improved performance for fog of war
-[🟡] Can no longer use F12 can in adventure mode
-
+[🟡] Can no longer use F12 cam in adventure mode
 [🟡] Most units now use abilities one by one and will cycle through available casters of the same type when used
     - when selecting groups of units, focus will be prioritised on the unit with abilities off cooldown
-
-[🟡] Sculk Catalyst sacrifice can no longer be used if the unit is standing on an unspreadable block
+[🟡] Sculk Catalyst Sacrifice can no longer be used if the unit is standing on top of the catalyst or its stairs
 [🟡] You can now move the camera by holding middle mouse click and its sensitivity has been raised
 [🟡] Added more title screen splash lines
 

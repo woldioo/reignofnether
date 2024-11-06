@@ -265,7 +265,7 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
     public boolean doHurtTarget(Entity pEntity) {
         boolean hurt = super.doHurtTarget(pEntity);
         if (hurt && hasMaimingEnchant() && pEntity instanceof LivingEntity le)
-            le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1));
+            le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
         return hurt;
     }
 }

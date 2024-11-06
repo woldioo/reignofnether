@@ -216,6 +216,7 @@ public abstract class ProductionBuilding extends Building {
                 case ResearchAdvancedPortals.itemName -> prodItem = new ResearchAdvancedPortals(building);
                 case ResearchFireResistance.itemName -> prodItem = new ResearchFireResistance(building);
                 case ResearchGrandLibrary.itemName -> prodItem = new ResearchGrandLibrary(building);
+                case ResearchSpiderWebs.itemName -> prodItem = new ResearchSpiderWebs(building);
 
                 case ResearchPortalForCivilian.itemName -> prodItem = new ResearchPortalForCivilian(building);
                 case ResearchPortalForMilitary.itemName -> prodItem = new ResearchPortalForMilitary(building);
