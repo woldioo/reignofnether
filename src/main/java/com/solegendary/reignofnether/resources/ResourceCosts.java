@@ -138,7 +138,7 @@ public class ResourceCosts {
 
     // ******************* ENCHANTMENTS ******************* //
     public static ResourceCost ENCHANT_SHARPNESS = ResourceCost.Enchantment(0,25, 40);
-    public static ResourceCost ENCHANT_QUICK_CHARGE = ResourceCost.Enchantment(0,50, 25);
+    public static ResourceCost ENCHANT_QUICK_CHARGE = ResourceCost.Enchantment(0,30, 15);
     public static ResourceCost ENCHANT_MAIMING = ResourceCost.Enchantment(0,40, 60);
     public static ResourceCost ENCHANT_MULTISHOT = ResourceCost.Enchantment(0,80, 40);
     public static ResourceCost ENCHANT_VIGOR = ResourceCost.Enchantment(0,60, 60);

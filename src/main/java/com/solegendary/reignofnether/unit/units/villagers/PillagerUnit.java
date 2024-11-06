@@ -36,6 +36,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -43,6 +44,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 // despite being a RangedAttackerUnit we don't implement performRangedAttack as we override the Pillager crossbow attack instead
 // we just implement this for fog reveal methods
@@ -231,10 +233,24 @@ public class PillagerUnit extends Pillager implements Unit, AttackerUnit, Ranged
 
     @Override
     public void setupEquipmentAndUpgradesServer() {
+        if (hasAnyEnchant())
+            return;
+
         ItemStack cbowStack = new ItemStack(Items.CROSSBOW);
         //if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchPillagerCrossbows.itemName))
         //    cbowStack.enchant(Enchantments.MULTISHOT, 1);
         this.setItemSlot(EquipmentSlot.MAINHAND, cbowStack);
+    }
+
+    public boolean hasAnyEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        return !itemStack.getAllEnchantments().isEmpty();
+    }
+
+    public Enchantment getEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        Optional<Enchantment> enchant = itemStack.getAllEnchantments().keySet().stream().findFirst();
+        return enchant.orElse(null);
     }
 
     // override to make inaccuracy 0

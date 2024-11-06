@@ -33,6 +33,7 @@ import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -40,6 +41,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class EvokerUnit extends Evoker implements Unit, AttackerUnit, RangedAttackerUnit {
     // region
@@ -373,12 +375,26 @@ public class EvokerUnit extends Evoker implements Unit, AttackerUnit, RangedAtta
 
     @Override
     public void setupEquipmentAndUpgradesServer() {
+        if (hasAnyEnchant())
+            return;
+
         // TODO: replace this with a stick instead
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+    }
+
+    public boolean hasAnyEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        return !itemStack.getAllEnchantments().isEmpty();
     }
 
     public boolean hasVigorEnchant() {
         ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
         return itemStack.getAllEnchantments().containsKey(EnchantVigor.actualEnchantment);
+    }
+
+    public Enchantment getEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        Optional<Enchantment> enchant = itemStack.getAllEnchantments().keySet().stream().findFirst();
+        return enchant.orElse(null);
     }
 }

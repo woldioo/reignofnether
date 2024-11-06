@@ -1,5 +1,5 @@
 
-1.19.2-1.0.6a
+1.19.2-1.0.7-beta
 -------------
 
 - Done and tested
@@ -74,13 +74,16 @@ Bugfixes
 [❌] Ravager artilleries shoot themselves when targeting a building
 [🟡] (In Colin's PR) Tab causes crash somehow?
 [🟡] (In Colin's PR) Fix chunk forcing issue with workers
+
+[🟡] If you somehow got into F12 in survival or adventure mode, you are automatically taken out of it
+[🟡] Fences, stairs, walls and other similar blocks won't cause buildings to be unbuildable
+[🟡] Enchantments aren't saved on server reload (because of setupEquipment runs, just don't run it if theyre holding enchanted items)
 [❌] Central portals sometimes do not ignite (and this somehow makes grunts spawn underground)
-[❌] If you somehow got into F12 in survival or adventure mode, you should be taken back out of it
-[❌] Fences, stairs, walls and other similar blocks that care about adjacent blocks won't cause buildings to be unbuildable
-[❌] Enchantments aren't saved on server reload (because of setupEquipment runs, just don't run it if theyre holding enchanted items)
 
 Quality of Life Features
 ------------------------
+[🟡] Mounted units now have special names and are grouped separately from non-mounted units when selected
+
 [🟡] Greatly improved performance for all monster units and buildings
 [🟡] Improved performance for fog of war
 [🟡] Can no longer use F12 can in adventure mode
@@ -102,8 +105,9 @@ EVERYONE
 MONSTERS
 [🟡] Zombie villagers are now slowed under sunlight like creepers and spiders
 [✔] Drowned turn illagers into Drowned now instead of regular zombies
-[✔] Zombie Piglins +10 hp, +1dmg and Zoglins +15hp, +1dmg
+[✔] Zombie Piglins +5 hp and Zoglins +15hp
 [🟡] Spiders now have an upgrade to unlock a Web Spin ability which creates temporary cobwebs on the field
+    - cannot be used while mounted
 [✔] Creepers are no longer automatically set off by explosions, including from other creepers
 
 VILLAGERS

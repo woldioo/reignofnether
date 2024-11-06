@@ -202,6 +202,11 @@ public class OrthoviewClientEvents {
         if (evt.phase != TickEvent.Phase.END)
             return;
 
+        if (isEnabled() && MC.gameMode != null &&
+            (MC.gameMode.getPlayerMode() == GameType.ADVENTURE ||
+            MC.gameMode.getPlayerMode() == GameType.SURVIVAL))
+            toggleEnable();
+
         if (cameraLockTicksLeft > 0)
             cameraLockTicksLeft -= 1;
 
@@ -288,8 +293,9 @@ public class OrthoviewClientEvents {
             if (evt.getKey() == Keybindings.getFnum(12).key &&
                 !OrthoviewClientEvents.isCameraLocked() &&
                 MC.gameMode != null) {
-                if ((MC.gameMode.getPlayerMode() == GameType.ADVENTURE ||
-                    MC.gameMode.getPlayerMode() == GameType.SURVIVAL) && MC.player != null) {
+                if (MC.player != null &&
+                    (MC.gameMode.getPlayerMode() == GameType.ADVENTURE ||
+                    MC.gameMode.getPlayerMode() == GameType.SURVIVAL)) {
                     MC.player.sendSystemMessage(Component.literal(""));
                     MC.player.sendSystemMessage(Component.literal("You must be in creative or spectator for RTS mode"));
                     MC.player.sendSystemMessage(Component.literal(""));

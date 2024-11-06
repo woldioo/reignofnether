@@ -24,6 +24,15 @@ import com.solegendary.reignofnether.unit.interfaces.AttackerUnit;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.interfaces.WorkerUnit;
+import com.solegendary.reignofnether.unit.units.monsters.PoisonSpiderUnit;
+import com.solegendary.reignofnether.unit.units.monsters.SkeletonUnit;
+import com.solegendary.reignofnether.unit.units.monsters.SpiderUnit;
+import com.solegendary.reignofnether.unit.units.monsters.StrayUnit;
+import com.solegendary.reignofnether.unit.units.piglins.BruteUnit;
+import com.solegendary.reignofnether.unit.units.piglins.HeadhunterUnit;
+import com.solegendary.reignofnether.unit.units.piglins.HoglinUnit;
+import com.solegendary.reignofnether.unit.units.villagers.PillagerUnit;
+import com.solegendary.reignofnether.unit.units.villagers.RavagerUnit;
 import com.solegendary.reignofnether.util.MiscUtil;
 import com.solegendary.reignofnether.util.MyRenderer;
 import net.minecraft.client.Minecraft;
@@ -35,8 +44,11 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.BannerItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -102,8 +114,8 @@ public class HudClientEvents {
                             return new Pair<>(le, totalCd);
                         }
                 ).filter(p -> {
-                    String str1 = getSimpleEntityName(p.getFirst());
-                    String str2 = getSimpleEntityName(hudSelectedEntity);
+                    String str1 = getModifiedEntityName(p.getFirst());
+                    String str2 = getModifiedEntityName(hudSelectedEntity);
                     return str1.equals(str2);
                 })
                 .sorted(Comparator.comparing(Pair::getSecond))
@@ -136,6 +148,35 @@ public class HudClientEvents {
         }
         else
             return entity.getName().getString();
+    }
+
+    // not to be used for resource paths
+    public static String getModifiedEntityName(Entity entity) {
+        String name = getSimpleEntityName(entity);
+
+        ItemStack itemStack = ((LivingEntity) entity).getItemBySlot(EquipmentSlot.HEAD);
+
+        if (itemStack.getItem() instanceof BannerItem) {
+            entity.setItemSlot(EquipmentSlot.HEAD, itemStack);
+            name += " Captain";
+        }
+        if (entity.getPassengers().size() == 1) {
+            Entity passenger = entity.getPassengers().get(0);
+            if (entity instanceof RavagerUnit && passenger instanceof PillagerUnit)
+                name = "Ravager Artillery";
+            else if (entity instanceof SpiderUnit && (passenger instanceof SkeletonUnit || passenger instanceof StrayUnit))
+                name = "Spider Jockey";
+            else if (entity instanceof PoisonSpiderUnit && (passenger instanceof SkeletonUnit || passenger instanceof StrayUnit))
+                name = "Poison Spider Jockey";
+            else if (entity instanceof HoglinUnit && passenger instanceof HeadhunterUnit)
+                name = "Hoglin Rider";
+            else {
+                String pName = getSimpleEntityName(entity.getPassengers().get(0)).replace("_"," ");
+                String nameCap = pName.substring(0, 1).toUpperCase() + pName.substring(1);
+                name += " & " + nameCap;
+            }
+        }
+        return name;
     }
 
     public static void showTemporaryMessage(String msg) {
@@ -428,7 +469,7 @@ public class HudClientEvents {
             blitY -= portraitRendererUnit.frameHeight;
 
             // write capitalised unit name
-            String name = getSimpleEntityName(hudSelectedEntity).replace("_"," ");
+            String name = getModifiedEntityName(hudSelectedEntity).replace("_"," ");
             if (hudSelectedEntity.hasCustomName())
                 name = hudSelectedEntity.getCustomName().getString();
 
@@ -504,12 +545,12 @@ public class HudClientEvents {
                         iconSize,
                         new ResourceLocation(ReignOfNether.MOD_ID, buttonImagePath),
                         unit,
-                        () -> hudSelectedEntity == null || getSimpleEntityName(hudSelectedEntity).equals(unitName),
+                        () -> hudSelectedEntity == null || getModifiedEntityName(hudSelectedEntity).equals(getModifiedEntityName(unit)),
                         () -> false,
                         () -> true,
                         () -> {
                             // select this one specific unit
-                            if (getSimpleEntityName(hudSelectedEntity).equals(unitName)) {
+                            if (getModifiedEntityName(hudSelectedEntity).equals(getModifiedEntityName(unit))) {
                                 UnitClientEvents.clearSelectedUnits();
                                 UnitClientEvents.addSelectedUnit(unit);
                             } else { // click to select this unit type as a group
@@ -1118,11 +1159,11 @@ public class HudClientEvents {
             }
 
             if (hudSelectedEntity != null) {
-                String hudSelectedEntityName = HudClientEvents.getSimpleEntityName(hudSelectedEntity);
+                String hudSelectedEntityName = HudClientEvents.getModifiedEntityName(hudSelectedEntity);
                 String lastEntityName = "";
                 boolean cycled = false;
                 for (LivingEntity entity : entities) {
-                    String currentEntityName = HudClientEvents.getSimpleEntityName(entity);
+                    String currentEntityName = HudClientEvents.getModifiedEntityName(entity);
                     if (lastEntityName.equals(hudSelectedEntityName) && !currentEntityName.equals(lastEntityName)) {
                         HudClientEvents.setHudSelectedEntity(entity);
                         cycled = true;
