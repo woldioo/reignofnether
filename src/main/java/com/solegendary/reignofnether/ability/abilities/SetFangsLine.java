@@ -62,6 +62,9 @@ public class SetFangsLine extends Ability {
 
     @Override
     public void setCooldown(int cooldown) {
+        if (evokerUnit.hasVigorEnchant())
+            cooldown *= EnchantVigor.cooldownMultiplier;
+
         super.setCooldown(cooldown);
         for (Ability ability : this.evokerUnit.getAbilities())
             if (ability instanceof SetFangsCircle ab)

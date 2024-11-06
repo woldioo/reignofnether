@@ -66,6 +66,22 @@ public class CastSummonVexes extends Ability {
     }
 
     @Override
+    public void setCooldown(int cooldown) {
+        if (evokerUnit.hasVigorEnchant())
+            cooldown *= EnchantVigor.cooldownMultiplier;
+        super.setCooldown(cooldown);
+    }
+
+
+    @Override
+    public void setToMaxCooldown() {
+        if (evokerUnit.hasVigorEnchant())
+            setCooldown((int) (cooldownMax * EnchantVigor.cooldownMultiplier));
+        else
+            setCooldown(cooldownMax);
+    }
+
+    @Override
     public void use(Level level, Unit unitUsing, BlockPos targetBp) {
         ((EvokerUnit) unitUsing).getCastSummonVexesGoal().setAbility(this);
         ((EvokerUnit) unitUsing).getCastSummonVexesGoal().startCasting();

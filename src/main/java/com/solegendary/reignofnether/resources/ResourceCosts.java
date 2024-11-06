@@ -45,6 +45,7 @@ public class ResourceCosts {
     public static ResourceCost DROWNED = ResourceCost.Unit(75,0,0,18,1);
     public static ResourceCost SPIDER = ResourceCost.Unit(90,25,25,25,2);
     public static ResourceCost POISON_SPIDER = ResourceCost.Unit(90,25,25,25,2);
+    public static ResourceCost WARDEN = ResourceCost.Unit(250,0,125,40,4);
 
     public static ResourceCost ZOMBIE_PIGLIN = ResourceCost.Unit(0,0,0,10,1);
     public static ResourceCost ZOGLIN = ResourceCost.Unit(0,0,0,10,2);
@@ -84,7 +85,6 @@ public class ResourceCosts {
     public static ResourceCost LABORATORY = ResourceCost.Building(0,250,150, 0);
     public static ResourceCost DARK_WATCHTOWER = ResourceCost.Building(0,100,100, 0);
     public static ResourceCost STRONGHOLD = ResourceCost.Building(0,400,300, 0);
-    public static ResourceCost WARDEN = ResourceCost.Unit(250,0,125,40,4);
 
     // Villagers
     public static ResourceCost TOWN_CENTRE = ResourceCost.Building(0,300,150, 10);

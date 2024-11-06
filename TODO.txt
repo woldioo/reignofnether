@@ -77,6 +77,7 @@ Bugfixes
 [❌] Central portals sometimes do not ignite (and this somehow makes grunts spawn underground)
 [❌] If you somehow got into F12 in survival or adventure mode, you should be taken back out of it
 [❌] Fences, stairs, walls and other similar blocks that care about adjacent blocks won't cause buildings to be unbuildable
+[❌] Enchantments aren't saved on server reload (because of setupEquipment runs, just don't run it if theyre holding enchanted items)
 
 Quality of Life Features
 ------------------------

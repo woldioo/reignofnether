@@ -33,8 +33,12 @@ public class CastSummonVexesGoal extends Goal {
                 if (!this.mob.level.isClientSide())
                     ((EvokerUnit) this.mob).summonVexes();
 
-                if (this.ability != null && !this.mob.level.isClientSide())
-                    AbilityClientboundPacket.sendSetCooldownPacket(this.mob.getId(), this.ability.action, this.ability.cooldownMax);
+                if (this.ability != null && !this.mob.level.isClientSide()) {
+                    if (!this.mob.level.isClientSide())
+                        AbilityClientboundPacket.sendSetCooldownPacket(this.mob.getId(), this.ability.action, this.ability.cooldownMax);
+                    else
+                        this.ability.setToMaxCooldown();
+                }
                 this.stop();
             }
         }

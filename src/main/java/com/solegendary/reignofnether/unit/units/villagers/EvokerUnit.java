@@ -1,10 +1,7 @@
 package com.solegendary.reignofnether.unit.units.villagers;
 
 import com.solegendary.reignofnether.ability.Ability;
-import com.solegendary.reignofnether.ability.abilities.SetFangsCircle;
-import com.solegendary.reignofnether.ability.abilities.SetFangsLine;
-import com.solegendary.reignofnether.ability.abilities.CastSummonVexes;
-import com.solegendary.reignofnether.ability.abilities.PromoteIllager;
+import com.solegendary.reignofnether.ability.abilities.*;
 import com.solegendary.reignofnether.building.GarrisonableBuilding;
 import com.solegendary.reignofnether.fogofwar.FogOfWarClientboundPacket;
 import com.solegendary.reignofnether.hud.AbilityButton;
@@ -376,6 +373,12 @@ public class EvokerUnit extends Evoker implements Unit, AttackerUnit, RangedAtta
 
     @Override
     public void setupEquipmentAndUpgradesServer() {
+        // TODO: replace this with a stick instead
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+    }
+
+    public boolean hasVigorEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        return itemStack.getAllEnchantments().containsKey(EnchantVigor.actualEnchantment);
     }
 }

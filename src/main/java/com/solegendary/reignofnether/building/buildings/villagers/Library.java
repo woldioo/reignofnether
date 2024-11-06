@@ -72,14 +72,19 @@ public class Library extends ProductionBuilding {
         this.abilities.add(enchantMaiming);
         Ability enchantMultishot = new EnchantMultishot(this);
         this.abilities.add(enchantMultishot);
+        Ability enchantVigor = new EnchantVigor(this);
+        this.abilities.add(enchantVigor);
 
         if (level.isClientSide()) {
             this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyQ));
-            this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyW));
+            this.abilityButtons.add(enchantQuickCharge.getButton(Keybindings.keyW));
+            this.abilityButtons.add(enchantMaiming.getButton(Keybindings.keyE));
+            this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyR));
+            this.abilityButtons.add(enchantVigor.getButton(Keybindings.keyT));
             this.productionButtons = Arrays.asList(
-                    ResearchLingeringPotions.getStartButton(this, Keybindings.keyU),
-                    ResearchEvokerVexes.getStartButton(this, Keybindings.keyI),
-                    ResearchGrandLibrary.getStartButton(this, Keybindings.keyO)
+                    ResearchLingeringPotions.getStartButton(this, Keybindings.keyY),
+                    ResearchEvokerVexes.getStartButton(this, Keybindings.keyU),
+                    ResearchGrandLibrary.getStartButton(this, Keybindings.keyI)
             );
         }
     }
