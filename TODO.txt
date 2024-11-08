@@ -2,6 +2,11 @@
 1.19.2-1.0.8
 -------------
 
+Tthings to regression test once PRs are merged
+- /gamerule neutralAggro still works
+- cycling unit groups with tab and shift tab
+-
+
 - Done and tested
 [✔] Done and tested
 [🟡] Partially done, only has a workaround and/or needs testing
@@ -25,13 +30,14 @@ Features
 Bugfixes
 --------
 (In Optimize and Crash Fixes #107 PR)
-[❌] Tab causes crash somehow?
-[❌] Fix chunk forcing issue with workers
-
+[❌] Fixed workers not actually working if they were too far out of view
+[❌] Improved performance for all buildings
+[❌] Fixed crash related to Hiding Leaves
+[❌] Fixed crash related to Ranged units attacking buildings
+[❌] Fixed crash related to pressing Tab on a group of units
 
 
 [🟡] Fixed issue of being kicked from the official server when switching instances (eg. between a game and the lobby)
-
 [❌] The world generation datapack is now hardcoded into the mod by default
     - as a world gen option like superflat
 [❌] Reduce melee unit repathing rate if out of melee range
@@ -40,12 +46,17 @@ Bugfixes
 [❌] Spider webs stay forever if the spider dies before they decay
 
 
+
 Quality of Life Features
 ------------------------
 (In Optimize and Crash Fixes #107 PR)
-[❌] Improved performance for fog of war
-[🟡] Added saved UUID data for all units
+[❌] Improved performance for all units and buildings
+[❌] Improved performance for Fog of War
 
+
+[❌] The thereisnospoon cheatcode to modify max population is now /gamerule maxpopulation <value>
+[🟡] Added saved UUID data for all units
+[❌] Leaving F12 will now more reliably set you to spectator mode if you were in spectator previously
 
 
 Balancing
