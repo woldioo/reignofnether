@@ -1,132 +1,62 @@
 
-1.19.2-1.0.7
+1.19.2-1.0.8
 -------------
 
 - Done and tested
 [✔] Done and tested
 [🟡] Partially done, only has a workaround and/or needs testing
-[❌] Not done, top ones are roughly of higher priority
+[❌] Not done, including unmerged PRs
 
-[❌] Wave Survival
-    - Start anywhere, set time to morning
-    - Whenever night begins, spawn wave of enemies to attack move your base
-
-    - play a random cave ambience sound at the start of each night and title function
-    - start off doing only monster enemies
-    - lose if your capitol dies
-    - need to make sure enemies don't spawn too close to your buildings
-    - might need improved pathfinding
-        - for now, just keep repeating attack move commands
-    - need a /rts-gamemode to change between:
-        - normal
-        - wavesurvival
-        - koth
-        - can't be used if there's at least 1 RTSPlayer
-    - each day length depends on difficulty
-        - 10mins - easy (same as vanilla length)
-        - 8mins - medium
-        - 6mins - hard
-    - nights last forever until you clear the wave
-    - add button to look for few remaining units (similar to idle villagers button)
-
-    WAVE DESIGN
-    - Each night is either piglin, illager or monster
-        - Piglins get popup portals that continuously send units
-            - medium sized wave from each portal at start (smaller than an illager wave) and
-            - must be destroyed before the wave ends
-            - cannot be damaged while building, builds extra fast
-            - at least 1 portal targets the capitol
-        - Monsters attack from all directions randomly at random targets
-        - Illagers attack in a large group always focusing the capitol
-        - can't be the same faction twice in a row
-        - as days pass, waves get larger (balanced by population value)
-
-    ANTI-CHEESING
-    - Give enemies all frostwalker to allow islands
-        - But won't work on sky maps
-    - Prevent leaving one enemy alive to farm resources forever
-        - At least some proportion of enemies try to focus workers
-        - X enemies or less remaining, all enemies focus on workers
-
-    VANILLA WORLD COMPATIBILITY
-    - Players are forced to expand further to keep getting resources, but always have to protect their capitol
+Features
+--------
+(In Optimize and Crash Fixes #107 PR)
+[❌] Alliance System
+    - /ally <player name> to send an alliance request to another player
+    - /allyconfirm <requester name> to accept an alliance request
+    - /disband to leave an alliance
+    - Allies are shown as blue in unit/building highlights and the minimap
+    - Allies win and lose together
+    - Allying a player will not automatically ally you with their allies
+    - Effects that don't friendly fire like creepers should also not affect allies
+    - You can still force attack allies using A + left-click
 
 
-
-🎉 Features 🎉
-- Vindicator and Pillager upgrades are now enchantments paid for per-unit from the library
-    - Diamond axes and Multishot blacksmith upgrades have been removed
-    - Libraries can now be upgraded to Grand Libraries (150 wood, 350 ore) for more enchantment options
-    - Basic libraries have:
-        - (25 wood, 40 ore) Sharpness for Vindicators (+1 dmg)
-        - (30 wood, 15 ore) Quick Charge for Pillagers
-    - Grand libraries have:
-        - (40 wood, 60 ore) Maiming for Vindicators (slow applied on hit)
-        - (80 wood, 40 ore) Multishot for Pillagers
-        - (60 wood, 60 ore) Vigor for Evokers (-25% cooldown times)
-    - You can have only one enchantment at a time, and can be overridden, but no refunds are given
-    - Enchantments can be right-clicked to auto cast (be careful, it'll spend all your resources!)
-
-- Spiders now have an upgrade to unlock a Web Spin ability which creates temporary cobwebs on the field
-    - Researched at the Lab (300 wood, 300 ore)
-	- Cooldown: 30s, Range: 8, Duration: 5s
-    - Cannot be used while mounted or recently dismounted
-
-🛠️ Bugfixes 🛠️
---------------
-- Improved pathfinding for melee units chasing enemies
-- Ravager Artilleries no longer shoot themselves when targeting a building
-- If you somehow got into F12 in survival or adventure mode, you are automatically taken out of it
-- Fences, stairs, walls and other similar blocks won't cause buildings to be unbuildable if placed against other blocks
-
-⚙ Quality of Life Features ⚙
-------------------------------
-- Mounted units now have special names and are grouped separately from non-mounted units when selected
-- Improved performance for all monster units
-- Can no longer use F12 cam in adventure mode
-- Most units now use abilities one by one and will cycle through available casters of the same type when used
-    - when selecting groups of units, focus will be prioritised on the unit with abilities off cooldown
-- Sculk Catalyst Sacrifice can no longer be used if the unit is standing on top of the catalyst or its stairs
-- You can now move the camera by holding middle mouse click and its sensitivity has been raised
-- Added more title screen splash lines
-
-⚖ Balancing ⚖
----------------
-- Worker Carry Bags now makes workers return resources when holding above 100 total
-- Default max population is now 150
-
-Monsters
-- Zombie Villagers are now slowed under sunlight like creepers and spiders
-- Drowned turn illagers into drowned instead of regular zombies
-- Zombie Piglins +5 hp and Zoglins +15hp
-- Creepers are no longer automatically set off by explosions, including from other creepers
-
-Villagers
-- Vindicator +1dmg, +30food, +5s, +1 pop
-- Pillager +5hp, +25food, +5wood, +5s, +1 pop
-- Witch upgrade -50 all resources, -10s
-- Castle Officer's Quarters +150 wood, +50 ore, +30s
-- Villagers can no longer build Golems if your blacksmith is destroyed
-
-Piglins
-- Brute -5 food
-- Brute Shields protect against ranged by 75% up from 67%
-- Headhunter -10 wood
-- Headhunter Heavy Tridents upgrade -20s
-- Hoglin -0.05as
-- Blaze +1dmg, +0.1as
-- Blaze Firewall upgrade +100 ore, -5 range, +5s cd
-- Wither Skeletons  +15hp, +1dmg, +50ore, +5s, +1pop
-- Wither death clouds reworked to instead give an active ability that generates wither clouds around them
-- Piglins are immune to magma by default, fire resistance upgrade now gives total fire block and fire tick immunity
 
 Bugfixes
 --------
-[❌] (In Colin's PR) Tab causes crash somehow?
-[❌] (In Colin's PR) Fix chunk forcing issue with workers
+(In Optimize and Crash Fixes #107 PR)
+[❌] Tab causes crash somehow?
+[❌] Fix chunk forcing issue with workers
+
+
+
+[🟡] Fixed issue of being kicked from the official server when switching instances (eg. between a game and the lobby)
+
+[❌] The world generation datapack is now hardcoded into the mod by default
+    - as a world gen option like superflat
+[❌] Reduce melee unit repathing rate if out of melee range
+    - "Made melee unit pathing slightly dumber to improve performance by a lot (they still chase slower units correctly)"
 [❌] Central portals sometimes do not ignite (and this somehow makes grunts spawn underground)
-[❌] Spider webs stay forever if the spider dies
+[❌] Spider webs stay forever if the spider dies before they decay
+
 
 Quality of Life Features
 ------------------------
-[❌] (In Colin's PR) Improved performance for fog of war
+(In Optimize and Crash Fixes #107 PR)
+[❌] Improved performance for fog of war
+[🟡] Added saved UUID data for all units
+
+
+
+Balancing
+---------
+[🟡] Build times with more than 1 worker are now slightly slower (now is the same speeds as AOE2)
+
+Villagers
+[🟡] Blacksmith: -100 wood, +100 ore
+[🟡] Libraries now only require a Barracks to be built instead of an Arcane Tower
+[🟡] Library: -50 wood, +10% build time
+[🟡] Grand Library Upgrade: +100 wood, -250 ore, +20s
+[🟡] Swapped Maiming and Sharpness Enchantment costs and requirements (Sharpness is now level II)
+[🟡] Enchant Maiming: -5 wood, -15 ore
+[🟡] Enchant Multishot: -10 wood, -5 ore

@@ -91,9 +91,9 @@ public class ResourceCosts {
     public static ResourceCost VILLAGER_HOUSE = ResourceCost.Building(0,100,0, 10);
     public static ResourceCost WHEAT_FARM = ResourceCost.Building(0,150,0, 0);
     public static ResourceCost BARRACKS = ResourceCost.Building(0,150,0, 0);
-    public static ResourceCost BLACKSMITH = ResourceCost.Building(0,250,150, 0);
+    public static ResourceCost BLACKSMITH = ResourceCost.Building(0,150,250, 0);
     public static ResourceCost ARCANE_TOWER = ResourceCost.Building(0,200,100, 0);
-    public static ResourceCost LIBRARY = ResourceCost.Building(0,350,100, 0);
+    public static ResourceCost LIBRARY = ResourceCost.Building(0,300,100, 0);
     public static ResourceCost WATCHTOWER = ResourceCost.Building(0,100,100, 0);
     public static ResourceCost CASTLE = ResourceCost.Building(0,400,300, 0);
     public static ResourceCost IRON_GOLEM_BUILDING = ResourceCost.Building(0,50,200, 0);
@@ -121,7 +121,7 @@ public class ResourceCosts {
     public static ResourceCost RESEARCH_LINGERING_POTIONS = ResourceCost.Research(250,250,250, 140);
     public static ResourceCost RESEARCH_EVOKER_VEXES = ResourceCost.Research(500,0,300, 120);
     public static ResourceCost RESEARCH_CASTLE_FLAG = ResourceCost.Research(200,150,150, 90);
-    public static ResourceCost RESEARCH_GRAND_LIBRARY = ResourceCost.Research(0,150,350, 120);
+    public static ResourceCost RESEARCH_GRAND_LIBRARY = ResourceCost.Research(0,200,100, 140);
     public static ResourceCost RESEARCH_SILVERFISH = ResourceCost.Research(0,300,300, 120);
     public static ResourceCost RESEARCH_SCULK_AMPLIFIERS = ResourceCost.Research(0,200,400, 150);
     public static ResourceCost RESEARCH_RAVAGER_ARTILLERY = ResourceCost.Research(400,0,350, 140);
@@ -137,10 +137,10 @@ public class ResourceCosts {
     public static ResourceCost RESEARCH_TRANSPORT_PORTAL = ResourceCost.Research(0, 175, 0, 40);
 
     // ******************* ENCHANTMENTS ******************* //
-    public static ResourceCost ENCHANT_SHARPNESS = ResourceCost.Enchantment(0,25, 40);
+    public static ResourceCost ENCHANT_MAIMING = ResourceCost.Enchantment(0,20, 30);
     public static ResourceCost ENCHANT_QUICK_CHARGE = ResourceCost.Enchantment(0,30, 15);
-    public static ResourceCost ENCHANT_MAIMING = ResourceCost.Enchantment(0,40, 60);
-    public static ResourceCost ENCHANT_MULTISHOT = ResourceCost.Enchantment(0,80, 40);
+    public static ResourceCost ENCHANT_SHARPNESS = ResourceCost.Enchantment(0,40, 60);
+    public static ResourceCost ENCHANT_MULTISHOT = ResourceCost.Enchantment(0,70, 35);
     public static ResourceCost ENCHANT_VIGOR = ResourceCost.Enchantment(0,60, 60);
 
     // ******************* Unused ******************* //

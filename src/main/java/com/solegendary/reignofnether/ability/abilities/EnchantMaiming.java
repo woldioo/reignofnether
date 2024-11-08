@@ -40,7 +40,7 @@ public class EnchantMaiming extends EnchantAbility {
                 hotkey,
                 () -> CursorClientEvents.getLeftClickAction() == ENCHANT_ACTION || library.autoCastEnchant == this,
                 () -> false,
-                library::isUpgraded,
+                () -> true,
                 () -> CursorClientEvents.setLeftClickAction(ENCHANT_ACTION),
                 () -> {
                     EnchantAbilityServerboundPacket.setAutocastEnchant(ENCHANT_ACTION, library.originPos);

@@ -43,7 +43,7 @@ public class EnchantSharpness extends EnchantAbility {
                 hotkey,
                 () -> CursorClientEvents.getLeftClickAction() == ENCHANT_ACTION || library.autoCastEnchant == this,
                 () -> false,
-                () -> true,
+                library::isUpgraded,
                 () -> CursorClientEvents.setLeftClickAction(ENCHANT_ACTION),
                 () -> {
                     EnchantAbilityServerboundPacket.setAutocastEnchant(ENCHANT_ACTION, library.originPos);
@@ -56,8 +56,8 @@ public class EnchantSharpness extends EnchantAbility {
                         FormattedCharSequence.forward("Sharpness Enchantment", Style.EMPTY.withBold(true)),
                         ResourceCosts.getFormattedCost(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Enchant a Vindicator's axe with Sharpness I, ", Style.EMPTY),
-                        FormattedCharSequence.forward("raising its damage by 1.", Style.EMPTY),
+                        FormattedCharSequence.forward("Enchant a Vindicator's axe with Sharpness II, ", Style.EMPTY),
+                        FormattedCharSequence.forward("raising its damage by 2.", Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
                         FormattedCharSequence.forward("Removes all other enchantments.", Style.EMPTY),
                         FormattedCharSequence.forward("Right click to auto-cast", Style.EMPTY)
@@ -86,6 +86,6 @@ public class EnchantSharpness extends EnchantAbility {
     protected void doEnchant(LivingEntity entity) {
         ItemStack item = entity.getItemBySlot(EquipmentSlot.MAINHAND);
         EnchantmentHelper.setEnchantments(new HashMap<>(), item);
-        item.enchant(actualEnchantment, 1);
+        item.enchant(actualEnchantment, 2);
     }
 }

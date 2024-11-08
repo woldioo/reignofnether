@@ -56,6 +56,7 @@ public class Library extends ProductionBuilding {
         this.woodCost = cost.wood;
         this.oreCost = cost.ore;
         this.popSupply = cost.population;
+        this.buildTimeModifier = 1.1f;
 
         this.canSetRallyPoint = false;
 
@@ -76,9 +77,9 @@ public class Library extends ProductionBuilding {
         this.abilities.add(enchantVigor);
 
         if (level.isClientSide()) {
-            this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyQ));
+            this.abilityButtons.add(enchantMaiming.getButton(Keybindings.keyQ));
             this.abilityButtons.add(enchantQuickCharge.getButton(Keybindings.keyW));
-            this.abilityButtons.add(enchantMaiming.getButton(Keybindings.keyE));
+            this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyE));
             this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyR));
             this.abilityButtons.add(enchantVigor.getButton(Keybindings.keyT));
             this.productionButtons = Arrays.asList(
@@ -122,7 +123,7 @@ public class Library extends ProductionBuilding {
             hotkey,
             () -> BuildingClientEvents.getBuildingToPlace() == Library.class,
             TutorialClientEvents::isEnabled,
-            () -> BuildingClientEvents.hasFinishedBuilding(ArcaneTower.buildingName) ||
+            () -> BuildingClientEvents.hasFinishedBuilding(Barracks.buildingName) ||
                     ResearchClient.hasCheat("modifythephasevariance"),
             () -> BuildingClientEvents.setBuildingToPlace(Library.class),
             null,
@@ -131,9 +132,9 @@ public class Library extends ProductionBuilding {
                 ResourceCosts.getFormattedCost(cost),
                 FormattedCharSequence.forward("", Style.EMPTY),
                 FormattedCharSequence.forward("An enchanting table surrounded by pillars of books.", Style.EMPTY),
-                FormattedCharSequence.forward("Used to research magic-related upgrades.", Style.EMPTY),
+                FormattedCharSequence.forward("Used to research magic upgrades and enchant weapons.", Style.EMPTY),
                 FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward("Requires an arcane tower.", Style.EMPTY)
+                FormattedCharSequence.forward("Requires a Barracks.", Style.EMPTY)
             ),
             null
         );
