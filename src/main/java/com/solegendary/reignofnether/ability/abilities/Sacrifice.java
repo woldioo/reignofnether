@@ -27,7 +27,7 @@ public class Sacrifice extends Ability {
     private static final int RANGE = 8;
 
     public Sacrifice() {
-        super(UnitAction.SACRIFICE, CD_MAX, RANGE, 0, true);
+        super(UnitAction.SACRIFICE, CD_MAX, RANGE, 0, true, true);
     }
 
     @Override
@@ -40,12 +40,10 @@ public class Sacrifice extends Ability {
             () -> true,
             () -> CursorClientEvents.setLeftClickAction(UnitAction.SACRIFICE),
             null,
-            List.of(FormattedCharSequence.forward(
-                    I18n.get("abilities.reignofnether.sacrifice"),
+            List.of(FormattedCharSequence.forward(I18n.get("abilities.reignofnether.sacrifice"),
                     Style.EMPTY.withBold(true)
                 ),
-                FormattedCharSequence.forward(
-                    I18n.get("abilities.reignofnether.sacrifice.tooltip1", RANGE),
+                FormattedCharSequence.forward(I18n.get("abilities.reignofnether.sacrifice.tooltip1", RANGE),
                     MyRenderer.iconStyle
                 ),
                 FormattedCharSequence.forward("", Style.EMPTY),
@@ -60,7 +58,8 @@ public class Sacrifice extends Ability {
 
         if (!level.isClientSide() && buildingUsing instanceof SculkCatalyst && targetEntity instanceof Unit unit
             && unit.getOwnerName().equals(buildingUsing.ownerName) && !level.getBlockState(targetEntity.getOnPos())
-            .isAir() && !BuildingUtils.isWithinRangeOfMaxedCatalyst(targetEntity)) {
+            .isAir() && !BuildingUtils.isWithinRangeOfMaxedCatalyst(targetEntity)
+            && !BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), targetEntity.getOnPos().above())) {
 
             if (targetEntity.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) < RANGE * RANGE) {
                 targetEntity.kill();
@@ -76,6 +75,8 @@ public class Sacrifice extends Ability {
                 HudClientEvents.showTemporaryMessage(I18n.get("abilities.reignofnether.sacrifice.in_air"));
             } else if (BuildingUtils.isWithinRangeOfMaxedCatalyst(targetEntity)) {
                 HudClientEvents.showTemporaryMessage(I18n.get("abilities.reignofnether.sacrifice.max_spread"));
+            } else if (BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), targetEntity.getOnPos().above())) {
+                HudClientEvents.showTemporaryMessage(I18n.get("abilities.reignofnether.sacrifice.not_spreadable"));
             }
         }
     }

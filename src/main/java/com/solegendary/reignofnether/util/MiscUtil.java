@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -99,14 +100,18 @@ public class MiscUtil {
         unit.setCheckpointTicksLeft(UnitClientEvents.CHECKPOINT_TICKS_MAX);
     }
 
-    public static BlockPos getHighestNonAirBlock(Level level, BlockPos blockPos) {
+    public static BlockPos getHighestNonAirBlock(Level level, BlockPos blockPos, boolean ignoreLeaves) {
         int y = level.getHeight();
         BlockState bs;
         do {
             bs = level.getBlockState(new BlockPos(blockPos.getX(), y, blockPos.getZ()));
             y -= 1;
-        } while(bs.isAir() && y > -63);
+        } while((bs.isAir() || (ignoreLeaves && bs.getMaterial() == Material.LEAVES)) && y > -63);
         return new BlockPos(blockPos.getX(), y, blockPos.getZ());
+    }
+
+    public static BlockPos getHighestNonAirBlock(Level level, BlockPos blockPos) {
+        return getHighestNonAirBlock(level, blockPos, false);
     }
 
     public static boolean listContainsObjectValue(List<Object> objs, String obj){

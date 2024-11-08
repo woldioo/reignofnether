@@ -8,6 +8,8 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import com.solegendary.reignofnether.ability.abilities.EnchantMaiming;
+import com.solegendary.reignofnether.ability.abilities.EnchantVigor;
 import com.solegendary.reignofnether.building.GarrisonableBuilding;
 import com.solegendary.reignofnether.healthbars.HealthBarClientEvents;
 import com.solegendary.reignofnether.resources.Resources;
@@ -18,6 +20,9 @@ import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.interfaces.WorkerUnit;
 import com.solegendary.reignofnether.unit.units.monsters.CreeperUnit;
 import com.solegendary.reignofnether.unit.units.piglins.BruteUnit;
+import com.solegendary.reignofnether.unit.units.villagers.EvokerUnit;
+import com.solegendary.reignofnether.unit.units.villagers.PillagerUnit;
+import com.solegendary.reignofnether.unit.units.villagers.VindicatorUnit;
 import com.solegendary.reignofnether.util.MyMath;
 import com.solegendary.reignofnether.util.MyRenderer;
 import net.minecraft.ReportedException;
@@ -29,7 +34,6 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -40,13 +44,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.solegendary.reignofnether.hud.HudClientEvents.getSimpleEntityName;
 
 // Renders a Unit's portrait including its animated head, name, healthbar, list of stats and UI frames for these
 
@@ -166,16 +169,23 @@ public class PortraitRendererUnit<T extends LivingEntity, M extends EntityModel<
 
         drawEntityOnScreen(poseStack, entity, drawX, drawY, sizeFinal);
 
-        if (itemStack.getItem() instanceof BannerItem) {
-            entity.setItemSlot(EquipmentSlot.HEAD, itemStack);
-            name = I18n.get("units.reignofnether.captain", name);
-        }
-        if (entity.getPassengers().size() == 1) {
-            String pName = getSimpleEntityName(entity.getPassengers().get(0)).replace("_", " ");
-            String nameCap = pName.substring(0, 1).toUpperCase() + pName.substring(1);
-            name += " & " + nameCap;
-        }
         name = WordUtils.capitalize(name);
+
+        if (entity instanceof VindicatorUnit pUnit && pUnit.getEnchant() == Enchantments.SHARPNESS) {
+            name += " (S)";
+        }
+        if (entity instanceof VindicatorUnit pUnit && pUnit.getEnchant() == EnchantMaiming.actualEnchantment) {
+            name += " (M)";
+        }
+        if (entity instanceof PillagerUnit pUnit && pUnit.getEnchant() == Enchantments.QUICK_CHARGE) {
+            name += " (QC)";
+        }
+        if (entity instanceof PillagerUnit pUnit && pUnit.getEnchant() == Enchantments.MULTISHOT) {
+            name += " (MS)";
+        }
+        if (entity instanceof EvokerUnit pUnit && pUnit.getEnchant() == EnchantVigor.actualEnchantment) {
+            name += " (V)";
+        }
 
         if (rs != Relationship.OWNED && entity instanceof Unit unit && unit.getOwnerName().length() > 0) {
             name += " (" + unit.getOwnerName() + ")";
@@ -213,14 +223,13 @@ public class PortraitRendererUnit<T extends LivingEntity, M extends EntityModel<
         MultiBufferSource.BufferSource multibuffersource$buffersource =
             MultiBufferSource.immediate(Tesselator.getInstance()
             .getBuilder());
-        String text = healthText + "/" + (int) entity.getMaxHealth();
+        String text = healthText + "/" + entity.getMaxHealth();
         FormattedCharSequence pTooltips = FormattedCharSequence.forward(text, Style.EMPTY);
         ClientTooltipComponent clientTooltip = ClientTooltipComponent.create(pTooltips);
         poseStack.translate(0.0, 0.0, 400.0);
         int x0 = x + (frameWidth / 2);
         int xC = (x0 - MC.font.width(text) / 2);
-        clientTooltip.renderText(
-            MC.font,
+        clientTooltip.renderText(MC.font,
             xC,
             y + frameHeight - 13,
             poseStack.last().pose(),
@@ -244,8 +253,7 @@ public class PortraitRendererUnit<T extends LivingEntity, M extends EntityModel<
 
         if (unit instanceof AttackerUnit attackerUnit) {
             textureStatIcons.add(new ResourceLocation("reignofnether", "textures/icons/items/sword.png")); // DAMAGE
-            textureStatIcons.add(new ResourceLocation(
-                "reignofnether",
+            textureStatIcons.add(new ResourceLocation("reignofnether",
                 "textures/icons/items/sparkler.png"
             )); // ATTACK SPEED
             textureStatIcons.add(new ResourceLocation("reignofnether", "textures/icons/items/bow.png")); // RANGE
@@ -284,8 +292,7 @@ public class PortraitRendererUnit<T extends LivingEntity, M extends EntityModel<
         // render based on prepped strings/icons
         for (int i = 0; i < statStrings.size(); i++) {
             MyRenderer.renderIcon(poseStack, textureStatIcons.get(i), blitXIcon, blitYIcon, 8);
-            GuiComponent.drawString(
-                poseStack,
+            GuiComponent.drawString(poseStack,
                 Minecraft.getInstance().font,
                 statStrings.get(i),
                 blitXIcon + 13,
@@ -307,8 +314,7 @@ public class PortraitRendererUnit<T extends LivingEntity, M extends EntityModel<
         int blitYIcon = y + 7;
 
         // prep strings/icons to render
-        List<ResourceLocation> textureStatIcons = List.of(new ResourceLocation(
-                "reignofnether",
+        List<ResourceLocation> textureStatIcons = List.of(new ResourceLocation("reignofnether",
                 "textures/icons/items/wheat.png"
             ),
             new ResourceLocation("reignofnether", "textures/icons/items/wood.png"),

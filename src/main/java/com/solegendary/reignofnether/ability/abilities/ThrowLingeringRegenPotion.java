@@ -33,6 +33,7 @@ public class ThrowLingeringRegenPotion extends Ability {
             CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND,
             witchUnit.getPotionThrowRange(),
             0,
+            true,
             true
         );
         this.witchUnit = witchUnit;

@@ -373,7 +373,9 @@ public class UnitClientEvents {
 
     @SubscribeEvent
     public static void onEntityLeaveEvent(EntityLeaveLevelEvent evt) {
-        idleWorkerIds.removeIf(id -> id == evt.getEntity().getId());
+        synchronized (idleWorkerIds) {
+            idleWorkerIds.removeIf(id -> id == evt.getEntity().getId());
+        }
     }
 
     /**
@@ -462,6 +464,7 @@ public class UnitClientEvents {
                     for (LivingEntity entity : nearbyEntities)
                         if (getPlayerToEntityRelationship(entity) == Relationship.OWNED)
                             addSelectedUnit(entity);
+                    HudClientEvents.setLowestCdHudEntity();
                 }
             }
             // move on left click

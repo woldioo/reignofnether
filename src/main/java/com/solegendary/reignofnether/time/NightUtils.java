@@ -28,7 +28,7 @@ public class NightUtils {
 
     // more consistent version of Mob.isSunburnTick()
     public static boolean isSunBurnTick(Mob mob) {
-        if (TimeUtils.isDay(mob.level.getDayTime()) && !mob.level.isClientSide) {
+        if (mob.tickCount % 4 == 0 && TimeUtils.isDay(mob.level.getDayTime()) && !mob.level.isClientSide) {
             BlockPos blockpos = new BlockPos(mob.getX(), mob.getEyeY(), mob.getZ());
             boolean flag = mob.isInWaterRainOrBubble() || mob.isInPowderSnow || mob.wasInPowderSnow;
             return !mob.isOnFire() && !flag && mob.level.canSeeSky(blockpos) && !NightUtils.isInRangeOfNightSource(mob.getEyePosition(), mob.level.isClientSide);

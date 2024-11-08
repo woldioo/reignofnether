@@ -327,6 +327,7 @@ public class CursorClientEvents {
 
                     for (LivingEntity unit : unitsToAdd)
                         UnitClientEvents.addSelectedUnit(unit);
+                    HudClientEvents.setLowestCdHudEntity();
                 }
 
             }

@@ -1,5 +1,6 @@
 package com.solegendary.reignofnether.unit.units.villagers;
 
+import com.solegendary.reignofnether.ability.abilities.EnchantMaiming;
 import com.solegendary.reignofnether.ability.abilities.PromoteIllager;
 import com.solegendary.reignofnether.hud.AbilityButton;
 import com.solegendary.reignofnether.research.ResearchClient;
@@ -17,6 +18,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,11 +34,14 @@ import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
@@ -116,7 +123,7 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
 
     // endregion
 
-    final static public float attackDamage = 5.0f;
+    final static public float attackDamage = 6.0f;
     final static public float attacksPerSecond = 0.5f;
     final static public float maxHealth = 60.0f;
     final static public float armorValue = 0.0f;
@@ -209,26 +216,56 @@ public class VindicatorUnit extends Vindicator implements Unit, AttackerUnit {
 
     @Override
     public void setupEquipmentAndUpgradesClient() {
+        if (hasAnyEnchant())
+            return;
+
         // weapon is purely visual, damage is based solely on entity attribute ATTACK_DAMAGE
         Item axe = Items.IRON_AXE;
-        if (ResearchClient.hasResearch(ResearchVindicatorAxes.itemName))
-            axe = Items.DIAMOND_AXE;
+        //if (ResearchClient.hasResearch(ResearchVindicatorAxes.itemName))
+        //    axe = Items.DIAMOND_AXE;
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(axe));
     }
 
     @Override
     public void setupEquipmentAndUpgradesServer() {
+        if (hasAnyEnchant())
+            return;
+
         // weapon is purely visual, damage is based solely on entity attribute ATTACK_DAMAGE
         Item axe = Items.IRON_AXE;
         int damageMod = 0;
-        if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchVindicatorAxes.itemName)) {
-            axe = Items.DIAMOND_AXE;
-            damageMod = 2;
-        }
+        //if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchVindicatorAxes.itemName)) {
+        //    axe = Items.DIAMOND_AXE;
+        //    damageMod = 2;
+        //}
         ItemStack axeStack = new ItemStack(axe);
         AttributeModifier mod = new AttributeModifier(UUID.randomUUID().toString(), damageMod, AttributeModifier.Operation.ADDITION);
         axeStack.addAttributeModifier(Attributes.ATTACK_DAMAGE, mod, EquipmentSlot.MAINHAND);
 
         this.setItemSlot(EquipmentSlot.MAINHAND, axeStack);
+    }
+
+    public boolean hasAnyEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        return !itemStack.getAllEnchantments().isEmpty();
+    }
+
+    public boolean hasMaimingEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        return itemStack.getAllEnchantments().containsKey(EnchantMaiming.actualEnchantment);
+    }
+
+    public Enchantment getEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        Optional<Enchantment> enchant = itemStack.getAllEnchantments().keySet().stream().findFirst();
+        return enchant.orElse(null);
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity pEntity) {
+        boolean hurt = super.doHurtTarget(pEntity);
+        if (hurt && hasMaimingEnchant() && pEntity instanceof LivingEntity le)
+            le.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
+        return hurt;
     }
 }

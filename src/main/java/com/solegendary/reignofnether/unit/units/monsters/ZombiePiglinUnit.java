@@ -110,9 +110,9 @@ public class ZombiePiglinUnit extends ZombifiedPiglin implements Unit, AttackerU
 
     // endregion
 
-    final static public float attackDamage = 3.0f;
+    final static public float attackDamage = 4.0f;
     final static public float attacksPerSecond = 0.5f;
-    final static public float maxHealth = 30.0f;
+    final static public float maxHealth = 35.0f;
     final static public float armorValue = 0.0f;
     final static public float movementSpeed = 0.28f;
     final static public float attackRange = 2; // only used by ranged units or melee building attackers

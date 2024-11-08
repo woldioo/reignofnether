@@ -1,6 +1,8 @@
 package com.solegendary.reignofnether.hud;
 
+import com.mojang.datafixers.util.Pair;
 import com.solegendary.reignofnether.ReignOfNether;
+import com.solegendary.reignofnether.ability.Ability;
 import com.solegendary.reignofnether.attackwarnings.AttackWarningClientEvents;
 import com.solegendary.reignofnether.building.*;
 import com.solegendary.reignofnether.guiscreen.TopdownGui;
@@ -23,6 +25,14 @@ import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.interfaces.AttackerUnit;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.interfaces.WorkerUnit;
+import com.solegendary.reignofnether.unit.units.monsters.PoisonSpiderUnit;
+import com.solegendary.reignofnether.unit.units.monsters.SkeletonUnit;
+import com.solegendary.reignofnether.unit.units.monsters.SpiderUnit;
+import com.solegendary.reignofnether.unit.units.monsters.StrayUnit;
+import com.solegendary.reignofnether.unit.units.piglins.HeadhunterUnit;
+import com.solegendary.reignofnether.unit.units.piglins.HoglinUnit;
+import com.solegendary.reignofnether.unit.units.villagers.PillagerUnit;
+import com.solegendary.reignofnether.unit.units.villagers.RavagerUnit;
 import com.solegendary.reignofnether.util.MiscUtil;
 import com.solegendary.reignofnether.util.MyRenderer;
 import net.minecraft.client.Minecraft;
@@ -35,8 +45,12 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.BannerItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderNameTagEvent;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -90,6 +104,33 @@ public class HudClientEvents {
 
     private static final ArrayList<RectZone> hudZones = new ArrayList<>();
 
+    // sets the
+    public static void setLowestCdHudEntity() {
+        if (UnitClientEvents.getSelectedUnits().isEmpty() || hudSelectedEntity == null) {
+            return;
+        }
+
+        List<Pair<LivingEntity, Integer>> pairs = UnitClientEvents.getSelectedUnits().stream().map((le) -> {
+            int totalCd = 0;
+            if (le instanceof Unit unit) {
+                for (Ability ability : unit.getAbilities())
+                    totalCd += ability.getCooldown();
+            }
+            return new Pair<>(le, totalCd);
+        }).filter(p -> {
+            String str1 = getModifiedEntityName(p.getFirst());
+            String str2 = getModifiedEntityName(hudSelectedEntity);
+            return str1.equals(str2);
+        }).sorted(Comparator.comparing(Pair::getSecond)).toList();
+
+        if (!pairs.isEmpty()) {
+            setHudSelectedEntity(pairs.get(0).getFirst());
+        }
+    }
+
+    public static void setHudSelectedEntity(LivingEntity entity) {
+        hudSelectedEntity = entity;
+    }
 
     // eg. entity.reignofnether.zombie_unit -> zombie
     public static String getSimpleEntityName(Entity entity) {
@@ -113,6 +154,39 @@ public class HudClientEvents {
         } else {
             return entity.getName().getString();
         }
+    }
+
+    // not to be used for resource paths
+    public static String getModifiedEntityName(Entity entity) {
+        String name = getSimpleEntityName(entity);
+
+        ItemStack itemStack = ((LivingEntity) entity).getItemBySlot(EquipmentSlot.HEAD);
+
+        if (itemStack.getItem() instanceof BannerItem) {
+            entity.setItemSlot(EquipmentSlot.HEAD, itemStack);
+            name += " Captain";
+        }
+        if (entity.getPassengers().size() == 1) {
+            Entity passenger = entity.getPassengers().get(0);
+            if (entity instanceof RavagerUnit && passenger instanceof PillagerUnit) {
+                name = "Ravager Artillery";
+            } else if (entity instanceof SpiderUnit && (
+                passenger instanceof SkeletonUnit || passenger instanceof StrayUnit
+            )) {
+                name = "Spider Jockey";
+            } else if (entity instanceof PoisonSpiderUnit && (
+                passenger instanceof SkeletonUnit || passenger instanceof StrayUnit
+            )) {
+                name = "Poison Spider Jockey";
+            } else if (entity instanceof HoglinUnit && passenger instanceof HeadhunterUnit) {
+                name = "Hoglin Rider";
+            } else {
+                String pName = getSimpleEntityName(entity.getPassengers().get(0)).replace("_", " ");
+                String nameCap = pName.substring(0, 1).toUpperCase() + pName.substring(1);
+                name += " & " + nameCap;
+            }
+        }
+        return name;
     }
 
     public static void showTemporaryMessage(String msg) {
@@ -448,7 +522,7 @@ public class HudClientEvents {
             blitY -= portraitRendererUnit.frameHeight;
 
             // write capitalised unit name
-            String name = getSimpleEntityName(hudSelectedEntity).replace("_", " ");
+            String name = getModifiedEntityName(hudSelectedEntity).replace("_", " ");
             if (hudSelectedEntity.hasCustomName()) {
                 name = hudSelectedEntity.getCustomName().getString();
             }
@@ -530,16 +604,17 @@ public class HudClientEvents {
                     iconSize,
                     new ResourceLocation(ReignOfNether.MOD_ID, buttonImagePath),
                     unit,
-                    () -> hudSelectedEntity == null || getSimpleEntityName(hudSelectedEntity).equals(unitName),
+                    () -> hudSelectedEntity == null || getModifiedEntityName(hudSelectedEntity).equals(
+                        getModifiedEntityName(unit)),
                     () -> false,
                     () -> true,
                     () -> {
                         // select this one specific unit
-                        if (getSimpleEntityName(hudSelectedEntity).equals(unitName)) {
+                        if (getModifiedEntityName(hudSelectedEntity).equals(getModifiedEntityName(unit))) {
                             UnitClientEvents.clearSelectedUnits();
                             UnitClientEvents.addSelectedUnit(unit);
                         } else { // click to select this unit type as a group
-                            hudSelectedEntity = unit;
+                            HudClientEvents.setHudSelectedEntity(unit);
                         }
                     },
                     null,
@@ -675,8 +750,8 @@ public class HudClientEvents {
                     }
                     String resourceName = UnitClientEvents.getSelectedUnitResourceTarget().toString();
                     String key = String.format("resources.reignofnether.%s", resourceName.toLowerCase(Locale.ENGLISH));
-                    actionButton.tooltipLines = List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether"
-                                + ".gather_resources",
+                    actionButton.tooltipLines = List.of(
+                        FormattedCharSequence.forward(I18n.get("hud.reignofnether" + ".gather_resources",
                             I18n.get(key)
                         ), Style.EMPTY),
                         FormattedCharSequence.forward(I18n.get("hud.reignofnether.change_target_resource"), Style.EMPTY)
@@ -692,7 +767,7 @@ public class HudClientEvents {
             // includes worker building buttons
             if (TutorialClientEvents.isAtOrPastStage(TutorialStage.BUILD_INTRO)) {
                 for (LivingEntity livingEntity : selUnits) {
-                    if (getSimpleEntityName(livingEntity).equals(getSimpleEntityName(hudSelectedEntity))) {
+                    if (livingEntity == hudSelectedEntity) {
                         List<AbilityButton> abilityButtons = ((Unit) livingEntity).getAbilityButtons();
 
                         int shownAbilities = abilityButtons.stream().filter(b -> !b.isHidden.get()).toList().size();
@@ -926,13 +1001,13 @@ public class HudClientEvents {
                                 && UnitClientEvents.getPlayerToEntityRelationship(u) == Relationship.OWNED)
                             .toList()
                             .size();
-                        tooltipWorkersAssigned = List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether"
-                                + ".total_workers",
+                        tooltipWorkersAssigned =
+                            List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether" + ".total_workers",
                             numWorkers
                         ), Style.EMPTY));
                     } else {
-                        tooltipWorkersAssigned = List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether"
-                                + ".workers_on",
+                        tooltipWorkersAssigned =
+                            List.of(FormattedCharSequence.forward(I18n.get("hud.reignofnether" + ".workers_on",
                             locName
                         ), Style.EMPTY));
                     }
@@ -1175,9 +1250,9 @@ public class HudClientEvents {
         units.sort(Comparator.comparing(HudClientEvents::getSimpleEntityName));
 
         if (units.size() <= 0) {
-            hudSelectedEntity = null;
+            HudClientEvents.setHudSelectedEntity(null);
         } else if (hudSelectedEntity == null || units.size() == 1 || !units.contains(hudSelectedEntity)) {
-            hudSelectedEntity = units.get(0);
+            HudClientEvents.setHudSelectedEntity(units.get(0));
         }
 
         if (hudSelectedEntity == null) {
@@ -1252,20 +1327,22 @@ public class HudClientEvents {
             }
 
             if (hudSelectedEntity != null) {
-                String hudSelectedEntityName = HudClientEvents.getSimpleEntityName(hudSelectedEntity);
+                String hudSelectedEntityName = HudClientEvents.getModifiedEntityName(hudSelectedEntity);
                 String lastEntityName = "";
                 boolean cycled = false;
                 for (LivingEntity entity : entities) {
-                    String currentEntityName = HudClientEvents.getSimpleEntityName(entity);
+                    String currentEntityName = HudClientEvents.getModifiedEntityName(entity);
                     if (lastEntityName.equals(hudSelectedEntityName) && !currentEntityName.equals(lastEntityName)) {
-                        hudSelectedEntity = entity;
+                        HudClientEvents.setHudSelectedEntity(entity);
                         cycled = true;
                         break;
                     }
                     lastEntityName = currentEntityName;
                 }
                 if (!cycled) {
-                    hudSelectedEntity = entities.get(0);
+                    HudClientEvents.setHudSelectedEntity(entities.get(0));
+                } else {
+                    HudClientEvents.setLowestCdHudEntity();
                 }
             }
         }

@@ -9,6 +9,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.Random;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Logger;
+
 public class NetherZone {
 
     private final int MAX_TICKS = 5;
@@ -37,7 +44,7 @@ public class NetherZone {
     }
 
     private NetherZone(BlockPos origin, double maxRange, double range,
-                     boolean isRestoring, int ticksLeft, int convertsAfterConstantRange) {
+                       boolean isRestoring, int ticksLeft, int convertsAfterConstantRange) {
         this.origin = origin;
         this.maxRange = maxRange;
         this.range = range;
@@ -138,7 +145,7 @@ public class NetherZone {
             double chance = (1 - (distSqr / rangeMaxSqr)) / 10;
 
             if (level.getBlockState(bp).getBlock() == Blocks.WATER ||
-                level.getBlockState(bp).getBlock() == Blocks.BUBBLE_COLUMN) {
+                    level.getBlockState(bp).getBlock() == Blocks.BUBBLE_COLUMN) {
                 int adjObs = 0;
                 if (level.getBlockState(bp.north()).getBlock() == Blocks.OBSIDIAN) adjObs += 1;
                 if (level.getBlockState(bp.south()).getBlock() == Blocks.OBSIDIAN) adjObs += 1;

@@ -36,6 +36,7 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -43,6 +44,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 // despite being a RangedAttackerUnit we don't implement performRangedAttack as we override the Pillager crossbow attack instead
 // we just implement this for fog reveal methods
@@ -137,7 +139,7 @@ public class PillagerUnit extends Pillager implements Unit, AttackerUnit, Ranged
 
     final static public float attackDamage = 7.0f;
     final static public float attacksPerSecond = 0.8f; // excludes crossbow charge time
-    final static public float maxHealth = 40.0f;
+    final static public float maxHealth = 45.0f;
     final static public float armorValue = 0.0f;
     final static public float movementSpeed = 0.25f;
     final static public float attackRange = 16.0F; // only used by ranged units or melee building attackers
@@ -231,10 +233,24 @@ public class PillagerUnit extends Pillager implements Unit, AttackerUnit, Ranged
 
     @Override
     public void setupEquipmentAndUpgradesServer() {
+        if (hasAnyEnchant())
+            return;
+
         ItemStack cbowStack = new ItemStack(Items.CROSSBOW);
-        if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchPillagerCrossbows.itemName))
-            cbowStack.enchant(Enchantments.MULTISHOT, 1);
+        //if (ResearchServerEvents.playerHasResearch(this.getOwnerName(), ResearchPillagerCrossbows.itemName))
+        //    cbowStack.enchant(Enchantments.MULTISHOT, 1);
         this.setItemSlot(EquipmentSlot.MAINHAND, cbowStack);
+    }
+
+    public boolean hasAnyEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        return !itemStack.getAllEnchantments().isEmpty();
+    }
+
+    public Enchantment getEnchant() {
+        ItemStack itemStack = this.getItemBySlot(EquipmentSlot.MAINHAND);
+        Optional<Enchantment> enchant = itemStack.getAllEnchantments().keySet().stream().findFirst();
+        return enchant.orElse(null);
     }
 
     // override to make inaccuracy 0
@@ -253,14 +269,17 @@ public class PillagerUnit extends Pillager implements Unit, AttackerUnit, Ranged
 
     @Override
     public void shootCrossbowProjectile(LivingEntity pUser, LivingEntity pTarget, Projectile pProjectile, float pProjectileAngle, float pVelocity) {
+        // bit of a hacky fix to attack buildings since this function is called from CrossbowItem
+        try {
+            if (pTarget == null && this.getAttackBuildingGoal() instanceof RangedAttackBuildingGoal<?> rabg) {
+                shootCrossbowProjectileAtBuilding(pUser, rabg, pProjectile, pProjectileAngle, pVelocity);
+                return;
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Caught NullPointerException in shootCrossbowProjectile: " + e.getMessage());
+        }
         if (pTarget == null)
             return;
-
-        /* // bit of a hacky fix to attack buildings since this function is called from CrossbowItem
-        if (pTarget == null && this.getAttackBuildingGoal() instanceof RangedAttackBuildingGoal<?> rabg) {
-            shootCrossbowProjectileAtBuilding(pUser, rabg, pProjectile, pProjectileAngle, pVelocity);
-            return;
-        } */
 
         double d0 = pTarget.getX() - pUser.getX();
         double d1 = pTarget.getZ() - pUser.getZ();

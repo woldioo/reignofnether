@@ -59,9 +59,7 @@ public class ResearchEvokerVexes extends ProductionItem {
                 ResourceCosts.getFormattedCost(cost),
                 ResourceCosts.getFormattedTime(cost),
                 FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward(I18n.get("research.reignofnether.evoker_vexes.tooltip1"), Style.EMPTY),
-                FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward(I18n.get("research.reignofnether.evoker_vexes.tooltip2"), Style.EMPTY)
+                FormattedCharSequence.forward(I18n.get("research.reignofnether.evoker_vexes.tooltip1"), Style.EMPTY)
             )
         );
     }

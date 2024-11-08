@@ -33,12 +33,6 @@ public abstract class MagmaBlockMixin {
     public void stepOn(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity, CallbackInfo ci) {
         ci.cancel();
 
-        boolean hasImmunityResearch = false;
-        if (pLevel.isClientSide())
-            hasImmunityResearch = ResearchClient.hasResearch(ResearchFireResistance.itemName);
-        else if (pEntity instanceof Unit unit)
-            hasImmunityResearch = ResearchServerEvents.playerHasResearch(unit.getOwnerName(), ResearchFireResistance.itemName);
-
         boolean isPiglinFaction = pEntity instanceof Unit unit && unit.getFaction() == Faction.PIGLINS;
         boolean isDamageTick = pEntity.tickCount % DAMAGE_DELAY == 0;
 
@@ -46,7 +40,7 @@ public abstract class MagmaBlockMixin {
             pEntity instanceof LivingEntity &&
             !(pEntity instanceof GruntUnit) &&
             !EnchantmentHelper.hasFrostWalker((LivingEntity)pEntity) &&
-            !(isPiglinFaction && hasImmunityResearch) && isDamageTick) {
+            !isPiglinFaction && isDamageTick) {
             pEntity.hurt(DamageSource.HOT_FLOOR, DAMAGE);
         }
     }

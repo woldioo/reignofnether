@@ -33,6 +33,7 @@ public class SonicBoom extends Ability {
             CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND,
             WardenUnit.SONIC_BOOM_RANGE,
             0,
+            true,
             true
         );
         this.wardenUnit = wardenUnit;
@@ -51,8 +52,7 @@ public class SonicBoom extends Ability {
             List.of(FormattedCharSequence.forward(I18n.get("abilities.reignofnether.sonic_boom"),
                     Style.EMPTY.withBold(true)
                 ),
-                FormattedCharSequence.forward(
-                    I18n.get("abilities.reignofnether.sonic_boom.tooltip1",
+                FormattedCharSequence.forward(I18n.get("abilities.reignofnether.sonic_boom.tooltip1",
                         WardenUnit.SONIC_BOOM_DAMAGE,
                         CD_MAX_SECONDS
                     ) + WardenUnit.SONIC_BOOM_RANGE,

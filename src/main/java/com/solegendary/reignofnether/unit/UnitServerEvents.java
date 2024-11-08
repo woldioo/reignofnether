@@ -1,5 +1,6 @@
 package com.solegendary.reignofnether.unit;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3d;
 import com.solegendary.reignofnether.ReignOfNether;
@@ -9,6 +10,7 @@ import com.solegendary.reignofnether.building.buildings.villagers.IronGolemBuild
 import com.solegendary.reignofnether.player.PlayerServerEvents;
 import com.solegendary.reignofnether.registrars.EntityRegistrar;
 import com.solegendary.reignofnether.research.ResearchServerEvents;
+import com.solegendary.reignofnether.research.researchItems.ResearchFireResistance;
 import com.solegendary.reignofnether.research.researchItems.ResearchHeavyTridents;
 import com.solegendary.reignofnether.research.researchItems.ResearchWitherClouds;
 import com.solegendary.reignofnether.resources.ResourceCosts;
@@ -23,6 +25,7 @@ import com.solegendary.reignofnether.unit.units.monsters.CreeperUnit;
 import com.solegendary.reignofnether.unit.units.monsters.DrownedUnit;
 import com.solegendary.reignofnether.unit.units.piglins.*;
 import com.solegendary.reignofnether.unit.units.villagers.*;
+import com.solegendary.reignofnether.util.Faction;
 import com.solegendary.reignofnether.util.MiscUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -62,6 +65,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import static com.solegendary.reignofnether.player.PlayerServerEvents.isRTSPlayer;
@@ -97,15 +101,29 @@ public class UnitServerEvents {
         data.units.clear();
         getAllUnits().forEach(e -> {
             if (e instanceof Unit unit) {
-                data.units.add(new UnitSave(e.getName().getString(), unit.getOwnerName(), e.getStringUUID()));
-                ReignOfNether.LOGGER.info(
-                    "saved unit in serverevents: " + unit.getOwnerName() + "|" + e.getName().getString() + "|"
-                        + e.getId());
+                UUID ownerUUID = null;
+                GameProfile profile = serverLevel.getServer().getProfileCache().get(unit.getOwnerName()).orElse(null);
+                if (profile != null) {
+                    ownerUUID = profile.getId();
+                    e.getPersistentData().putUUID("OwnerUUID", ownerUUID);
+                } else {
+                    System.out.println("Could not find UUID for owner name: " + unit.getOwnerName());
+                }
+
+                // Save unit data as usual
+                data.units.add(new UnitSave(
+                        e.getName().getString(),
+                        unit.getOwnerName(),
+                        e.getStringUUID()
+                ));
+                System.out.println("saved unit in serverevents: " + unit.getOwnerName() + "|" + e.getName().getString() + "|" + e.getId());
             }
         });
         data.save();
         serverLevel.getDataStorage().save();
     }
+
+
 
     @SubscribeEvent
     public static void loadUnits(ServerStartedEvent evt) {
@@ -320,30 +338,8 @@ public class UnitServerEvents {
             creeperUnit.explodeCreeper();
         }
 
-        if (evt.getEntity().getLastHurtByMob() instanceof Unit unit && (
-            evt.getEntity().getLastHurtByMob() instanceof WitherSkeletonUnit || evt.getSource()
-                .getMsgId()
-                .equals("wither")
-        ) && ResearchServerEvents.playerHasResearch(unit.getOwnerName(), ResearchWitherClouds.itemName)) {
-
-            AreaEffectCloud aec = new AreaEffectCloud(evt.getEntity().level,
-                evt.getEntity().getX(),
-                evt.getEntity().getY(),
-                evt.getEntity().getZ()
-            );
-            aec.setOwner(evt.getEntity());
-            aec.setRadius(4.0F);
-            aec.setRadiusOnUse(0);
-            aec.setDurationOnUse(0);
-            aec.setDuration(10 * 20);
-            aec.setRadiusPerTick(-aec.getRadius() / (float) aec.getDuration());
-            aec.addEffect(new MobEffectInstance(MobEffects.WITHER, 10 * 20));
-            evt.getEntity().level.addFreshEntity(aec);
-        }
-
-        if (evt.getEntity().getLastHurtByMob() instanceof Unit unit && (
-            evt.getEntity().getLastHurtByMob() instanceof DrownedUnit
-        )) {
+        if (evt.getEntity().getLastHurtByMob() instanceof Unit unit &&
+            (evt.getEntity().getLastHurtByMob() instanceof DrownedUnit)) {
 
             EntityType<? extends Unit> entityType = null;
 
@@ -352,12 +348,13 @@ public class UnitServerEvents {
                 entityType = EntityRegistrar.ZOMBIE_PIGLIN_UNIT.get();
             } else if (evt.getEntity() instanceof HoglinUnit) {
                 entityType = EntityRegistrar.ZOGLIN_UNIT.get();
-            } else if (evt.getEntity() instanceof VillagerUnit) {
+            } else if (evt.getEntity() instanceof VillagerUnit)
                 entityType = EntityRegistrar.ZOMBIE_VILLAGER_UNIT.get();
-            } else if (evt.getEntity() instanceof VindicatorUnit || evt.getEntity() instanceof PillagerUnit
-                || evt.getEntity() instanceof EvokerUnit || evt.getEntity() instanceof WitchUnit) {
-                entityType = EntityRegistrar.ZOMBIE_UNIT.get();
-            }
+            else if (evt.getEntity() instanceof VindicatorUnit ||
+                    evt.getEntity() instanceof PillagerUnit ||
+                    evt.getEntity() instanceof EvokerUnit ||
+                    evt.getEntity() instanceof WitchUnit)
+                entityType = EntityRegistrar.DROWNED_UNIT.get();
 
             if (entityType != null && evt.getEntity().getLevel() instanceof ServerLevel serverLevel) {
                 Entity entity = entityType.spawn(serverLevel,
@@ -576,6 +573,28 @@ public class UnitServerEvents {
         // ensure projectiles from units do the damage of the unit, not the item
         if (evt.getSource().isProjectile() && evt.getSource().getEntity() instanceof AttackerUnit attackerUnit) {
             evt.setAmount(attackerUnit.getUnitAttackDamage());
+
+        // ignore added weapon damage for workers
+        if (evt.getSource().getEntity() instanceof WorkerUnit &&
+            evt.getSource().getEntity() instanceof AttackerUnit attackerUnit)
+            evt.setAmount(attackerUnit.getUnitAttackDamage());
+
+        if (evt.getEntity() instanceof BruteUnit brute && brute.isHoldingUpShield && (evt.getSource().isProjectile()))
+            evt.setAmount(evt.getAmount() / 4);
+
+        if (evt.getEntity() instanceof CreeperUnit && (evt.getSource().isExplosion()))
+            evt.setCanceled(true);
+
+        // prevent friendly fire from your own creepers (but still set off chained explosions and cause knockback)
+        if (evt.getSource().getEntity() instanceof CreeperUnit creeperUnit &&
+            getUnitToEntityRelationship(creeperUnit, evt.getEntity()) == Relationship.FRIENDLY)
+            evt.setCanceled(true);
+
+        if (evt.getSource() == DamageSource.LIGHTNING_BOLT) {
+            if (evt.getEntity() instanceof CreeperUnit)
+                evt.setCanceled(true);
+            else
+                evt.setAmount(evt.getAmount() / 2);
         }
 
         // ignore added weapon damage for workers
@@ -608,6 +627,14 @@ public class UnitServerEvents {
 
         if (evt.getEntity() instanceof Unit && (evt.getSource() == DamageSource.IN_WALL)) {
             evt.setCanceled(true);
+        }
+
+        // piglin fire immunity
+        if (evt.getEntity() instanceof Unit unit &&
+            (evt.getSource() == DamageSource.ON_FIRE || evt.getSource() == DamageSource.IN_FIRE)) {
+            boolean hasImmunityResearch = ResearchServerEvents.playerHasResearch(unit.getOwnerName(), ResearchFireResistance.itemName);
+            if (hasImmunityResearch && unit.getFaction() == Faction.PIGLINS)
+                evt.setCanceled(true);
         }
 
         // prevent friendly fire damage from ranged units (unless specifically targeted)
@@ -666,6 +693,7 @@ public class UnitServerEvents {
     }
 
     // make creepers explode from other explosions, like TNT
+    /*
     @SubscribeEvent
     public static void onExplosion(ExplosionEvent.Detonate evt) {
         for (Entity entity : evt.getAffectedEntities())
@@ -676,6 +704,7 @@ public class UnitServerEvents {
                 );
             }
     }
+     */
 
     public static void debug1() {
     }

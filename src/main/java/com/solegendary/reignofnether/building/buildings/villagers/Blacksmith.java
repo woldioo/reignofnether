@@ -54,9 +54,9 @@ public class Blacksmith extends ProductionBuilding {
         if (level.isClientSide())
             this.productionButtons = Arrays.asList(
                 IronGolemProd.getStartButton(this, Keybindings.keyQ),
-                ResearchVindicatorAxes.getStartButton(this, Keybindings.keyW),
-                ResearchPillagerCrossbows.getStartButton(this, Keybindings.keyE),
-                ResearchGolemSmithing.getStartButton(this, Keybindings.keyR)
+                //ResearchVindicatorAxes.getStartButton(this, Keybindings.keyW),
+                //ResearchPillagerCrossbows.getStartButton(this, Keybindings.keyE),
+                ResearchGolemSmithing.getStartButton(this, Keybindings.keyW)
             );
     }
 

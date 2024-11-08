@@ -40,7 +40,14 @@ public class IronGolemBuilding extends Building {
     public final static ResourceCost cost = ResourceCosts.IRON_GOLEM_BUILDING;
 
     public IronGolemBuilding(Level level, BlockPos originPos, Rotation rotation, String ownerName) {
-        super(level, originPos, rotation, ownerName, getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation), false);
+        super(
+            level,
+            originPos,
+            rotation,
+            ownerName,
+            getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation),
+            false
+        );
         this.name = buildingName;
         this.ownerName = ownerName;
         this.portraitBlock = Blocks.IRON_BLOCK;
@@ -55,7 +62,9 @@ public class IronGolemBuilding extends Building {
         this.startingBlockTypes.add(Blocks.JUNGLE_FENCE);
     }
 
-    public Faction getFaction() {return Faction.VILLAGERS;}
+    public Faction getFaction() {
+        return Faction.VILLAGERS;
+    }
 
     public static ArrayList<BuildingBlock> getRelativeBlockData(LevelAccessor level) {
         return BuildingBlockData.getBuildingBlocks(structureName, level);
@@ -66,37 +75,48 @@ public class IronGolemBuilding extends Building {
         super.onBuilt();
         if (!this.getLevel().isClientSide()) {
             this.destroy((ServerLevel) this.getLevel());
-            Entity entity = EntityRegistrar.IRON_GOLEM_UNIT.get().spawn((ServerLevel) this.getLevel(), null,
-                    null,
-                    this.centrePos.offset(0,-1,0),
-                    MobSpawnType.SPAWNER,
-                    true,
-                    false
+            Entity entity = EntityRegistrar.IRON_GOLEM_UNIT.get().spawn((ServerLevel) this.getLevel(),
+                null,
+                null,
+                this.centrePos.offset(0, -1, 0),
+                MobSpawnType.SPAWNER,
+                true,
+                false
             );
-            if (entity instanceof Unit unit)
+            if (entity instanceof Unit unit) {
                 unit.setOwnerName(ownerName);
+            }
         }
     }
 
     public static AbilityButton getBuildButton(Keybinding hotkey) {
-        return new AbilityButton(
-            IronGolemBuilding.buildingName,
+        return new AbilityButton(IronGolemBuilding.buildingName,
             new ResourceLocation("minecraft", "textures/block/iron_block.png"),
             hotkey,
             () -> BuildingClientEvents.getBuildingToPlace() == IronGolemBuilding.class,
             TutorialClientEvents::isEnabled,
-            () -> ResearchClient.hasResearch(ResearchGolemSmithing.itemName) ||
-                    ResearchClient.hasCheat("modifythephasevariance"),
+            () -> BuildingClientEvents.hasFinishedBuilding(Blacksmith.buildingName) && (
+                ResearchClient.hasResearch(ResearchGolemSmithing.itemName) || ResearchClient.hasCheat(
+                    "modifythephasevariance")
+            ),
             () -> BuildingClientEvents.setBuildingToPlace(IronGolemBuilding.class),
             null,
-            List.of(
-                FormattedCharSequence.forward(I18n.get("buildings.villagers.reignofnether.iron_golem"), Style.EMPTY.withBold(true)),
+            List.of(FormattedCharSequence.forward(
+                    I18n.get("buildings.villagers.reignofnether.iron_golem"),
+                    Style.EMPTY.withBold(true)
+                ),
                 ResourceCosts.getFormattedCost(cost),
                 ResourceCosts.getFormattedPopAndTime(IronGolemProd.cost),
                 FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward(I18n.get("buildings.villagers.reignofnether.iron_golem.tooltip1"), Style.EMPTY),
+                FormattedCharSequence.forward(
+                    I18n.get("buildings.villagers.reignofnether.iron_golem.tooltip1"),
+                    Style.EMPTY
+                ),
                 FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward(I18n.get("buildings.villagers.reignofnether.iron_golem.tooltip2"), Style.EMPTY)
+                FormattedCharSequence.forward(
+                    I18n.get("buildings.villagers.reignofnether.iron_golem.tooltip2"),
+                    Style.EMPTY
+                )
             ),
             null
         );

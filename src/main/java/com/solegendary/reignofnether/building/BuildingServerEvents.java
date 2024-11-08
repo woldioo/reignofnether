@@ -8,6 +8,7 @@ import com.solegendary.reignofnether.building.buildings.piglins.Portal;
 import com.solegendary.reignofnether.building.buildings.shared.AbstractBridge;
 import com.solegendary.reignofnether.building.buildings.villagers.Castle;
 import com.solegendary.reignofnether.building.buildings.villagers.IronGolemBuilding;
+import com.solegendary.reignofnether.building.buildings.villagers.Library;
 import com.solegendary.reignofnether.fogofwar.FrozenChunkClientboundPacket;
 import com.solegendary.reignofnether.nether.NetherBlocks;
 import com.solegendary.reignofnether.player.PlayerServerEvents;
@@ -124,8 +125,7 @@ public class BuildingServerEvents {
             ArrayList<BlockPos> placedNZs = new ArrayList<>();
 
             buildingData.buildings.forEach(b -> {
-                Building building = BuildingUtils.getNewBuilding(
-                    b.name,
+                Building building = BuildingUtils.getNewBuilding(b.name,
                     level,
                     b.originPos,
                     b.rotation,
@@ -148,6 +148,8 @@ public class BuildingServerEvents {
                             lab.changeStructure(Laboratory.upgradedStructureName);
                         } else if (building instanceof Portal portal) {
                             portal.changeStructure(b.portalType);
+                        } else if (building instanceof Library library) {
+                            library.changeStructure(Library.upgradedStructureName);
                         }
                     }
                     // setNetherZone can only be run once - this supercedes where it normally happens in tick() ->
@@ -188,8 +190,7 @@ public class BuildingServerEvents {
         boolean queue,
         boolean isDiagonalBridge
     ) {
-        Building newBuilding = BuildingUtils.getNewBuilding(
-            buildingName,
+        Building newBuilding = BuildingUtils.getNewBuilding(buildingName,
             serverLevel,
             pos,
             rotation,
@@ -243,8 +244,7 @@ public class BuildingServerEvents {
                     false
                 );
 
-                ResourcesServerEvents.addSubtractResources(new Resources(
-                    newBuilding.ownerName,
+                ResourcesServerEvents.addSubtractResources(new Resources(newBuilding.ownerName,
                     -newBuilding.foodCost,
                     -newBuilding.woodCost,
                     -newBuilding.oreCost
@@ -321,9 +321,7 @@ public class BuildingServerEvents {
     }
 
     private static void moveNonBuildersAwayFromBuildingFoundations(
-        LivingEntity entity,
-        int[] builderUnitIds,
-        Building newBuilding
+        LivingEntity entity, int[] builderUnitIds, Building newBuilding
     ) {
         if (Arrays.stream(builderUnitIds).noneMatch(id -> id == entity.getId())) {
             UnitServerEvents.addActionItem(((Unit) entity).getOwnerName(),
@@ -578,8 +576,9 @@ public class BuildingServerEvents {
                             le.hurt(exp.getDamageSource(), random.nextInt(atkDmg + 1));
                     }
 
-                    if (building instanceof AbstractBridge)
+                    if (building instanceof AbstractBridge) {
                         atkDmg /= 2;
+                    }
 
                     building.destroyRandomBlocks(atkDmg);
                 }
@@ -638,18 +637,21 @@ public class BuildingServerEvents {
         int blocksBelow = 0;
         for (BuildingBlock block : blocks) {
             if (block.getBlockPos().getY() == 0 && level != null) {
-                BlockPos bp = block.getBlockPos().offset(originPos).offset(0,1,0);
+                BlockPos bp = block.getBlockPos().offset(originPos).offset(0, 1, 0);
                 BlockState bs = block.getBlockState(); // building block
                 BlockState bsBelow = level.getBlockState(bp.below()); // world block
 
                 if (bs.getMaterial().isSolid()) {
                     blocksBelow += 1;
-                    if (NetherBlocks.isNetherBlock(level, bp.below()))
+                    if (NetherBlocks.isNetherBlock(level, bp.below())) {
                         netherBlocksBelow += 1;
+                    }
                 }
             }
         }
-        if (blocksBelow <= 0) return false; // avoid division by 0
+        if (blocksBelow <= 0) {
+            return false; // avoid division by 0
+        }
         return ((float) netherBlocksBelow / (float) blocksBelow) > MIN_NETHER_BLOCKS_PERCENT;
     }
 }

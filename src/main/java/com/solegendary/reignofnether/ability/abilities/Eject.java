@@ -9,6 +9,7 @@ import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.UnitClientEvents;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
+import com.solegendary.reignofnether.unit.units.monsters.SpiderUnit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -54,5 +55,9 @@ public class Eject extends Ability {
     @Override
     public void use(Level level, Unit unitUsing, BlockPos targetBp) {
         ((LivingEntity) unitUsing).ejectPassengers();
+
+        for (Ability ability : unitUsing.getAbilities())
+            if (ability instanceof SpinWebs spinWebs)
+                spinWebs.setCooldown(spinWebs.getCooldown() / 4);
     }
 }

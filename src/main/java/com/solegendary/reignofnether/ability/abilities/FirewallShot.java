@@ -25,13 +25,13 @@ import java.util.List;
 
 public class FirewallShot extends Ability {
 
-    public static final int CD_MAX_SECONDS = 15;
-    public static final int RANGE = 20;
+    public static final int CD_MAX_SECONDS = 20;
+    public static final int RANGE = 15;
 
     private final BlazeUnit blazeUnit;
 
     public FirewallShot(BlazeUnit blazeUnit) {
-        super(UnitAction.SHOOT_FIREWALL, CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND, RANGE, 0, true);
+        super(UnitAction.SHOOT_FIREWALL, CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND, RANGE, 0, true, true);
         this.blazeUnit = blazeUnit;
     }
 
@@ -45,8 +45,8 @@ public class FirewallShot extends Ability {
             () -> true,
             () -> CursorClientEvents.setLeftClickAction(UnitAction.SHOOT_FIREWALL),
             null,
-            List.of(FormattedCharSequence.forward(
-                    I18n.get("abilities.reignofnether.fire_wall_shot"),
+            List.of(
+                FormattedCharSequence.forward(I18n.get("abilities.reignofnether.fire_wall_shot"),
                     Style.EMPTY.withBold(true)
                 ),
                 FormattedCharSequence.forward(

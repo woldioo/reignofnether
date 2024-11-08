@@ -4,10 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
@@ -17,7 +14,7 @@ public class BuildingBlock {
     private BlockPos blockPos;
     private BlockState blockState; // ideal blockstate when placed, not actual world state
 
-    private List<Block> blocksThatIgnoreState = List.of(Blocks.SCULK_SHRIEKER, Blocks.SCULK_SENSOR);
+    private List<Material> materialsThatIgnoreState = List.of(Material.SCULK, Material.LEAVES, Material.GLASS);
 
     public BuildingBlock(BlockPos blockPos, BlockState blockState) {
         this.blockPos = blockPos;
@@ -56,12 +53,16 @@ public class BuildingBlock {
         boolean isMatchingWallBlock = this.blockState.getBlock() instanceof WallBlock && bs.getBlock() == this.blockState.getBlock();
 
         // account for sculk sensors turning on and off constantly
-        if (this.blocksThatIgnoreState.contains(this.blockState.getBlock()) &&
-            this.blocksThatIgnoreState.contains(bs.getBlock()))
+        if (this.materialsThatIgnoreState.contains(this.blockState.getMaterial()) &&
+            this.materialsThatIgnoreState.contains(bs.getMaterial()))
             return true;
 
-        if (this.blockState.getMaterial() == Material.LEAVES &&
-            bs.getMaterial() == Material.LEAVES)
+        Block block1 = this.blockState.getBlock();
+        Block block2 = bs.getBlock();
+        if ((block1 instanceof StairBlock && block2 instanceof StairBlock) ||
+            (block1 instanceof FenceBlock && block2 instanceof FenceBlock) ||
+            (block1 instanceof WallBlock && block2 instanceof WallBlock) ||
+            (block1 instanceof IronBarsBlock && block2 instanceof IronBarsBlock))
             return true;
 
         return !this.blockState.isAir() && (bs == this.blockState || isMatchingWallBlock);

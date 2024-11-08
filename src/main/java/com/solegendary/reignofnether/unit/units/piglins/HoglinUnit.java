@@ -117,7 +117,7 @@ public class HoglinUnit extends Hoglin implements Unit, AttackerUnit {
     // endregion
 
     final static public float attackDamage = 6.0f;
-    final static public float attacksPerSecond = 0.5f;
+    final static public float attacksPerSecond = 0.45f;
     final static public float attackRange = 2; // only used by ranged units or melee building attackers
     final static public float aggroRange = 10;
     final static public boolean willRetaliate = true; // will attack when hurt by an enemy

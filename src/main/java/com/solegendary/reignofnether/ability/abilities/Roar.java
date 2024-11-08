@@ -26,7 +26,7 @@ public class Roar extends Ability {
     private final RavagerUnit ravagerUnit;
 
     public Roar(RavagerUnit ravagerUnit) {
-        super(UnitAction.ROAR, CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND, 0, 0, false);
+        super(UnitAction.ROAR, CD_MAX_SECONDS * ResourceCost.TICKS_PER_SECOND, 0, 0, false, true);
         this.ravagerUnit = ravagerUnit;
     }
 

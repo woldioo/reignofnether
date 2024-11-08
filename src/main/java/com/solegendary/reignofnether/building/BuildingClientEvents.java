@@ -7,6 +7,7 @@ import com.solegendary.reignofnether.building.buildings.monsters.Laboratory;
 import com.solegendary.reignofnether.building.buildings.piglins.Portal;
 import com.solegendary.reignofnether.building.buildings.shared.AbstractBridge;
 import com.solegendary.reignofnether.building.buildings.villagers.Castle;
+import com.solegendary.reignofnether.building.buildings.villagers.Library;
 import com.solegendary.reignofnether.cursor.CursorClientEvents;
 import com.solegendary.reignofnether.fogofwar.FogOfWarClientEvents;
 import com.solegendary.reignofnether.hud.HudClientEvents;
@@ -981,6 +982,8 @@ public class BuildingClientEvents {
                     lab.changeStructure(Laboratory.upgradedStructureName);
                 } else if (newBuilding instanceof Portal portal) {
                     portal.changeStructure(portalType);
+                } else if (newBuilding instanceof Library library) {
+                    library.changeStructure(Library.upgradedStructureName);
                 }
             }
             buildings.add(newBuilding);

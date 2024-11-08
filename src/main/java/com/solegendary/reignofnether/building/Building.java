@@ -110,6 +110,7 @@ public abstract class Building {
     private final int MAX_ANIMALS = 8;
     private final int ANIMAL_SPAWN_RANGE = 80; // block range to check and spawn animals in
     protected long tickAgeAfterBuilt = 0; // not saved
+    protected long tickAge = 0; // not saved
 
     public int foodCost;
     public int woodCost;
@@ -460,6 +461,9 @@ public abstract class Building {
     }
 
     public boolean shouldBeDestroyed() {
+        if (tickAge % 4 == 0) {
+            return false;
+        }
         if (!this.level.getWorldBorder().isWithinBounds(centrePos)) {
             return true;
         }
@@ -468,7 +472,7 @@ public abstract class Building {
         )) {
             return false;
         }
-        if (blockPlaceQueue.size() > 0) {
+        if (!blockPlaceQueue.isEmpty()) {
             return false;
         }
         if (getBlocksPlaced() <= 0) {
@@ -684,6 +688,7 @@ public abstract class Building {
         if (isBuilt) {
             tickAgeAfterBuilt += 1;
         }
+        tickAge = +1;
     }
 
     @OnlyIn(Dist.CLIENT)

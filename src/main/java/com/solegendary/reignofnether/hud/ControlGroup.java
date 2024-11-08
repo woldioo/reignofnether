@@ -119,6 +119,7 @@ public class ControlGroup {
                     UnitClientEvents.clearSelectedUnits();
                     for (LivingEntity entity : entities)
                         UnitClientEvents.addSelectedUnit(entity);
+                    HudClientEvents.setLowestCdHudEntity();
                     if (doubleClicked)
                         OrthoviewClientEvents.centreCameraOnPos(entities.get(0).getX(), entities.get(0).getZ());
                 }
