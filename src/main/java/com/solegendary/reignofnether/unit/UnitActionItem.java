@@ -292,24 +292,26 @@ public class UnitActionItem {
                             if (ability.canTargetEntities && this.unitId > 0) {
                                 ability.use(level, unit, (LivingEntity) level.getEntity(unitId));
                                 usedAbility = ability;
-                                if (ability.oneClickOneUse)
+                                if (ability.oneClickOneUse) {
                                     break actionableUnitsLoop;
-                            }
-                            else {
+                                }
+                            } else {
                                 ability.use(level, unit, preselectedBlockPos);
                                 usedAbility = ability;
-                                if (ability.oneClickOneUse)
+                                if (ability.oneClickOneUse) {
                                     break actionableUnitsLoop;
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        if (level.isClientSide() && usedAbility != null && usedAbility.oneClickOneUse)
+        if (level.isClientSide() && usedAbility != null && usedAbility.oneClickOneUse) {
             HudClientEvents.setLowestCdHudEntity();
+        }
 
-        if (this.selectedBuildingPos.equals(new BlockPos(0, 0, 0)))
+        if (this.selectedBuildingPos.equals(new BlockPos(0, 0, 0))) {
             return;
         }
 

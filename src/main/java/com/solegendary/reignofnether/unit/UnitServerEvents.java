@@ -12,7 +12,6 @@ import com.solegendary.reignofnether.registrars.EntityRegistrar;
 import com.solegendary.reignofnether.research.ResearchServerEvents;
 import com.solegendary.reignofnether.research.researchItems.ResearchFireResistance;
 import com.solegendary.reignofnether.research.researchItems.ResearchHeavyTridents;
-import com.solegendary.reignofnether.research.researchItems.ResearchWitherClouds;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.resources.ResourceSource;
 import com.solegendary.reignofnether.resources.ResourceSources;
@@ -20,7 +19,10 @@ import com.solegendary.reignofnether.unit.interfaces.AttackerUnit;
 import com.solegendary.reignofnether.unit.interfaces.ConvertableUnit;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.interfaces.WorkerUnit;
-import com.solegendary.reignofnether.unit.packets.*;
+import com.solegendary.reignofnether.unit.packets.UnitConvertClientboundPacket;
+import com.solegendary.reignofnether.unit.packets.UnitIdleWorkerClientBoundPacket;
+import com.solegendary.reignofnether.unit.packets.UnitSyncClientboundPacket;
+import com.solegendary.reignofnether.unit.packets.UnitSyncWorkerClientBoundPacket;
 import com.solegendary.reignofnether.unit.units.monsters.CreeperUnit;
 import com.solegendary.reignofnether.unit.units.monsters.DrownedUnit;
 import com.solegendary.reignofnether.unit.units.piglins.*;
@@ -32,8 +34,6 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
@@ -57,7 +57,6 @@ import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -111,18 +110,15 @@ public class UnitServerEvents {
                 }
 
                 // Save unit data as usual
-                data.units.add(new UnitSave(
-                        e.getName().getString(),
-                        unit.getOwnerName(),
-                        e.getStringUUID()
-                ));
-                System.out.println("saved unit in serverevents: " + unit.getOwnerName() + "|" + e.getName().getString() + "|" + e.getId());
+                data.units.add(new UnitSave(e.getName().getString(), unit.getOwnerName(), e.getStringUUID()));
+                System.out.println(
+                    "saved unit in serverevents: " + unit.getOwnerName() + "|" + e.getName().getString() + "|"
+                        + e.getId());
             }
         });
         data.save();
         serverLevel.getDataStorage().save();
     }
-
 
 
     @SubscribeEvent
@@ -291,7 +287,7 @@ public class UnitServerEvents {
                 .filter(u -> (u instanceof Unit unit1 && unit1.getOwnerName().equals(unit.getOwnerName())))
                 .toList()
                 .size();
-            if (unitsOwned == 0 && PlayerServerEvents.isRTSPlayer(unit.getOwnerName())
+            if (unitsOwned == 0 && isRTSPlayer(unit.getOwnerName())
                 && BuildingUtils.getTotalCompletedBuildingsOwned(false, unit.getOwnerName()) == 0) {
                 PlayerServerEvents.defeat(unit.getOwnerName(), "server.reignofnether.lost_all");
             }
@@ -302,27 +298,32 @@ public class UnitServerEvents {
     public static void onLivingDeath(LivingDeathEvent evt) {
 
         // Convert nearby blocks arond a death into something that is sculk convertible
-        // supposed to add to sculk_spreadable.json tag under the data/minecraft/tags/blocks but doesn't work for some reason
+        // supposed to add to sculk_spreadable.json tag under the data/minecraft/tags/blocks but doesn't work for
+        // some reason
         for (Building building : BuildingServerEvents.getBuildings()) {
-            if (building instanceof SculkCatalyst sc && evt.getEntity().distanceToSqr(Vec3.atCenterOf(sc.centrePos)) <
-                    SculkCatalyst.ESTIMATED_RANGE * SculkCatalyst.ESTIMATED_RANGE) {
+            if (building instanceof SculkCatalyst sc && evt.getEntity().distanceToSqr(Vec3.atCenterOf(sc.centrePos))
+                < SculkCatalyst.ESTIMATED_RANGE * SculkCatalyst.ESTIMATED_RANGE) {
                 Level level = evt.getEntity().getLevel();
                 BlockPos bp = evt.getEntity().getOnPos();
 
-                if (level.getBlockState(bp).getBlock() == Blocks.DIRT_PATH)
+                if (level.getBlockState(bp).getBlock() == Blocks.DIRT_PATH) {
                     level.setBlockAndUpdate(bp, Blocks.DIRT.defaultBlockState());
-                if (level.getBlockState(bp.above()).getMaterial() == Material.PLANT)
+                }
+                if (level.getBlockState(bp.above()).getMaterial() == Material.PLANT) {
                     level.destroyBlock(bp.above(), false);
+                }
 
                 for (int x = -3; x <= 3; x++) {
                     for (int y = -3; y <= 3; y++) {
                         for (int z = -3; z <= 3; z++) {
-                            BlockPos bp2 = bp.offset(x,y,z);
+                            BlockPos bp2 = bp.offset(x, y, z);
                             BlockState bs = level.getBlockState(bp2);
-                            if (bp2.distManhattan(bp) > 3)
+                            if (bp2.distManhattan(bp) > 3) {
                                 continue;
-                            if (bs.getBlock() == Blocks.DIRT_PATH)
+                            }
+                            if (bs.getBlock() == Blocks.DIRT_PATH) {
                                 level.setBlockAndUpdate(bp2, Blocks.DIRT.defaultBlockState());
+                            }
                         }
                     }
                 }
@@ -338,8 +339,9 @@ public class UnitServerEvents {
             creeperUnit.explodeCreeper();
         }
 
-        if (evt.getEntity().getLastHurtByMob() instanceof Unit unit &&
-            (evt.getEntity().getLastHurtByMob() instanceof DrownedUnit)) {
+        if (evt.getEntity().getLastHurtByMob() instanceof Unit unit && (
+            evt.getEntity().getLastHurtByMob() instanceof DrownedUnit
+        )) {
 
             EntityType<? extends Unit> entityType = null;
 
@@ -348,13 +350,12 @@ public class UnitServerEvents {
                 entityType = EntityRegistrar.ZOMBIE_PIGLIN_UNIT.get();
             } else if (evt.getEntity() instanceof HoglinUnit) {
                 entityType = EntityRegistrar.ZOGLIN_UNIT.get();
-            } else if (evt.getEntity() instanceof VillagerUnit)
+            } else if (evt.getEntity() instanceof VillagerUnit) {
                 entityType = EntityRegistrar.ZOMBIE_VILLAGER_UNIT.get();
-            else if (evt.getEntity() instanceof VindicatorUnit ||
-                    evt.getEntity() instanceof PillagerUnit ||
-                    evt.getEntity() instanceof EvokerUnit ||
-                    evt.getEntity() instanceof WitchUnit)
+            } else if (evt.getEntity() instanceof VindicatorUnit || evt.getEntity() instanceof PillagerUnit
+                || evt.getEntity() instanceof EvokerUnit || evt.getEntity() instanceof WitchUnit) {
                 entityType = EntityRegistrar.DROWNED_UNIT.get();
+            }
 
             if (entityType != null && evt.getEntity().getLevel() instanceof ServerLevel serverLevel) {
                 Entity entity = entityType.spawn(serverLevel,
@@ -573,28 +574,34 @@ public class UnitServerEvents {
         // ensure projectiles from units do the damage of the unit, not the item
         if (evt.getSource().isProjectile() && evt.getSource().getEntity() instanceof AttackerUnit attackerUnit) {
             evt.setAmount(attackerUnit.getUnitAttackDamage());
+        }
 
         // ignore added weapon damage for workers
-        if (evt.getSource().getEntity() instanceof WorkerUnit &&
-            evt.getSource().getEntity() instanceof AttackerUnit attackerUnit)
+        if (evt.getSource().getEntity() instanceof WorkerUnit && evt.getSource()
+            .getEntity() instanceof AttackerUnit attackerUnit) {
             evt.setAmount(attackerUnit.getUnitAttackDamage());
+        }
 
-        if (evt.getEntity() instanceof BruteUnit brute && brute.isHoldingUpShield && (evt.getSource().isProjectile()))
+        if (evt.getEntity() instanceof BruteUnit brute && brute.isHoldingUpShield && (evt.getSource().isProjectile())) {
             evt.setAmount(evt.getAmount() / 4);
+        }
 
-        if (evt.getEntity() instanceof CreeperUnit && (evt.getSource().isExplosion()))
+        if (evt.getEntity() instanceof CreeperUnit && (evt.getSource().isExplosion())) {
             evt.setCanceled(true);
+        }
 
         // prevent friendly fire from your own creepers (but still set off chained explosions and cause knockback)
-        if (evt.getSource().getEntity() instanceof CreeperUnit creeperUnit &&
-            getUnitToEntityRelationship(creeperUnit, evt.getEntity()) == Relationship.FRIENDLY)
+        if (evt.getSource().getEntity() instanceof CreeperUnit creeperUnit
+            && getUnitToEntityRelationship(creeperUnit, evt.getEntity()) == Relationship.FRIENDLY) {
             evt.setCanceled(true);
+        }
 
         if (evt.getSource() == DamageSource.LIGHTNING_BOLT) {
-            if (evt.getEntity() instanceof CreeperUnit)
+            if (evt.getEntity() instanceof CreeperUnit) {
                 evt.setCanceled(true);
-            else
+            } else {
                 evt.setAmount(evt.getAmount() / 2);
+            }
         }
 
         // ignore added weapon damage for workers
@@ -630,11 +637,15 @@ public class UnitServerEvents {
         }
 
         // piglin fire immunity
-        if (evt.getEntity() instanceof Unit unit &&
-            (evt.getSource() == DamageSource.ON_FIRE || evt.getSource() == DamageSource.IN_FIRE)) {
-            boolean hasImmunityResearch = ResearchServerEvents.playerHasResearch(unit.getOwnerName(), ResearchFireResistance.itemName);
-            if (hasImmunityResearch && unit.getFaction() == Faction.PIGLINS)
+        if (evt.getEntity() instanceof Unit unit && (
+            evt.getSource() == DamageSource.ON_FIRE || evt.getSource() == DamageSource.IN_FIRE
+        )) {
+            boolean hasImmunityResearch = ResearchServerEvents.playerHasResearch(unit.getOwnerName(),
+                ResearchFireResistance.itemName
+            );
+            if (hasImmunityResearch && unit.getFaction() == Faction.PIGLINS) {
                 evt.setCanceled(true);
+            }
         }
 
         // prevent friendly fire damage from ranged units (unless specifically targeted)

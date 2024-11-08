@@ -96,8 +96,8 @@ public class OrthoviewClientEvents {
     private static float mouseLeftDownY = 0;
 
     // by default orthoview players stay at BASE_Y, but can be raised to as high as MAX_Y if they are clipping terrain
-    public static double ORTHOVIEW_PLAYER_BASE_Y=100;
-    public static double ORTHOVIEW_PLAYER_MAX_Y=160;
+    public static double ORTHOVIEW_PLAYER_BASE_Y = 100;
+    public static double ORTHOVIEW_PLAYER_MAX_Y = 160;
 
     public static void updateOrthoviewY() {
         if (MC.player != null && MC.level != null) {
@@ -227,12 +227,13 @@ public class OrthoviewClientEvents {
             return;
         }
 
-        if (isEnabled() && MC.gameMode != null &&
-            (MC.gameMode.getPlayerMode() == GameType.ADVENTURE ||
-            MC.gameMode.getPlayerMode() == GameType.SURVIVAL))
+        if (isEnabled() && MC.gameMode != null && (
+            MC.gameMode.getPlayerMode() == GameType.ADVENTURE || MC.gameMode.getPlayerMode() == GameType.SURVIVAL
+        )) {
             toggleEnable();
+        }
 
-        if (cameraLockTicksLeft > 0)
+        if (cameraLockTicksLeft > 0) {
             cameraLockTicksLeft -= 1;
         }
 
@@ -269,8 +270,9 @@ public class OrthoviewClientEvents {
         }
 
         for (Building building : BuildingClientEvents.getBuildings())
-            if (building instanceof NightSource ns)
+            if (building instanceof NightSource ns) {
                 ns.updateNightBorderBps();
+            }
 
         enabled = !enabled;
 
@@ -322,18 +324,18 @@ public class OrthoviewClientEvents {
         // Prevent repeated key actions
         if (evt.getAction() == GLFW.GLFW_PRESS) {
 
-            if (evt.getKey() == Keybindings.getFnum(12).key &&
-                !OrthoviewClientEvents.isCameraLocked() &&
-                MC.gameMode != null) {
-                if (MC.player != null &&
-                    (MC.gameMode.getPlayerMode() == GameType.ADVENTURE ||
-                    MC.gameMode.getPlayerMode() == GameType.SURVIVAL)) {
+            if (evt.getKey() == Keybindings.getFnum(12).key && !OrthoviewClientEvents.isCameraLocked()
+                && MC.gameMode != null) {
+                if (MC.player != null && (
+                    MC.gameMode.getPlayerMode() == GameType.ADVENTURE
+                        || MC.gameMode.getPlayerMode() == GameType.SURVIVAL
+                )) {
                     MC.player.sendSystemMessage(Component.literal(""));
                     MC.player.sendSystemMessage(Component.literal("You must be in creative or spectator for RTS mode"));
                     MC.player.sendSystemMessage(Component.literal(""));
-                }
-                else
+                } else {
                     toggleEnable();
+                }
             }
             if (evt.getKey() == Keybindings.getFnum(6).key) {
                 FogOfWarClientEvents.resetFogChunks();
@@ -347,8 +349,8 @@ public class OrthoviewClientEvents {
                     HudClientEvents.showTemporaryMessage(I18n.get("hud.orthoview.reignofnether.hiding_leaves_all"));
                 } else if (hideLeavesMethod == LeafHideMethod.ALL) {
                     hideLeavesMethod = LeafHideMethod.NONE;
-                    HudClientEvents.showTemporaryMessage(I18n.get("hud.orthoview.reignofnether"
-                        + ".disabled_hiding_leaves"));
+                    HudClientEvents.showTemporaryMessage(I18n.get(
+                        "hud.orthoview.reignofnether" + ".disabled_hiding_leaves"));
                 }
             }
 
@@ -369,7 +371,8 @@ public class OrthoviewClientEvents {
             // If the current difficulty is Peaceful, switch to Easy
             if (currentDifficulty == Difficulty.PEACEFUL) {
                 minecraft.getSingleplayerServer().setDifficulty(Difficulty.EASY, true);
-                HudClientEvents.showTemporaryMessage("RTS units cannot spawn in Peaceful. Your difficulty has been set to Easy.");
+                HudClientEvents.showTemporaryMessage(
+                    "RTS units cannot spawn in Peaceful. Your difficulty has been set to Easy.");
             }
         }
     }
@@ -516,12 +519,12 @@ public class OrthoviewClientEvents {
             return;
         }
 
-        if ((evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_1 && Keybindings.altMod.isDown()) ||
-            evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_3) {
+        if ((evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_1 && Keybindings.altMod.isDown())
+            || evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_3) {
             cameraMovingByMouse = true;
 
-            float moveX = (float) evt.getDragX() * 0.20f * (zoom/ZOOM_MAX); //* winWidth/1920;
-            float moveZ = (float) evt.getDragY() * 0.20f * (zoom/ZOOM_MAX); //* winHeight/1080;
+            float moveX = (float) evt.getDragX() * 0.20f * (zoom / ZOOM_MAX); //* winWidth/1920;
+            float moveZ = (float) evt.getDragY() * 0.20f * (zoom / ZOOM_MAX); //* winHeight/1080;
             panCam(moveX, 0, moveZ);
         } else if (evt.getMouseButton() == GLFW.GLFW_MOUSE_BUTTON_2 && Keybindings.altMod.isDown()) {
             cameraMovingByMouse = true;
