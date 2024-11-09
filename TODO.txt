@@ -5,7 +5,8 @@
 Tthings to regression test once PRs are merged
 - /gamerule neutralAggro still works
 - cycling unit groups with tab and shift tab
--
+- all tooltips for multiple languages
+
 
 - Done and tested
 [✔] Done and tested
@@ -28,6 +29,7 @@ Features
 [❌] Localisation Keys (Thanks to @Promethia)
     - All strings in the mod are now translatable
     - If a string in your locale is not available, it will default to English
+    - Due to an unforseen bug, you must restart your client when switching languages for it to take effect
     - Languages completed so far are English (en_us) and Chinese (Simplified) (zh_cn)
     - If you would like to contribute translations, please make a pull request to the Github here:
         - https://github.com/SoLegendary/reignofnether/tree/1.19.2-dev/src/main/resources/assets/reignofnether/lang
@@ -41,9 +43,9 @@ Bugfixes
 [❌] Fixed crash related to Hiding Leaves
 [❌] Fixed crash related to Ranged units attacking buildings
 [❌] Fixed crash related to pressing Tab on a group of units
+[❌] Fixed enchantment icons
 
 
-[❌] Piglins can't build on blackstone
 [🟡] Fixed issue of being kicked from the official server when switching instances (eg. between a game and the lobby)
 [❌] The world generation datapack is now hardcoded into the mod by default
     - as a world gen option like superflat

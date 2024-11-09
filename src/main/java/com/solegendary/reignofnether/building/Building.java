@@ -108,7 +108,7 @@ public abstract class Building {
     private final long TICKS_TO_SPAWN_ANIMALS_MAX = 1800; // how often we attempt to spawn animals around each
     private long ticksToSpawnAnimals = 0; // spawn once soon after placement
     private final int MAX_ANIMALS = 8;
-    private final int ANIMAL_SPAWN_RANGE = 80; // block range to check and spawn animals in
+    private final int ANIMAL_SPAWN_RANGE = 70; // block range to check and spawn animals in
     protected long tickAgeAfterBuilt = 0; // not saved
     protected long tickAge = 0; // not saved
 
@@ -822,12 +822,12 @@ public abstract class Building {
             spawnBp = new BlockPos(x, y, z);
             spawnBs = level.getBlockState(spawnBp);
             spawnAttempts += 1;
-            if (spawnAttempts > 20) {
+            if (spawnAttempts > 25) {
                 ReignOfNether.LOGGER.warn("Gave up trying to find a suitable animal spawn!");
                 return;
             }
         } while (!spawnBs.getMaterial().isSolid() || spawnBs.getMaterial() == Material.LEAVES
-            || spawnBs.getMaterial() == Material.WOOD || spawnBp.distSqr(centrePos) < 400
+            || spawnBs.getMaterial() == Material.WOOD || spawnBp.distSqr(centrePos) < 225
             || BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), spawnBp)
             || BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), spawnBp.above()));
 
