@@ -9,6 +9,7 @@ import com.solegendary.reignofnether.resources.ResourcesClientEvents;
 import com.solegendary.reignofnether.resources.ResourcesServerEvents;
 import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -87,15 +88,15 @@ public abstract class EnchantAbility extends Ability {
         } else if (level.isClientSide()) {
             if (!(te instanceof Unit unit &&
                     unit.getOwnerName().equals(buildingUsing.ownerName))) {
-                HudClientEvents.showTemporaryMessage("Can only enchant your own units");
+                HudClientEvents.showTemporaryMessage(I18n.get("ability.reignofnether.enchant.error1"));
             } else if (te.distanceToSqr(Vec3.atCenterOf(buildingUsing.centrePos)) >= RANGE * RANGE) {
-                HudClientEvents.showTemporaryMessage("Unit is out of range");
+                HudClientEvents.showTemporaryMessage(I18n.get("ability.reignofnether.enchant.error2"));
             } else if (!isCorrectUnitAndEquipment(te)) {
-                HudClientEvents.showTemporaryMessage("Can't enchant that type of unit");
+                HudClientEvents.showTemporaryMessage(I18n.get("ability.reignofnether.enchant.error3"));
             } else if (hasSameEnchant(te)) {
-                HudClientEvents.showTemporaryMessage("Unit already has this enchantment");
+                HudClientEvents.showTemporaryMessage(I18n.get("ability.reignofnether.enchant.error4"));
             } else if (!canAfford(buildingUsing)) {
-                HudClientEvents.showTemporaryMessage("Can't afford this enchantment");
+                HudClientEvents.showTemporaryMessage(I18n.get("ability.reignofnether.enchant.error5"));
             } else {
                 setToMaxCooldown();
                 playSound(level, te);

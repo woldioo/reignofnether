@@ -15,7 +15,7 @@ Tthings to regression test once PRs are merged
 Features
 --------
 (In Optimize and Crash Fixes #107 PR)
-[❌] Alliance System
+[❌] Alliance System (Thanks to @Boobcat)
     - /ally <player name> to send an alliance request to another player
     - /allyconfirm <requester name> to accept an alliance request
     - /disband to leave an alliance
@@ -25,6 +25,11 @@ Features
     - Effects that don't friendly fire like creepers should also not affect allies
     - You can still force attack allies using A + left-click
 
+[❌] Localisation Keys (Thanks to @Promethia)
+    - All strings in the mod are now translatable
+    - Languages completed so far are English (en_us) and Chinese (Simplified) (zh_cn)
+    - If you would like to contribute translations, please make a pull request to the Github here:
+        - https://github.com/SoLegendary/reignofnether/tree/1.19.2-dev/src/main/resources/assets/reignofnether/lang
 
 
 Bugfixes
@@ -37,6 +42,7 @@ Bugfixes
 [❌] Fixed crash related to pressing Tab on a group of units
 
 
+[❌] Piglins can't build on blackstone
 [🟡] Fixed issue of being kicked from the official server when switching instances (eg. between a game and the lobby)
 [❌] The world generation datapack is now hardcoded into the mod by default
     - as a world gen option like superflat

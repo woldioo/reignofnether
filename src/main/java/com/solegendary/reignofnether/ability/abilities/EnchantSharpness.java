@@ -10,6 +10,7 @@ import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.units.villagers.PillagerUnit;
 import com.solegendary.reignofnether.unit.units.villagers.VindicatorUnit;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -53,14 +54,14 @@ public class EnchantSharpness extends EnchantAbility {
                         library.autoCastEnchant = this;
                 },
                 List.of(
-                        FormattedCharSequence.forward("Sharpness Enchantment", Style.EMPTY.withBold(true)),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.sharpness"), Style.EMPTY.withBold(true)),
                         ResourceCosts.getFormattedCost(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Enchant a Vindicator's axe with Sharpness II, ", Style.EMPTY),
-                        FormattedCharSequence.forward("raising its damage by 2.", Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.sharpness.tooltip1"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.sharpness.tooltip2"), Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Removes all other enchantments.", Style.EMPTY),
-                        FormattedCharSequence.forward("Right click to auto-cast", Style.EMPTY)
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.sharpness.tooltip3"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.sharpness.tooltip4"), Style.EMPTY)
                 ),
                 this
         );

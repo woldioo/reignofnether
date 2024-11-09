@@ -9,6 +9,7 @@ import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.units.villagers.EvokerUnit;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -52,14 +53,14 @@ public class EnchantVigor extends EnchantAbility {
                         library.autoCastEnchant = this;
                 },
                 List.of(
-                        FormattedCharSequence.forward("Vigor Enchantment", Style.EMPTY.withBold(true)),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.vigor"), Style.EMPTY.withBold(true)),
                         ResourceCosts.getFormattedCost(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Gives an Evoker a wand enchanted with ", Style.EMPTY),
-                        FormattedCharSequence.forward("Vigor, lowering their cooldowns by 25%", Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.vigor.tooltip1"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.vigor.tooltip2"), Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Removes all other enchantments.", Style.EMPTY),
-                        FormattedCharSequence.forward("Right click to auto-cast", Style.EMPTY)
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.vigor.tooltip3"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.vigor.tooltip4"), Style.EMPTY)
                 ),
                 this
         );
