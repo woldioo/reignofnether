@@ -20,6 +20,7 @@ import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.tutorial.TutorialClientEvents;
 import com.solegendary.reignofnether.util.Faction;
 import com.solegendary.reignofnether.util.MiscUtil;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -46,7 +47,13 @@ public class Library extends ProductionBuilding {
     public EnchantAbility autoCastEnchant = null;
 
     public Library(Level level, BlockPos originPos, Rotation rotation, String ownerName) {
-        super(level, originPos, rotation, ownerName, getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation), false);
+        super(level,
+            originPos,
+            rotation,
+            ownerName,
+            getAbsoluteBlockData(getRelativeBlockData(level), level, originPos, rotation),
+            false
+        );
         this.name = buildingName;
         this.ownerName = ownerName;
         this.portraitBlock = Blocks.ENCHANTING_TABLE;
@@ -81,10 +88,9 @@ public class Library extends ProductionBuilding {
             this.abilityButtons.add(enchantMaiming.getButton(Keybindings.keyE));
             this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyR));
             this.abilityButtons.add(enchantVigor.getButton(Keybindings.keyT));
-            this.productionButtons = Arrays.asList(
-                    ResearchLingeringPotions.getStartButton(this, Keybindings.keyY),
-                    ResearchEvokerVexes.getStartButton(this, Keybindings.keyU),
-                    ResearchGrandLibrary.getStartButton(this, Keybindings.keyI)
+            this.productionButtons = Arrays.asList(ResearchLingeringPotions.getStartButton(this, Keybindings.keyY),
+                ResearchEvokerVexes.getStartButton(this, Keybindings.keyU),
+                ResearchGrandLibrary.getStartButton(this, Keybindings.keyI)
             );
         }
     }
@@ -93,15 +99,21 @@ public class Library extends ProductionBuilding {
     public void tick(Level tickLevel) {
         super.tick(tickLevel);
 
-        if (tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 15 == 0 &&
-            isBuilt && autoCastEnchant != null && autoCastEnchant.isOffCooldown()) {
+        if (tickAgeAfterBuilt > 0 && tickAgeAfterBuilt % 15 == 0 && isBuilt && autoCastEnchant != null
+            && autoCastEnchant.isOffCooldown()) {
 
-            List<Mob> mobs = MiscUtil.getEntitiesWithinRange(new Vector3d(this.centrePos.getX(), this.centrePos.getY(), this.centrePos.getZ()),
-                autoCastEnchant.range - 1, Mob.class, tickLevel)
-                    .stream().filter(e -> (autoCastEnchant.isCorrectUnitAndEquipment(e) &&
-                    autoCastEnchant.canAfford(this) &&
-                    !autoCastEnchant.hasAnyEnchant(e)))
-                    .toList();
+            List<Mob> mobs = MiscUtil.getEntitiesWithinRange(new Vector3d(
+                    this.centrePos.getX(),
+                    this.centrePos.getY(),
+                    this.centrePos.getZ()
+                ),
+                autoCastEnchant.range - 1,
+                Mob.class,
+                tickLevel
+            ).stream().filter(e -> (
+                autoCastEnchant.isCorrectUnitAndEquipment(e) && autoCastEnchant.canAfford(this)
+                    && !autoCastEnchant.hasAnyEnchant(e)
+            )).toList();
 
             if (!mobs.isEmpty()) {
                 autoCastEnchant.use(tickLevel, this, mobs.get(0));
@@ -109,31 +121,39 @@ public class Library extends ProductionBuilding {
         }
     }
 
-    public Faction getFaction() {return Faction.VILLAGERS;}
+    public Faction getFaction() {
+        return Faction.VILLAGERS;
+    }
 
     public static ArrayList<BuildingBlock> getRelativeBlockData(LevelAccessor level) {
         return BuildingBlockData.getBuildingBlocks(structureName, level);
     }
 
     public static AbilityButton getBuildButton(Keybinding hotkey) {
-        return new AbilityButton(
-            Library.buildingName,
+        return new AbilityButton(Library.buildingName,
             new ResourceLocation("minecraft", "textures/block/enchanting_table_top.png"),
             hotkey,
             () -> BuildingClientEvents.getBuildingToPlace() == Library.class,
             TutorialClientEvents::isEnabled,
-            () -> BuildingClientEvents.hasFinishedBuilding(ArcaneTower.buildingName) ||
-                    ResearchClient.hasCheat("modifythephasevariance"),
+            () -> BuildingClientEvents.hasFinishedBuilding(ArcaneTower.buildingName) || ResearchClient.hasCheat(
+                "modifythephasevariance"),
             () -> BuildingClientEvents.setBuildingToPlace(Library.class),
             null,
-            List.of(
-                FormattedCharSequence.forward(Library.buildingName, Style.EMPTY.withBold(true)),
+            List.of(FormattedCharSequence.forward(I18n.get("buildings.villagers.reignofnether.library"),
+                    Style.EMPTY.withBold(true)
+                ),
                 ResourceCosts.getFormattedCost(cost),
                 FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward("An enchanting table surrounded by pillars of books.", Style.EMPTY),
-                FormattedCharSequence.forward("Used to research magic-related upgrades.", Style.EMPTY),
+                FormattedCharSequence.forward(I18n.get("buildings.villagers.reignofnether.library.tooltip1"),
+                    Style.EMPTY
+                ),
+                FormattedCharSequence.forward(I18n.get("buildings.villagers.reignofnether.library.tooltip2"),
+                    Style.EMPTY
+                ),
                 FormattedCharSequence.forward("", Style.EMPTY),
-                FormattedCharSequence.forward("Requires an arcane tower.", Style.EMPTY)
+                FormattedCharSequence.forward(I18n.get("buildings.villagers.reignofnether.library.tooltip3"),
+                    Style.EMPTY
+                )
             ),
             null
         );
@@ -149,8 +169,9 @@ public class Library extends ProductionBuilding {
     @Override
     public boolean isUpgraded() {
         for (BuildingBlock block : blocks)
-            if (block.getBlockState().getBlock() == Blocks.GLOWSTONE)
+            if (block.getBlockState().getBlock() == Blocks.GLOWSTONE) {
                 return true;
+            }
         return false;
     }
 }
