@@ -129,7 +129,7 @@
     "ability.reignofnether.enchant.error4": "Unit already has this enchantment",
     "ability.reignofnether.enchant.error5": "Can't afford this enchantment",
     "ability.reignofnether.enchant.maiming": "Enchant: Maiming",
-    "ability.reignofnether.enchant.maiming.tooltip1": "Enchant a Vindicator's axe with maiming",
+    "ability.reignofnether.enchant.maiming.tooltip1": "Enchant a Vindicator's axe with Maiming",
     "ability.reignofnether.enchant.maiming.tooltip2": "causing targets to be slowed on hit.",
     "ability.reignofnether.enchant.maiming.tooltip3": "Removes all other enchantments.",
     "ability.reignofnether.enchant.maiming.tooltip4": "Right click to auto-cast",
@@ -150,7 +150,7 @@
     "ability.reignofnether.enchant.multishot.tooltip4": "Right click to auto-cast",
     "ability.reignofnether.enchant.vigor": "Enchant: Vigor",
     "ability.reignofnether.enchant.vigor.tooltip1": "Gives an Evoker a wand enchanted with ",
-    "ability.reignofnether.enchant.vigor.tooltip2": "Vigor, lowering their cooldowns by 25%",
+    "ability.reignofnether.enchant.vigor.tooltip2": "Vigor, lowering their cooldowns by 25%%",
     "ability.reignofnether.enchant.vigor.tooltip3": "Removes all other enchantments.",
     "ability.reignofnether.enchant.vigor.tooltip4": "Right click to auto-cast",
 
@@ -728,6 +728,9 @@
     "units.villagers.reignofnether.vindicator.tooltip2": "Upgraded with diamond axes that deal +2 damage",
     "units.villagers.reignofnether.witch": "Witch",
     "units.villagers.reignofnether.witch.tooltip1": "A devious hag who can heal and harm with potions.",
+
+    "survival.reignofnether.dawn": "Dawn breaks",
+    "survival.reignofnether.dusk": "Night falls...",
 
     "block.reignofnether.decayable_nether_wart_block": "Decayable Nether Wart Block",
     "block.reignofnether.decayable_warped_wart_block": "Decayable Warped Wart Block",

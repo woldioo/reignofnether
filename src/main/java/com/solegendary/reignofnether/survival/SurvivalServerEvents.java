@@ -3,8 +3,8 @@ package com.solegendary.reignofnether.survival;
 import com.solegendary.reignofnether.player.PlayerServerEvents;
 import com.solegendary.reignofnether.time.TimeUtils;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
-import com.solegendary.reignofnether.unit.packets.UnitSyncClientboundPacket;
 import com.solegendary.reignofnether.util.Faction;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,11 +43,11 @@ public class SurvivalServerEvents {
         }
 
         if (lastTime <= TimeUtils.DAWN && normTime > TimeUtils.DAWN) {
-            PlayerServerEvents.sendMessageToAllPlayers("Dawn breaks.");
+            PlayerServerEvents.sendMessageToAllPlayers(I18n.get("survival.reignofnether.dawn"), true);
             ((ServerLevel) evt.level).setDayTime(time + getDifficultyTimeModifier());
         }
         else if (lastTime <= TimeUtils.DUSK && normTime > TimeUtils.DUSK) {
-            PlayerServerEvents.sendMessageToAllPlayers("Night falls...");
+            PlayerServerEvents.sendMessageToAllPlayers(I18n.get("survival.reignofnether.dusk"), true);
             startNextWave();
             ((ServerLevel) evt.level).setDayTime(time + getDifficultyTimeModifier());
         }

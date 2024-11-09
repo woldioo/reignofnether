@@ -27,6 +27,7 @@ Features
 
 [❌] Localisation Keys (Thanks to @Promethia)
     - All strings in the mod are now translatable
+    - If a string in your locale is not available, it will default to English
     - Languages completed so far are English (en_us) and Chinese (Simplified) (zh_cn)
     - If you would like to contribute translations, please make a pull request to the Github here:
         - https://github.com/SoLegendary/reignofnether/tree/1.19.2-dev/src/main/resources/assets/reignofnether/lang

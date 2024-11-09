@@ -40,7 +40,7 @@ public class EnchantSharpness extends EnchantAbility {
     public AbilityButton getButton(Keybinding hotkey) {
         return new AbilityButton(
                 "Sharpness Enchantment",
-                new ResourceLocation("minecraft", "textures/item/iron_axe.png"),
+                new ResourceLocation("minecraft", "textures/item/diamond_axe.png"),
                 hotkey,
                 () -> CursorClientEvents.getLeftClickAction() == ENCHANT_ACTION || library.autoCastEnchant == this,
                 () -> false,

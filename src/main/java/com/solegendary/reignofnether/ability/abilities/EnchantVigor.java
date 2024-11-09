@@ -39,7 +39,7 @@ public class EnchantVigor extends EnchantAbility {
     public AbilityButton getButton(Keybinding hotkey) {
         return new AbilityButton(
                 "Vigor Enchantment",
-                new ResourceLocation("minecraft", "textures/item/iron_helmet.png"),
+                new ResourceLocation("minecraft", "textures/item/stick.png"),
                 hotkey,
                 () -> CursorClientEvents.getLeftClickAction() == ENCHANT_ACTION || library.autoCastEnchant == this,
                 () -> false,
