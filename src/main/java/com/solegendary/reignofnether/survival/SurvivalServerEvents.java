@@ -220,10 +220,11 @@ public class SurvivalServerEvents {
 
             ArrayList<Entity> entities = UnitServerEvents.spawnMobs(monsterType, serverLevel, spawnBp.above(), 1, "Monsters");
 
-            for (Entity entity : entities)
+            for (Entity entity : entities) {
                 BotControls.startingCommand(entity);
-
-
+                if (entity instanceof Unit unit)
+                    nextWave.population -= unit.getPopCost();
+            }
 
         } while (nextWave.population > 0);
 
