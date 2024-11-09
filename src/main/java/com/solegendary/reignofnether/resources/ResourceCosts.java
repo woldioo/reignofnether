@@ -53,8 +53,8 @@ public class ResourceCosts {
     // Villagers
     public static ResourceCost VILLAGER = ResourceCost.Unit(50,0,0,15,1);
     public static ResourceCost IRON_GOLEM = ResourceCost.Unit(0,50,200,40,4);
-    public static ResourceCost PILLAGER = ResourceCost.Unit(125,85,0,35,3);
-    public static ResourceCost VINDICATOR = ResourceCost.Unit(180,0,0,35,3);
+    public static ResourceCost PILLAGER = ResourceCost.Unit(120,85,0,35,3);
+    public static ResourceCost VINDICATOR = ResourceCost.Unit(175,0,0,35,3);
     public static ResourceCost WITCH = ResourceCost.Unit(100,100,100,35,3);
     public static ResourceCost EVOKER = ResourceCost.Unit(150,0,150,35,3);
     public static ResourceCost RAVAGER = ResourceCost.Unit(400,50,150,60,7);

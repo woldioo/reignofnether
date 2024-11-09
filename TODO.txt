@@ -64,6 +64,7 @@ Balancing
 [🟡] Build times with more than 1 worker are now slightly slower (now is the same speeds as AOE2)
 
 Villagers
+[🟡] Vindicators and Pillagers: -5 food
 [🟡] Blacksmith: -100 wood, +100 ore
 [🟡] Libraries now only require a Barracks to be built instead of an Arcane Tower
 [🟡] Library: -50 wood, +10% build time
