@@ -637,7 +637,11 @@
     "tutorial.reignofnether.good_luck": "Until next time... Good luck and have fun!",
     "tutorial.reignofnether.tutorial_disabled": "Tutorial mode disabled",
 
-    "units.reignofnether.captain": "%s Captain",
+    "units.reignofnether.captain": "Captain",
+    "units.reignofnether.ravager_artillery": "Ravager Artillery",
+    "units.reignofnether.spider_jockey": "Spider Jockey",
+    "units.reignofnether.poison_spider_jockey": "Poison Spider Jockey",
+    "units.reignofnether.hoglin_rider": "Hoglin Rider",
 
     "units.monsters.reignofnether.creeper": "Creeper",
     "units.monsters.reignofnether.creeper.tooltip1": "An explosive monster that can blow up units and buildings.",
