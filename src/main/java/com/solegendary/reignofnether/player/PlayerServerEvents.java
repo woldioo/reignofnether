@@ -631,6 +631,7 @@ public class PlayerServerEvents {
 
             if (SurvivalServerEvents.isEnabled()) {
                 SurvivalServerEvents.resetWaves();
+                SurvivalServerEvents.setEnabled(false);
             }
         }
     }

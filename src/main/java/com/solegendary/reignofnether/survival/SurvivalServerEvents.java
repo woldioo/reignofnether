@@ -84,6 +84,7 @@ public class SurvivalServerEvents {
                 }));
         evt.getDispatcher().register(Commands.literal("rts-wave-survival").then(Commands.literal("enable")
                 .executes((command) -> {
+                    setEnabled(true);
                     resetWaves();
                     return 1;
                 })));
