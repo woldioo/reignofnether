@@ -18,6 +18,7 @@ import java.util.List;
 
 public class VoteCommand {
 
+    /*
     @SubscribeEvent
     public static void onCommandRegister(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
@@ -29,6 +30,7 @@ public class VoteCommand {
                         })
         );
     }
+     */
 
     @OnlyIn(Dist.CLIENT)
     private static void openMapSelectionScreen() {

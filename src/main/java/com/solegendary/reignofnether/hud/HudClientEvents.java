@@ -164,22 +164,22 @@ public class HudClientEvents {
 
         if (itemStack.getItem() instanceof BannerItem) {
             entity.setItemSlot(EquipmentSlot.HEAD, itemStack);
-            name += " Captain";
+            name += " " + I18n.get("units.reignofnether.captain");
         }
         if (entity.getPassengers().size() == 1) {
             Entity passenger = entity.getPassengers().get(0);
             if (entity instanceof RavagerUnit && passenger instanceof PillagerUnit) {
-                name = "Ravager Artillery";
+                name = I18n.get("units.reignofnether.ravager_artillery");
             } else if (entity instanceof SpiderUnit && (
                 passenger instanceof SkeletonUnit || passenger instanceof StrayUnit
             )) {
-                name = "Spider Jockey";
+                name = I18n.get("units.reignofnether.spider_jockey");
             } else if (entity instanceof PoisonSpiderUnit && (
                 passenger instanceof SkeletonUnit || passenger instanceof StrayUnit
             )) {
-                name = "Poison Spider Jockey";
+                name = I18n.get("units.reignofnether.poison_spider_jockey");
             } else if (entity instanceof HoglinUnit && passenger instanceof HeadhunterUnit) {
-                name = "Hoglin Rider";
+                name = I18n.get("units.reignofnether.hoglin_rider");
             } else {
                 String pName = getSimpleEntityName(entity.getPassengers().get(0)).replace("_", " ");
                 String nameCap = pName.substring(0, 1).toUpperCase() + pName.substring(1);

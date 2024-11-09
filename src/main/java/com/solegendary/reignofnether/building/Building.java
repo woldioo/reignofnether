@@ -108,7 +108,7 @@ public abstract class Building {
     private final long TICKS_TO_SPAWN_ANIMALS_MAX = 1800; // how often we attempt to spawn animals around each
     private long ticksToSpawnAnimals = 0; // spawn once soon after placement
     private final int MAX_ANIMALS = 8;
-    private final int ANIMAL_SPAWN_RANGE = 80; // block range to check and spawn animals in
+    private final int ANIMAL_SPAWN_RANGE = 70; // block range to check and spawn animals in
     protected long tickAgeAfterBuilt = 0; // not saved
     protected long tickAge = 0; // not saved
 
@@ -717,13 +717,7 @@ public abstract class Building {
             // 3 builders - 3/5 (60%)
             // 4 builders - 3/6 (50%)
             // 5 builders - 3/7 (43%)
-            // Our speed:
-            // 1 builder  - 2/2 (100%)
-            // 2 builders - 2/3 (67%)
-            // 3 builders - 2/4 (50%)
-            // 4 builders - 2/5 (40%)
-            // 5 builders - 2/6 (33%)
-            int msPerBuild = (2 * BASE_MS_PER_BUILD) / (builderCount + 1);
+            int msPerBuild = (3 * BASE_MS_PER_BUILD) / (builderCount + 2);
             if (!isBuilt) {
                 msPerBuild *= buildTimeModifier;
             } else {
@@ -828,12 +822,12 @@ public abstract class Building {
             spawnBp = new BlockPos(x, y, z);
             spawnBs = level.getBlockState(spawnBp);
             spawnAttempts += 1;
-            if (spawnAttempts > 20) {
+            if (spawnAttempts > 25) {
                 ReignOfNether.LOGGER.warn("Gave up trying to find a suitable animal spawn!");
                 return;
             }
         } while (!spawnBs.getMaterial().isSolid() || spawnBs.getMaterial() == Material.LEAVES
-            || spawnBs.getMaterial() == Material.WOOD || spawnBp.distSqr(centrePos) < 400
+            || spawnBs.getMaterial() == Material.WOOD || spawnBp.distSqr(centrePos) < 225
             || BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), spawnBp)
             || BuildingUtils.isPosInsideAnyBuilding(level.isClientSide(), spawnBp.above()));
 

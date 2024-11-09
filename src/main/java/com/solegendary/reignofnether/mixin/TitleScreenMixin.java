@@ -45,7 +45,7 @@ public class TitleScreenMixin extends Screen {
     private static final ResourceLocation LILYPAD_TEXTURE =
             new ResourceLocation( "textures/gui/title/lilypad.png");
 
-    private static final String VERSION_STRING = "1.0.7";
+    private static final String VERSION_STRING = "1.0.8";
 
     @Shadow @Final private PanoramaRenderer panorama;
     @Shadow @Final private boolean fading;

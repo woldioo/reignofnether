@@ -9,6 +9,7 @@ import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.units.villagers.PillagerUnit;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -50,14 +51,14 @@ public class EnchantQuickCharge extends EnchantAbility {
                         library.autoCastEnchant = this;
                 },
                 List.of(
-                        FormattedCharSequence.forward("Quick Charge Enchantment", Style.EMPTY.withBold(true)),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.quickshot"), Style.EMPTY.withBold(true)),
                         ResourceCosts.getFormattedCost(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Enchant a Pillager's crossbow with Quick Charge I, ", Style.EMPTY),
-                        FormattedCharSequence.forward("reducing the time it takes to load arrows by 0.25s.", Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.quickshot.tooltip1"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.quickshot.tooltip2"), Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Removes all other enchantments.", Style.EMPTY),
-                        FormattedCharSequence.forward("Right click to auto-cast", Style.EMPTY)
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.quickshot.tooltip3"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.quickshot.tooltip4"), Style.EMPTY)
                 ),
                 this
         );

@@ -18,6 +18,8 @@ import com.solegendary.reignofnether.player.PlayerServerEvents;
 import com.solegendary.reignofnether.research.ResearchServerEvents;
 import com.solegendary.reignofnether.resources.ResourcesClientEvents;
 import com.solegendary.reignofnether.resources.ResourcesServerEvents;
+import com.solegendary.reignofnether.survival.SurvivalClientEvents;
+import com.solegendary.reignofnether.survival.SurvivalServerEvents;
 import com.solegendary.reignofnether.time.TimeClientEvents;
 import com.solegendary.reignofnether.tps.TPSClientEvents;
 import com.solegendary.reignofnether.tps.TPSServerEvents;
@@ -57,6 +59,7 @@ public class ClientEventRegistrar {
         vanillaEventBus.register(TutorialClientEvents.class);
         vanillaEventBus.register(TitleClientEvents.class);
         vanillaEventBus.register(WorldBorderClientEvents.class);
+        vanillaEventBus.register(SurvivalClientEvents.class);
 
         // to allow singleplayer integrated server to work
         vanillaEventBus.register(TutorialServerEvents.class);
@@ -68,5 +71,6 @@ public class ClientEventRegistrar {
         vanillaEventBus.register(TPSServerEvents.class);
         vanillaEventBus.register(FogOfWarServerEvents.class);
         vanillaEventBus.register(ResearchServerEvents.class);
+        vanillaEventBus.register(SurvivalServerEvents.class);
     }
 }

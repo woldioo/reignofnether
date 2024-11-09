@@ -14,6 +14,7 @@ import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
 import com.solegendary.reignofnether.unit.units.villagers.PillagerUnit;
 import com.solegendary.reignofnether.util.MyRenderer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -43,7 +44,7 @@ public class EnchantMultishot extends EnchantAbility {
     public AbilityButton getButton(Keybinding hotkey) {
         return new AbilityButton(
                 "Multishot Enchantment",
-                new ResourceLocation("minecraft", "textures/item/crossbow_standby.png"),
+                new ResourceLocation("minecraft", "textures/item/crossbow_arrow.png"),
                 hotkey,
                 () -> CursorClientEvents.getLeftClickAction() == ENCHANT_ACTION || library.autoCastEnchant == this,
                 () -> false,
@@ -57,14 +58,14 @@ public class EnchantMultishot extends EnchantAbility {
                         library.autoCastEnchant = this;
                 },
                 List.of(
-                        FormattedCharSequence.forward("Multishot Enchantment", Style.EMPTY.withBold(true)),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.multishot"), Style.EMPTY.withBold(true)),
                         ResourceCosts.getFormattedCost(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Enchant a Pillager's crossbow with Multishot, ", Style.EMPTY),
-                        FormattedCharSequence.forward("making it fire 3 arrows at once in a spread.", Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.multishot.tooltip1"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.multishot.tooltip2"), Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Removes all other enchantments.", Style.EMPTY),
-                        FormattedCharSequence.forward("Right click to auto-cast", Style.EMPTY)
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.multishot.tooltip3"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.multishot.tooltip4"), Style.EMPTY)
                 ),
                 this
         );

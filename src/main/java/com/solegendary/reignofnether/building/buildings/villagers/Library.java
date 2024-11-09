@@ -63,6 +63,7 @@ public class Library extends ProductionBuilding {
         this.woodCost = cost.wood;
         this.oreCost = cost.ore;
         this.popSupply = cost.population;
+        this.buildTimeModifier = 1.1f;
 
         this.canSetRallyPoint = false;
 
@@ -83,9 +84,9 @@ public class Library extends ProductionBuilding {
         this.abilities.add(enchantVigor);
 
         if (level.isClientSide()) {
-            this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyQ));
+            this.abilityButtons.add(enchantMaiming.getButton(Keybindings.keyQ));
             this.abilityButtons.add(enchantQuickCharge.getButton(Keybindings.keyW));
-            this.abilityButtons.add(enchantMaiming.getButton(Keybindings.keyE));
+            this.abilityButtons.add(enchantSharpness.getButton(Keybindings.keyE));
             this.abilityButtons.add(enchantMultishot.getButton(Keybindings.keyR));
             this.abilityButtons.add(enchantVigor.getButton(Keybindings.keyT));
             this.productionButtons = Arrays.asList(ResearchLingeringPotions.getStartButton(this, Keybindings.keyY),
@@ -135,8 +136,8 @@ public class Library extends ProductionBuilding {
             hotkey,
             () -> BuildingClientEvents.getBuildingToPlace() == Library.class,
             TutorialClientEvents::isEnabled,
-            () -> BuildingClientEvents.hasFinishedBuilding(ArcaneTower.buildingName) || ResearchClient.hasCheat(
-                "modifythephasevariance"),
+            () -> BuildingClientEvents.hasFinishedBuilding(Barracks.buildingName) ||
+                    ResearchClient.hasCheat("modifythephasevariance"),
             () -> BuildingClientEvents.setBuildingToPlace(Library.class),
             null,
             List.of(FormattedCharSequence.forward(I18n.get("buildings.villagers.reignofnether.library"),

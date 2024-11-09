@@ -13,6 +13,8 @@ import com.solegendary.reignofnether.research.ResearchServerEvents;
 import com.solegendary.reignofnether.resources.ResourceCost;
 import com.solegendary.reignofnether.resources.Resources;
 import com.solegendary.reignofnether.resources.ResourcesServerEvents;
+import com.solegendary.reignofnether.survival.SurvivalServerEvents;
+import com.solegendary.reignofnether.time.TimeUtils;
 import com.solegendary.reignofnether.tutorial.TutorialServerEvents;
 import com.solegendary.reignofnether.unit.UnitServerEvents;
 import com.solegendary.reignofnether.unit.interfaces.Unit;
@@ -307,9 +309,12 @@ public class PlayerServerEvents {
                     level.addFreshEntity(entity);
                 }
             }
-            if (faction == Faction.MONSTERS) {
+            if (SurvivalServerEvents.isEnabled()) {
+                level.setDayTime(TimeUtils.DAWN + SurvivalServerEvents.getDifficultyTimeModifier());
+            } else {
                 level.setDayTime(MONSTER_START_TIME_OF_DAY);
             }
+
             ResourcesServerEvents.resetResources(playerName);
 
             if (!TutorialServerEvents.isEnabled()) {
@@ -621,8 +626,12 @@ public class PlayerServerEvents {
 
             BuildingServerEvents.netherZones.forEach(NetherZone::startRestoring);
 
-            if (rtsLocked) {
+            if (rtsLocked)
                 setRTSLock(false);
+
+            if (SurvivalServerEvents.isEnabled()) {
+                SurvivalServerEvents.resetWaves();
+                SurvivalServerEvents.setEnabled(false);
             }
         }
     }

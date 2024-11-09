@@ -9,6 +9,7 @@ import com.solegendary.reignofnether.keybinds.Keybinding;
 import com.solegendary.reignofnether.resources.ResourceCosts;
 import com.solegendary.reignofnether.unit.UnitAction;
 import com.solegendary.reignofnether.unit.units.villagers.VindicatorUnit;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -40,7 +41,7 @@ public class EnchantMaiming extends EnchantAbility {
                 hotkey,
                 () -> CursorClientEvents.getLeftClickAction() == ENCHANT_ACTION || library.autoCastEnchant == this,
                 () -> false,
-                library::isUpgraded,
+                () -> true,
                 () -> CursorClientEvents.setLeftClickAction(ENCHANT_ACTION),
                 () -> {
                     EnchantAbilityServerboundPacket.setAutocastEnchant(ENCHANT_ACTION, library.originPos);
@@ -50,14 +51,14 @@ public class EnchantMaiming extends EnchantAbility {
                         library.autoCastEnchant = this;
                 },
                 List.of(
-                        FormattedCharSequence.forward("Maiming Enchantment", Style.EMPTY.withBold(true)),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.maiming"), Style.EMPTY.withBold(true)),
                         ResourceCosts.getFormattedCost(cost),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Enchant a Vindicator's axe with maiming, ", Style.EMPTY),
-                        FormattedCharSequence.forward("causing targets to be slowed on hit.", Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.maiming.tooltip1"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.maiming.tooltip2"), Style.EMPTY),
                         FormattedCharSequence.forward("", Style.EMPTY),
-                        FormattedCharSequence.forward("Removes all other enchantments.", Style.EMPTY),
-                        FormattedCharSequence.forward("Right click to auto-cast", Style.EMPTY)
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.maiming.tooltip3"), Style.EMPTY),
+                        FormattedCharSequence.forward(I18n.get("ability.reignofnether.enchant.maiming.tooltip4"), Style.EMPTY)
                 ),
                 this
         );

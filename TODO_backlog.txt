@@ -1,10 +1,7 @@
 
-1.19.2-1.0.6
-------------
-
 [✔] Done and tested
 [🟡] Partially done, only has a workaround and/or needs testing
-[❌] Not done, top ones are roughly of higher priority
+[❌] Not done, including unmerged PRs
 
 
 Features
@@ -12,14 +9,42 @@ Features
 [❌] Wave Survival
     - Start anywhere, set time to morning
     - Whenever night begins, spawn wave of enemies to attack move your base
-    - Give enemies all frostwalker to allow islands
-        - But won't work on sky maps
+
     - play a random cave ambience sound at the start of each night and title function
     - start off doing only monster enemies
-
     - lose if your capitol dies
     - need to make sure enemies don't spawn too close to your buildings
     - might need improved pathfinding
+        - for now, just keep repeating attack move commands
+    - each day length depends on difficulty
+        - 10mins - easy (same as vanilla length)
+        - 8mins - medium
+        - 6mins - hard
+    - nights last forever until you clear the wave
+    - add button to look for few remaining units (similar to idle villagers button)
+
+    WAVE DESIGN
+    - Each night is either piglin, illager or monster
+        - Piglins get popup portals that continuously send units
+            - medium sized wave from each portal at start (smaller than an illager wave) and
+            - must be destroyed before the wave ends
+            - cannot be damaged while building, builds extra fast
+            - at least 1 portal targets the capitol
+        - Monsters attack from all directions randomly at random targets
+        - Illagers attack in a large group always focusing the capitol
+        - can't be the same faction twice in a row
+        - as days pass, waves get larger (balanced by population value)
+
+    ANTI-CHEESING
+    - Give enemies all frostwalker to allow islands
+        - But won't work on sky maps
+    - Prevent leaving one enemy alive to farm resources forever
+        - At least some proportion of enemies try to focus workers
+        - X enemies or less remaining, all enemies focus on workers
+
+    VANILLA WORLD COMPATIBILITY
+    - Players are forced to expand further to keep getting resources, but always have to protect their capitol
+
 
 
 
@@ -42,8 +67,6 @@ Features
 Bugfixes
 --------
 
-[❌] Fix worker counts for spectators
-
 [❌] On a server, unloaded workers stop gathering stuff
     - Relook at forced chunks?
 
@@ -58,18 +81,11 @@ Quality of Life Features
 
 [❌] Shift queueing movements and buildings (not just placement)
 
-[❌] Teams using vanilla teams functionality
-
-[❌] The world generation datapack is now hardcoded into the mod by default
-    - as a world gen option like superflat
-
 [❌] Flatten terrain ability
     - Require that villagers work on it like a building
     - Will need a new flatten zone object (no need to save it)
 
 [❌] Amethyst is now mineable, and regenerates automatically after 1min
-
-[❌] Reduce web slowness by a lot
 
 
 
@@ -77,12 +93,6 @@ Balancing
 ---------
 
 [❌] Lightning should only charge one creeper at a time
-
-
-
-[❌] Web upgrade: Spiders can cast a temporary field of webs onto an area
-    - cannot be used while mounted
-    - placed on cooldown when eject is used to dismount
 
 [❌] - Upgrade gives stimpacks (-10hp for 10s of double attack speed and speed buff, cant be used while mounted)
 
